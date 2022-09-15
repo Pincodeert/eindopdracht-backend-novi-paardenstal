@@ -22,7 +22,6 @@ public class Horse {
 
     private String telephoneOfVet;
 
-    private Boolean isOnMedication;
 
 
     public long getId() {
@@ -81,11 +80,5 @@ public class Horse {
         this.telephoneOfVet = telephoneOfVet;
     }
 
-    public Boolean getOnMedication() {
-        return isOnMedication;
-    }
 
-    public void setOnMedication(Boolean onMedication) {
-        isOnMedication = onMedication;
-    }
 }
