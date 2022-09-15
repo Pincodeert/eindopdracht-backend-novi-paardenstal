@@ -1,8 +1,8 @@
 INSERT INTO stalls(name, size, type)
 VALUES
-('The Good', '3 x 3.5', 'inside stall'),
-('The Bad', '3 x 3.5', 'inside stall'),
-('The Ugly', '3 x 3.5', 'inside stall');
+('The Good', '3 x 3.5', 'indoor stall'),
+('The Bad', '3 x 3.5', 'indoor stall'),
+('The Ugly', '3 x 3.5', 'indoor stall');
 
 INSERT INTO horses(name, type_of_feed, type_of_bedding, name_of_vet, residence_of_vet, telephone_of_vet)
 VALUES

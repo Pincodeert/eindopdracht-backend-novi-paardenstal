@@ -14,7 +14,7 @@ public class Subscription {
 
     private String typeOfCare;
 
-    private String typeOfStable;
+    private String typeOfStall;
 
 
     public long getId() {
@@ -41,11 +41,11 @@ public class Subscription {
         this.typeOfCare = typeOfCare;
     }
 
-    public String getTypeOfStable() {
-        return typeOfStable;
+    public String getTypeOfStall() {
+        return typeOfStall;
     }
 
-    public void setTypeOfStable(String typeOfStable) {
-        this.typeOfStable = typeOfStable;
+    public void setTypeOfStable(String typeOfStall) {
+        this.typeOfStall = typeOfStall;
     }
 }
