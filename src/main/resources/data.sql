@@ -1,5 +1,5 @@
-INSERT INTO stables(name, size, type)
+INSERT INTO stalls(name, size, type)
 VALUES
-('The Good', '3 x 3.5', 'inside stable'),
-('The Bad', '3 x 3.5', 'inside stable'),
-('The Ugly', '3 x 3.5', 'inside stable');
+('The Good', '3 x 3.5', 'inside stall'),
+('The Bad', '3 x 3.5', 'inside stall'),
+('The Ugly', '3 x 3.5', 'inside stall');

@@ -3,8 +3,8 @@ package nl.pin.paardenstal.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "stables")
-public class Stable {
+@Table(name = "stalls")
+public class Stall {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
