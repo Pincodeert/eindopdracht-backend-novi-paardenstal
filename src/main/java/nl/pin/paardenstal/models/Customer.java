@@ -1,11 +1,14 @@
 package nl.pin.paardenstal.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "customers")
 public class Customer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     private String firstName;
 
@@ -21,6 +24,15 @@ public class Customer {
 
     private String telephoneNumber;
 
+
+
+    public long getId(){
+        return id;
+    }
+
+    public void setId(long id){
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
