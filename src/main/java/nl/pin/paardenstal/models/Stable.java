@@ -12,7 +12,7 @@ public class Stable {
 
     private String name;
 
-    private double size;
+    private String size;
 
     private String type;
 
@@ -32,11 +32,11 @@ public class Stable {
         this.name = name;
     }
 
-    public double getSize() {
+    public String getSize() {
         return size;
     }
 
-    public void setSize(double size) {
+    public void setSize(String size) {
         this.size = size;
     }
 
