@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.services;
 
+import nl.pin.paardenstal.dtos.SubscriptionDto;
+import nl.pin.paardenstal.dtos.SubscriptionInputDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Subscription;
 import nl.pin.paardenstal.repositories.SubscriptionRepository;
@@ -21,24 +23,32 @@ public class SubscriptionService {
     }
 
     List<Subscription> subscriptions = new ArrayList<>();
+    List<SubscriptionDto> dtos = new ArrayList<>();
 
-    public List<Subscription> getAllSubscriptions(){
+    public List<SubscriptionDto> getAllSubscriptions(){
         subscriptions = subscriptionRepository.findAll();
-        return subscriptions;
+
+        for(Subscription s: subscriptions){
+            SubscriptionDto dto = transferToSubscriptionDto(s);
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
-    public Subscription getSubscription(long id){
+    public SubscriptionDto getSubscription(long id){
         Optional<Subscription> optionalSubscription = subscriptionRepository.findById(id);
 
         if(optionalSubscription.isPresent()){
-            return optionalSubscription.get();
+            SubscriptionDto dto = transferToSubscriptionDto(optionalSubscription.get());
+            return dto;
         } else {
             throw new RecordNotFoundException("This id does not exist.");
         }
     }
 
-    public long addSubscription(Subscription subscription){
-        Subscription newSubscription = subscriptionRepository.save(subscription);
+    public long addSubscription(SubscriptionInputDto subscriptionInputDto){
+        Subscription newSubscription = transferToSubscription(subscriptionInputDto);
+                subscriptionRepository.save(newSubscription);
         long newId = newSubscription.getId();
         return newId;
     }
@@ -52,6 +62,27 @@ public class SubscriptionService {
             throw new RecordNotFoundException("no subsription known by this ID");
         }
 
+    }
+
+    public SubscriptionDto transferToSubscriptionDto(Subscription subscription){
+        SubscriptionDto dto = new SubscriptionDto();
+
+        dto.setId(subscription.getId());
+        dto.setPrice(subscription.getPrice());
+        dto.setTypeOfCare(subscription.getTypeOfCare());
+        dto.setTypeOfStall(subscription.getTypeOfStall());
+
+        return dto;
+    }
+
+    public Subscription transferToSubscription(SubscriptionInputDto subscriptionInputDto){
+        Subscription subscription = new Subscription();
+
+        subscription.setPrice(subscriptionInputDto.getPrice());
+        subscription.setTypeOfCare(subscriptionInputDto.getTypeOfCare());
+        subscription.setTypeOfStall(subscriptionInputDto.getTypeOfStall());
+
+        return subscription;
     }
 
 }

@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.controllers;
 
+import nl.pin.paardenstal.dtos.StallDto;
+import nl.pin.paardenstal.dtos.StallInputDto;
 import nl.pin.paardenstal.models.Stall;
 import nl.pin.paardenstal.services.StallService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,23 +24,23 @@ public class StallController {
         this.stallService = stallService;
     }
 
-    List<Stall> stalls = new ArrayList<>();
+    List<StallDto> stallDtos = new ArrayList<>();
 
     @GetMapping("/stalls")
-    public ResponseEntity<List<Stall>> getAllStalls(){
-        stalls = stallService.getAllStalls();
-        return ResponseEntity.ok(stalls);
+    public ResponseEntity<List<StallDto>> getAllStalls(){
+        stallDtos = stallService.getAllStalls();
+        return ResponseEntity.ok(stallDtos);
     }
 
     @GetMapping("/stalls/{id}")
-    public ResponseEntity<Stall> getStall(@PathVariable long id){
-        Stall stall = stallService.getStall(id);
-        return ResponseEntity.ok(stall);
+    public ResponseEntity<StallDto> getStall(@PathVariable long id){
+        StallDto stallDto = stallService.getStall(id);
+        return ResponseEntity.ok(stallDto);
     }
 
     @PostMapping("/stalls")
-    public ResponseEntity<Object> addStable(@RequestBody Stall stall){
-        long newId = stallService.addStall(stall);
+    public ResponseEntity<Object> addStable(@RequestBody StallInputDto stallInputDto){
+        long newId = stallService.addStall(stallInputDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newId).toUri();
