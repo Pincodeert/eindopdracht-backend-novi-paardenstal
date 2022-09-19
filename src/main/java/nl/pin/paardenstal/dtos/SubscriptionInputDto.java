@@ -1,14 +1,6 @@
-package nl.pin.paardenstal.models;
+package nl.pin.paardenstal.dtos;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "subscriptions")
-public class Subscription {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class SubscriptionInputDto {
 
     private double price;
 
@@ -16,14 +8,6 @@ public class Subscription {
 
     private String typeOfStall;
 
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public double getPrice() {
         return price;
@@ -48,4 +32,6 @@ public class Subscription {
     public void setTypeOfStall(String typeOfStall) {
         this.typeOfStall = typeOfStall;
     }
+
+
 }

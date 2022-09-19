@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.controllers;
 
+import nl.pin.paardenstal.dtos.SubscriptionDto;
+import nl.pin.paardenstal.dtos.SubscriptionInputDto;
 import nl.pin.paardenstal.models.Subscription;
 import nl.pin.paardenstal.services.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,23 +23,23 @@ public class SubscriptionController {
         this.subscriptionService = subscriptionService;
     }
 
-    List<Subscription> subscriptions = new ArrayList<>();
+    List<SubscriptionDto> subscriptionDtos = new ArrayList<>();
 
     @GetMapping("/subscriptions")
-    public ResponseEntity<List<Subscription>> getAllSubscriptions(){
-        subscriptions = subscriptionService.getAllSubscriptions();
-        return ResponseEntity.ok(subscriptions);
+    public ResponseEntity<List<SubscriptionDto>> getAllSubscriptions(){
+        subscriptionDtos = subscriptionService.getAllSubscriptions();
+        return ResponseEntity.ok(subscriptionDtos);
     }
 
     @GetMapping("/subscriptions/{id}")
-    public ResponseEntity<Subscription> getSubscription(@PathVariable long id){
-        Subscription subscription = subscriptionService.getSubscription(id);
-        return ResponseEntity.ok(subscription);
+    public ResponseEntity<SubscriptionDto> getSubscription(@PathVariable long id){
+        SubscriptionDto subscriptionDto = subscriptionService.getSubscription(id);
+        return ResponseEntity.ok(subscriptionDto);
     }
 
     @PostMapping("/subscriptions")
-    public ResponseEntity<Long> addSubscription(@RequestBody Subscription subscription){
-        long newId = subscriptionService.addSubscription(subscription);
+    public ResponseEntity<Long> addSubscription(@RequestBody SubscriptionInputDto subscriptionInputDto){
+        long newId = subscriptionService.addSubscription(subscriptionInputDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newId).toUri();
