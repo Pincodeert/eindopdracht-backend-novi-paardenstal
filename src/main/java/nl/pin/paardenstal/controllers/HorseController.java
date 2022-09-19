@@ -1,8 +1,9 @@
 package nl.pin.paardenstal.controllers;
 
+import nl.pin.paardenstal.dtos.HorseDto;
+import nl.pin.paardenstal.dtos.HorseInputDto;
 import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.services.HorseService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,23 +23,23 @@ public class HorseController {
         this.horseService = horseService;
     }
 
-    List<Horse> horses = new ArrayList<>();
+    List<HorseDto> horseDtos = new ArrayList<>();
 
     @GetMapping("/horses")
-    public ResponseEntity<List<Horse>> getAllHorses(){
-        horses = horseService.getAllHorses();
-        return ResponseEntity.ok(horses);
+    public ResponseEntity<List<HorseDto>> getAllHorses(){
+        horseDtos = horseService.getAllHorses();
+        return ResponseEntity.ok(horseDtos);
     }
 
     @GetMapping("/horses/{id}")
-    public ResponseEntity<Horse> getHorse(@PathVariable long id){
-        Horse horse = horseService.getHorse(id);
-        return ResponseEntity.ok(horse);
+    public ResponseEntity<HorseDto> getHorse(@PathVariable long id){
+        HorseDto horseDto = horseService.getHorse(id);
+        return ResponseEntity.ok(horseDto);
     }
 
     @PostMapping("/horses")
-    public ResponseEntity<Object> addNewHorse(@RequestBody Horse horse){
-        long newId = horseService.addNewHorse(horse);
+    public ResponseEntity<Object> addNewHorse(@RequestBody HorseInputDto horseInputDto){
+        long newId = horseService.addNewHorse(horseInputDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newId).toUri();
@@ -53,8 +54,8 @@ public class HorseController {
     }
 
     @PatchMapping("/horses/{id}")
-    public ResponseEntity<Object> updateHorse(@PathVariable long id, @RequestBody Horse horse){
-        horseService.updateHorse(id, horse);
+    public ResponseEntity<Object> updateHorse(@PathVariable long id, @RequestBody HorseInputDto horseInputDto){
+        horseService.updateHorse(id, horseInputDto);
         return ResponseEntity.noContent().build();
     }
 
