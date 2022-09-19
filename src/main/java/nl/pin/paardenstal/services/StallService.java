@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.services;
 
+import nl.pin.paardenstal.dtos.StallDto;
+import nl.pin.paardenstal.dtos.StallInputDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Stall;
 import nl.pin.paardenstal.repositories.StallRepository;
@@ -21,26 +23,52 @@ public class StallService {
     }
 
     List<Stall> stalls = new ArrayList<>();
+    List<StallDto> dtos = new ArrayList<>();
 
-    public List<Stall> getAllStalls(){
+    public List<StallDto> getAllStalls(){
         stalls = stallRepository.findAll();
-        return stalls;
+        for(Stall s: stalls){
+            StallDto dto = transferToDto(s);
+            dtos.add(dto);
+        }
+
+        return dtos;
     }
 
-    public Stall getStall(long id){
+    public StallDto getStall(long id){
         Optional<Stall> optionalStall = stallRepository.findById(id);
 
         if(optionalStall.isPresent()){
-            return optionalStall.get();
+            StallDto dto = transferToDto(optionalStall.get());
+            return dto;
         } else {
             throw new RecordNotFoundException("this ID does not exist");
         }
     }
 
-    public long addStall(Stall stall){
+    public long addStall(StallInputDto stallInputDto){
+        Stall stall = transferToStall(stallInputDto);
         Stall newStall = stallRepository.save(stall);
         long newId = newStall.getId();
         return newId;
+    }
+
+    public StallDto transferToDto(Stall stall){
+        StallDto dto = new StallDto();
+
+        dto.setId(stall.getId());
+        dto.setName(stall.getName());
+        dto.setSize(stall.getSize());
+        dto.setType(stall.getType());
+        return dto;
+    }
+
+    public Stall transferToStall(StallInputDto inputDto){
+        Stall stall = new Stall();
+        stall.setName(inputDto.getName());
+        stall.setSize(inputDto.getSize());
+        stall.setType(inputDto.getType());
+        return stall;
     }
 
 
