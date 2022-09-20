@@ -1,5 +1,6 @@
 package nl.pin.paardenstal.controllers;
 
+import nl.pin.paardenstal.dtos.IdInputDto;
 import nl.pin.paardenstal.dtos.StallDto;
 import nl.pin.paardenstal.dtos.StallInputDto;
 import nl.pin.paardenstal.models.Stall;
@@ -46,6 +47,12 @@ public class StallController {
                 .buildAndExpand(newId).toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @PutMapping("/stalls/{id}/horse")
+    public ResponseEntity<Object> assignHorseToStall(@PathVariable long id, @RequestBody IdInputDto input){
+        stallService.assignHorseToStall(id, input.id);
+        return ResponseEntity.noContent().build();
     }
 
 

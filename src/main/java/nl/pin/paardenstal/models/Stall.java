@@ -16,6 +16,9 @@ public class Stall {
 
     private String type;
 
+    @OneToOne
+    private Horse horse;
+
     public long getId() {
         return id;
     }
@@ -46,5 +49,13 @@ public class Stall {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Horse getHorse() {
+        return horse;
+    }
+
+    public void setHorse(Horse horse) {
+        this.horse = horse;
     }
 }
