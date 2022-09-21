@@ -51,6 +51,10 @@ public class StallService {
 
         if(optionalStall.isPresent()){
             StallDto dto = transferToDto(optionalStall.get());
+            if(optionalStall.get().getHorse() != null){
+                HorseDto horseDto = horseService.transfertoDto(optionalStall.get().getHorse());
+                dto.setHorseDto(horseDto);
+            }
             return dto;
         } else {
             throw new RecordNotFoundException("this ID does not exist");
