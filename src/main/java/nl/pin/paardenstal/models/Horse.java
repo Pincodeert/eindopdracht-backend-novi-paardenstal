@@ -22,6 +22,9 @@ public class Horse {
 
     private String telephoneOfVet;
 
+    @OneToOne(mappedBy = "horse")
+    private Stall stall;
+
 
 
     public long getId() {
@@ -80,5 +83,11 @@ public class Horse {
         this.telephoneOfVet = telephoneOfVet;
     }
 
+    public Stall getStall() {
+        return stall;
+    }
 
+    public void setStall(Stall stall) {
+        this.stall = stall;
+    }
 }
