@@ -3,8 +3,8 @@ package nl.pin.paardenstal.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "customers")
-public class Customer {
+@Table(name = "customerprofiles")
+public class CustomerProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +23,8 @@ public class Customer {
     private String residence;
 
     private String telephoneNumber;
+
+    private String emailAddress;
 
 
 
@@ -88,5 +90,13 @@ public class Customer {
 
     public void setTelephoneNumber(String telephoneNumber) {
         this.telephoneNumber = telephoneNumber;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 }
