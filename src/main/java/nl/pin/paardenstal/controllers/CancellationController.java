@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.controllers;
 
+import nl.pin.paardenstal.dtos.CancellationDto;
+import nl.pin.paardenstal.dtos.CancellationInputDto;
 import nl.pin.paardenstal.models.Cancellation;
 import nl.pin.paardenstal.services.CancellationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,20 +23,20 @@ public class CancellationController {
     }
 
     @GetMapping("/cancellations")
-    public ResponseEntity<List<Cancellation>> getAllCancellations(){
-        List<Cancellation> cancellations = cancellationService.getAllCancellations();
+    public ResponseEntity<List<CancellationDto>> getAllCancellations(){
+        List<CancellationDto> cancellations = cancellationService.getAllCancellations();
         return ResponseEntity.ok(cancellations);
     }
 
     @GetMapping("/cancellations/{id}")
-    public ResponseEntity<Cancellation> getCancellation(@PathVariable long id){
-        Cancellation cancellation = cancellationService.getCancellation(id);
+    public ResponseEntity<CancellationDto> getCancellation(@PathVariable long id){
+        CancellationDto cancellation = cancellationService.getCancellation(id);
         return ResponseEntity.ok(cancellation);
     }
 
     @PostMapping("/cancellations")
-    public ResponseEntity<Long> createCancellation(@RequestBody Cancellation cancellation){
-        long newId = cancellationService.createCancellation(cancellation);
+    public ResponseEntity<Long> createCancellation(@RequestBody CancellationInputDto inputDto){
+        long newId = cancellationService.createCancellation(inputDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newId).toUri();
