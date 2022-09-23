@@ -1,11 +1,14 @@
 package nl.pin.paardenstal.services;
 
+import nl.pin.paardenstal.dtos.CancellationDto;
+import nl.pin.paardenstal.dtos.CancellationInputDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Cancellation;
 import nl.pin.paardenstal.repositories.CancellationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,23 +22,31 @@ public class CancellationService {
         this.cancellationRepository = cancellationRepository;
     }
 
-    public List<Cancellation> getAllCancellations(){
+    public List<CancellationDto> getAllCancellations(){
         List<Cancellation> cancellations = cancellationRepository.findAll();
-        return cancellations;
+        List<CancellationDto> dtos = new ArrayList<>();
+
+        for(Cancellation c: cancellations){
+            CancellationDto dto = transferToDto(c);
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
-    public Cancellation getCancellation(long id){
+    public CancellationDto getCancellation(long id){
         Optional<Cancellation> optionalCancellation = cancellationRepository.findById(id);
 
         if(optionalCancellation.isPresent()){
-            return optionalCancellation.get();
+            CancellationDto dto = transferToDto(optionalCancellation.get());
+            return dto;
         } else {
             throw new RecordNotFoundException("Can't find any cancellation by this ID");
         }
     }
 
-    public long createCancellation(Cancellation cancellation){
-        Cancellation newCancellation = cancellationRepository.save(cancellation);
+    public long createCancellation(CancellationInputDto inputDto){
+        Cancellation newCancellation = transferToCancellation(inputDto);
+        cancellationRepository.save(newCancellation);
         long id = newCancellation.getId();
         return id;
     }
@@ -48,6 +59,23 @@ public class CancellationService {
         } else {
             throw new RecordNotFoundException("Can't find any cancellation by this ID");
         }
+    }
+
+    public CancellationDto transferToDto(Cancellation cancellation){
+        CancellationDto dto = new CancellationDto();
+
+        dto.setId(cancellation.getId());
+        dto.setEndDate(cancellation.getEndDate());
+
+        return dto;
+    }
+
+    public Cancellation transferToCancellation(CancellationInputDto inputDto){
+        Cancellation cancellation = new Cancellation();
+
+        cancellation.setEndDate(inputDto.getEndDate());
+
+        return cancellation;
     }
 
 }
