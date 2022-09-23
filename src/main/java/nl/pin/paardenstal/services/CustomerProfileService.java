@@ -1,11 +1,14 @@
 package nl.pin.paardenstal.services;
 
+import nl.pin.paardenstal.dtos.CustomerProfileDto;
+import nl.pin.paardenstal.dtos.CustomerProfileInputDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.repositories.CustomerProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,24 +22,33 @@ public class CustomerProfileService {
         this.customerProfileRepository = customerProfileRepository;
     }
 
-    public List<CustomerProfile> getAllCustomerProfiles(){
+    public List<CustomerProfileDto> getAllCustomerProfiles(){
         List<CustomerProfile> customerProfiles = customerProfileRepository.findAll();
-        return customerProfiles;
+        List<CustomerProfileDto> dtos = new ArrayList<>();
+
+        for(CustomerProfile c: customerProfiles){
+            CustomerProfileDto dto = transferToDto(c);
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
-    public CustomerProfile getCustomerProfile(long id){
+    public CustomerProfileDto getCustomerProfile(long id){
         Optional<CustomerProfile> customerProfile = customerProfileRepository.findById(id);
 
         if(customerProfile.isPresent()){
-            return customerProfile.get();
+            CustomerProfileDto dto = transferToDto(customerProfile.get());
+
+            return dto;
         } else {
             throw new RecordNotFoundException("this ID does not exist");
         }
 
     }
 
-    public long createNewCustomerProfile(CustomerProfile customerProfile){
-        CustomerProfile newCustomerProfile = customerProfileRepository.save(customerProfile);
+    public long createNewCustomerProfile(CustomerProfileInputDto inputDto){
+        CustomerProfile newCustomerProfile = transferToCustomerProfile(inputDto);
+                customerProfileRepository.save(newCustomerProfile);
         long id = newCustomerProfile.getId();
         return id;
     }
@@ -51,11 +63,12 @@ public class CustomerProfileService {
         }
     }
 
-    public void updateCustomerProfile(long id, CustomerProfile customerProfile){
+    public void updateCustomerProfile(long id, CustomerProfileInputDto inputDto){
         Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
 
         if(optionalCustomerProfile.isPresent()){
             CustomerProfile storedCustomerProfile = optionalCustomerProfile.get();
+            CustomerProfile customerProfile = transferToCustomerProfile(inputDto);
             customerProfile.setId(storedCustomerProfile.getId());
             customerProfileRepository.save(customerProfile);
         } else {
@@ -63,11 +76,12 @@ public class CustomerProfileService {
         }
     }
 
-    public void partialUpdateCustomerProfile(long id, CustomerProfile customerProfile){
+    public void partialUpdateCustomerProfile(long id, CustomerProfileInputDto inputDto){
         Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
 
         if(optionalCustomerProfile.isPresent()){
             CustomerProfile storedCustomerProfile = customerProfileRepository.findById(id).orElse(null);
+            CustomerProfile customerProfile = transferToCustomerProfile(inputDto);
             if(customerProfile.getFirstName()!= null && !customerProfile.getFirstName().isEmpty()){
                 storedCustomerProfile.setFirstName(customerProfile.getFirstName());
             }
@@ -94,6 +108,37 @@ public class CustomerProfileService {
             }
             customerProfileRepository.save(storedCustomerProfile);
         }
+    }
+
+    public CustomerProfile transferToCustomerProfile(CustomerProfileInputDto customerProfileInputDto){
+        CustomerProfile customerProfile = new CustomerProfile();
+
+        customerProfile.setFirstName(customerProfileInputDto.getFirstName());
+        customerProfile.setLastName(customerProfileInputDto.getLastName());
+        customerProfile.setStreet(customerProfileInputDto.getStreet());
+        customerProfile.setHouseNumber(customerProfileInputDto.getHouseNumber());
+        customerProfile.setPostalCode(customerProfileInputDto.getPostalCode());
+        customerProfile.setResidence(customerProfileInputDto.getResidence());
+        customerProfile.setTelephoneNumber(customerProfileInputDto.getTelephoneNumber());
+        customerProfile.setEmailAddress(customerProfileInputDto.getEmailAddress());
+
+        return customerProfile;
+    }
+
+    public CustomerProfileDto transferToDto(CustomerProfile customerProfile){
+        CustomerProfileDto dto = new CustomerProfileDto();
+
+        dto.setId(customerProfile.getId());
+        dto.setFirstName(customerProfile.getFirstName());
+        dto.setLastName(customerProfile.getLastName());
+        dto.setStreet(customerProfile.getStreet());
+        dto.setHouseNumber(customerProfile.getHouseNumber());
+        dto.setPostalCode(customerProfile.getPostalCode());
+        dto.setResidence(customerProfile.getResidence());
+        dto.setTelephoneNumber(customerProfile.getTelephoneNumber());
+        dto.setEmailAddress(customerProfile.getEmailAddress());
+
+        return dto;
     }
 
 }

@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.controllers;
 
+import nl.pin.paardenstal.dtos.CustomerProfileDto;
+import nl.pin.paardenstal.dtos.CustomerProfileInputDto;
 import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.services.CustomerProfileService;
 import org.apache.coyote.Response;
@@ -20,20 +22,20 @@ public class CustomerProfileController {
     }
 
     @GetMapping("/customerprofiles")
-    public ResponseEntity<List<CustomerProfile>> getAllCustomerProfiles(){
-        List<CustomerProfile> customerProfiles = customerProfileService.getAllCustomerProfiles();
-        return ResponseEntity.ok(customerProfiles);
+    public ResponseEntity<List<CustomerProfileDto>> getAllCustomerProfiles(){
+        List<CustomerProfileDto> dtos = customerProfileService.getAllCustomerProfiles();
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/customerprofiles/{id}")
-    public ResponseEntity<CustomerProfile> getCustomerProfile(@PathVariable long id){
-        CustomerProfile customerProfile = customerProfileService.getCustomerProfile(id);
-        return ResponseEntity.ok(customerProfile);
+    public ResponseEntity<CustomerProfileDto> getCustomerProfile(@PathVariable long id){
+        CustomerProfileDto dto = customerProfileService.getCustomerProfile(id);
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/customerprofiles")
-    public ResponseEntity<Long> createNewCustomerProfile(@RequestBody CustomerProfile customerProfile){
-        long newId = customerProfileService.createNewCustomerProfile(customerProfile);
+    public ResponseEntity<Long> createNewCustomerProfile(@RequestBody CustomerProfileInputDto customerProfileInputDto){
+        long newId = customerProfileService.createNewCustomerProfile(customerProfileInputDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newId).toUri();
@@ -48,16 +50,16 @@ public class CustomerProfileController {
     }
 
     @PutMapping("/customerprofiles/{id}")
-    public ResponseEntity<Object> updateCustomerProfile(@PathVariable long id, @RequestBody CustomerProfile
-            customerProfile){
-        customerProfileService.updateCustomerProfile(id, customerProfile);
+    public ResponseEntity<Object> updateCustomerProfile(@PathVariable long id, @RequestBody CustomerProfileInputDto
+            inputDto){
+        customerProfileService.updateCustomerProfile(id, inputDto);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/customerprofiles/{id}")
-    public ResponseEntity<Object> partialUpdateCustomerProfile(@PathVariable long id, @RequestBody CustomerProfile
-            customerProfile){
-        customerProfileService.partialUpdateCustomerProfile(id, customerProfile);
+    public ResponseEntity<Object> partialUpdateCustomerProfile(@PathVariable long id,
+                                                               @RequestBody CustomerProfileInputDto inputDto){
+        customerProfileService.partialUpdateCustomerProfile(id, inputDto);
         return ResponseEntity.noContent().build();
     }
 
