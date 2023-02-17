@@ -1,6 +1,10 @@
 package nl.pin.paardenstal.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "customerprofiles")
@@ -25,6 +29,10 @@ public class CustomerProfile {
     private String telephoneNumber;
 
     private String emailAddress;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Horse> horses = new ArrayList<>();
 
 
 
@@ -99,4 +107,23 @@ public class CustomerProfile {
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
+
+    public List<Horse> getHorses() {
+        return horses;
+    }
+
+    public void setHorses(List<Horse> horses) {
+        this.horses = horses;
+    }
+
+
+
+    public void addHorseToList(Horse horse){
+        horses.add(horse);
+    }
+
+    public void deleteHorseFromList(Horse horse){
+        horses.remove(horse);
+    }
+
 }

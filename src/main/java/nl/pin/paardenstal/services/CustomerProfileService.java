@@ -2,10 +2,13 @@ package nl.pin.paardenstal.services;
 
 import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.CustomerProfileInputDto;
+import nl.pin.paardenstal.dtos.HorseDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.CustomerProfile;
+import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.repositories.CustomerProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,10 +19,12 @@ import java.util.Optional;
 public class CustomerProfileService {
 
     private final CustomerProfileRepository customerProfileRepository;
+    private final HorseService horseService;
 
     @Autowired
-    public CustomerProfileService(CustomerProfileRepository customerProfileRepository){
+    public CustomerProfileService(CustomerProfileRepository customerProfileRepository, HorseService horseService){
         this.customerProfileRepository = customerProfileRepository;
+        this.horseService = horseService;
     }
 
     public List<CustomerProfileDto> getAllCustomerProfiles(){
@@ -37,7 +42,17 @@ public class CustomerProfileService {
         Optional<CustomerProfile> customerProfile = customerProfileRepository.findById(id);
 
         if(customerProfile.isPresent()){
-            CustomerProfileDto dto = transferToDto(customerProfile.get());
+            CustomerProfile storedCustomer = customerProfile.get();
+            CustomerProfileDto dto = transferToDto(storedCustomer);
+
+            List<Horse> horses = storedCustomer.getHorses();
+            List<HorseDto> horseDtos = new ArrayList<>();
+            for(Horse h: horses){
+                HorseDto horseDto = horseService.transfertoDto(h);
+                horseDtos.add(horseDto);
+            }
+            dto.setHorseDtos(horseDtos);
+
 
             return dto;
         } else {

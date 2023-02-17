@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.dtos;
 
+import nl.pin.paardenstal.models.CustomerProfile;
+
 public class HorseDto {
 
     private long id;
@@ -16,6 +18,7 @@ public class HorseDto {
 
     private String telephoneOfVet;
 
+    private CustomerProfileDto ownerDto;
 
 
     public long getId() {
@@ -74,4 +77,11 @@ public class HorseDto {
         this.telephoneOfVet = telephoneOfVet;
     }
 
+    public CustomerProfileDto getOwnerDto() {
+        return ownerDto;
+    }
+
+    public void setOwnerDto(CustomerProfileDto ownerDto) {
+        this.ownerDto = ownerDto;
+    }
 }

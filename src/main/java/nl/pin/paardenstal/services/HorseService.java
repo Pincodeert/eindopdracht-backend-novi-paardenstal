@@ -1,11 +1,13 @@
 package nl.pin.paardenstal.services;
 
+import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.HorseDto;
 import nl.pin.paardenstal.dtos.HorseInputDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.repositories.HorseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,10 +18,12 @@ import java.util.Optional;
 public class HorseService {
 
     private final HorseRepository horseRepository;
+    private final CustomerProfileService customerProfileService;
 
     @Autowired
-    public HorseService(HorseRepository horseRepository){
+    public HorseService(HorseRepository horseRepository, @Lazy CustomerProfileService customerProfileService){
         this.horseRepository = horseRepository;
+        this.customerProfileService = customerProfileService;
     }
 
     List<Horse> horses = new ArrayList<>();
@@ -30,6 +34,10 @@ public class HorseService {
 
         for(Horse h: horses){
             HorseDto dto = transfertoDto(h);
+            if(h.getOwner() != null){
+                CustomerProfileDto ownerDto = customerProfileService.transferToDto(h.getOwner());
+                dto.setOwnerDto(ownerDto);
+            }
             dtos.add(dto);
         }
         return dtos;
@@ -40,6 +48,11 @@ public class HorseService {
 
         if(optionalHorse.isPresent()){
             HorseDto horseDto = transfertoDto(optionalHorse.get());
+
+            if(optionalHorse.get().getOwner() != null) {
+                CustomerProfileDto ownerDto = customerProfileService.transferToDto(optionalHorse.get().getOwner());
+                horseDto.setOwnerDto(ownerDto);
+            }
             return horseDto;
         } else {
             throw new RecordNotFoundException("This ID does not exist");
