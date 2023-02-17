@@ -1,5 +1,10 @@
 package nl.pin.paardenstal.dtos;
 
+import nl.pin.paardenstal.models.Horse;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class CustomerProfileDto {
 
     private long id;
@@ -19,6 +24,8 @@ public class CustomerProfileDto {
     private String telephoneNumber;
 
     private String emailAddress;
+
+    private List<HorseDto> horseDtos = new ArrayList<>();
 
 
     public long getId() {
@@ -92,4 +99,21 @@ public class CustomerProfileDto {
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
+
+    public List<HorseDto> getHorseDtos(){
+        return horseDtos;
+    }
+
+    public void setHorseDtos(List<HorseDto> horses){
+        this.horseDtos = horseDtos;
+    }
+
+    public void addHorseDtoToList(HorseDto horseDto){
+        horseDtos.add(horseDto);
+    }
+
+    public void deleteHorseDtoFromList(HorseDto horse){
+        horseDtos.remove(horse);
+    }
+
 }

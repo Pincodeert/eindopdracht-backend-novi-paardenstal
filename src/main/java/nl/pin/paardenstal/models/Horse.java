@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -25,6 +27,10 @@ public class Horse {
     @OneToOne(mappedBy = "horse")
     private Stall stall;
 
+    @ManyToOne
+    @JoinColumn(name = "customer_profile_id", referencedColumnName = "id")
+    @JsonIgnore
+    private CustomerProfile owner;
 
 
     public long getId() {
@@ -89,5 +95,13 @@ public class Horse {
 
     public void setStall(Stall stall) {
         this.stall = stall;
+    }
+
+    public CustomerProfile getOwner() {
+       return owner;
+    }
+
+    public void setOwner(CustomerProfile owner) {
+        this.owner = owner;
     }
 }
