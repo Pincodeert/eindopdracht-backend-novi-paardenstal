@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.services;
 
+import nl.pin.paardenstal.dtos.UserDto;
+import nl.pin.paardenstal.dtos.UserInputDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.User;
 import nl.pin.paardenstal.repositories.UserRepository;
@@ -16,45 +18,69 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     List<User> users = new ArrayList<>();
+    List<UserDto> dtos = new ArrayList<>();
 
-    public List<User> getAllUsers(){
+    public List<UserDto> getAllUsers() {
         users = userRepository.findAll();
-        return users;
+
+        for (User u : users) {
+            UserDto dto = transferToDto(u);
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
-    public User getUser(long id){
+    public UserDto getUser(long id) {
         Optional<User> optionalUser = userRepository.findById(id);
 
-        if(optionalUser.isPresent()){
-            return optionalUser.get();
+        if (optionalUser.isPresent()) {
+            User storedUser = optionalUser.get();
+            UserDto dto = transferToDto(storedUser);
+            return dto;
         } else {
             throw new RecordNotFoundException("This ID does not exist");
         }
 
     }
 
-    public long addNewUser(User user){
-        User newUser = userRepository.save(user);
+    public long addNewUser(UserInputDto userInputDto) {
+        User newUser = transferToUser(userInputDto);
+        userRepository.save(newUser);
         long newId = newUser.getId();
         return newId;
     }
 
-    public void deleteUser(long id){
+    public void deleteUser(long id) {
         Optional<User> optionalUser = userRepository.findById(id);
 
-        if(optionalUser.isPresent()){
+        if (optionalUser.isPresent()) {
             userRepository.deleteById(id);
         } else {
             throw new RecordNotFoundException("This ID does not exist");
         }
     }
 
+    public UserDto transferToDto(User user) {
+        UserDto dto = new UserDto();
 
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        return dto;
+    }
 
+    public User transferToUser(UserInputDto userInputDto) {
+        User user = new User();
+
+        user.setUsername(userInputDto.getUsername());
+        user.setPassword(userInputDto.getPassword());
+
+        return user;
+
+    }
 
 }

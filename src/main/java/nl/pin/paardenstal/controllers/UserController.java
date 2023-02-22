@@ -1,8 +1,7 @@
 package nl.pin.paardenstal.controllers;
 
-import nl.pin.paardenstal.dtos.HorseDto;
-import nl.pin.paardenstal.dtos.HorseInputDto;
-import nl.pin.paardenstal.models.User;
+import nl.pin.paardenstal.dtos.UserDto;
+import nl.pin.paardenstal.dtos.UserInputDto;
 import nl.pin.paardenstal.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,23 +20,22 @@ public class UserController {
         this.userService = userService;
     }
 
-    List<User> users = new ArrayList<>();
-
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers(){
-        users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+    public ResponseEntity<List<UserDto>> getAllUsers(){
+        List<UserDto> userDtos = new ArrayList<>();
+        userDtos = userService.getAllUsers();
+        return ResponseEntity.ok(userDtos);
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUser(@PathVariable long id){
-        User user = userService.getUser(id);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<UserDto> getUser(@PathVariable long id){
+        UserDto userDto = userService.getUser(id);
+        return ResponseEntity.ok(userDto);
     }
 
     @PostMapping("/users")
-    public ResponseEntity<Object> addNewUser(@RequestBody User user){
-        long newId = userService.addNewUser(user);
+    public ResponseEntity<Object> addNewUser(@RequestBody UserInputDto userInputDto){
+        long newId = userService.addNewUser(userInputDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newId).toUri();
@@ -50,7 +48,5 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
-
-
 
 }

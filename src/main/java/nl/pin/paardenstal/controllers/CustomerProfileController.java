@@ -2,7 +2,6 @@ package nl.pin.paardenstal.controllers;
 
 import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.CustomerProfileInputDto;
-import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.services.CustomerProfileService;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;

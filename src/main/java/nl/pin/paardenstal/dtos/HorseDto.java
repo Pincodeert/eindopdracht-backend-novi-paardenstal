@@ -1,7 +1,5 @@
 package nl.pin.paardenstal.dtos;
 
-import nl.pin.paardenstal.models.CustomerProfile;
-
 public class HorseDto {
 
     private long id;

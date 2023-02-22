@@ -2,7 +2,6 @@ package nl.pin.paardenstal.controllers;
 
 import nl.pin.paardenstal.dtos.HorseDto;
 import nl.pin.paardenstal.dtos.HorseInputDto;
-import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.services.HorseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
