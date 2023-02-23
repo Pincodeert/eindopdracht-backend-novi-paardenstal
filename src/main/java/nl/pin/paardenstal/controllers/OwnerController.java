@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.controllers;
 
+import nl.pin.paardenstal.dtos.OwnerDto;
+import nl.pin.paardenstal.dtos.OwnerInputDto;
 import nl.pin.paardenstal.models.Owner;
 import nl.pin.paardenstal.services.OwnerService;
 import org.springframework.http.ResponseEntity;
@@ -19,23 +21,23 @@ public class OwnerController {
         this.ownerService = ownerService;
     }
 
-    List<Owner> owners = new ArrayList<>();
+    List<OwnerDto> owners = new ArrayList<>();
 
     @GetMapping("/owners")
-    public ResponseEntity<List<Owner>> getAllOwners(){
+    public ResponseEntity<List<OwnerDto>> getAllOwners(){
         owners = ownerService.getAllOwners();
         return ResponseEntity.ok(owners);
     }
 
     @GetMapping("/owners/{id}")
-    public ResponseEntity<Owner> getOwner(@PathVariable long id){
-        Owner owner = ownerService.getOwner(id);
-        return ResponseEntity.ok(owner);
+    public ResponseEntity<OwnerDto> getOwner(@PathVariable long id){
+        OwnerDto ownerDto = ownerService.getOwner(id);
+        return ResponseEntity.ok(ownerDto);
     }
 
     @PostMapping("/owners")
-    public ResponseEntity<Long> addNewOwner(@RequestBody Owner owner){
-        long newId = ownerService.createNewOwner(owner);
+    public ResponseEntity<Long> addNewOwner(@RequestBody OwnerInputDto ownerInputDto){
+        long newId = ownerService.createNewOwner(ownerInputDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newId).toUri();
@@ -49,8 +51,8 @@ public class OwnerController {
     }
 
     @PutMapping("/owners/{id}")
-    public ResponseEntity<Object> updateOwner(@PathVariable long id, @RequestBody Owner owner){
-        ownerService.updateOwner(id,owner);
+    public ResponseEntity<Object> updateOwner(@PathVariable long id, @RequestBody OwnerInputDto ownerInputDto){
+        ownerService.updateOwner(id,ownerInputDto);
         return ResponseEntity.noContent().build();
     }
 
