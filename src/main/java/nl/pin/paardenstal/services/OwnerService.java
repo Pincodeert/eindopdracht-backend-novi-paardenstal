@@ -1,8 +1,8 @@
 package nl.pin.paardenstal.services;
 
+import nl.pin.paardenstal.dtos.OwnerDto;
+import nl.pin.paardenstal.dtos.OwnerInputDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
-import nl.pin.paardenstal.models.CustomerProfile;
-import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.models.Owner;
 import nl.pin.paardenstal.repositories.OwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,26 +23,34 @@ public class OwnerService {
     }
 
     List<Owner> owners = new ArrayList<>();
+    List<OwnerDto> dtos = new ArrayList<>();
 
-    public List<Owner> getAllOwners(){
+    public List<OwnerDto> getAllOwners(){
         owners = ownerRepository.findAll();
-        return owners;
+        OwnerDto ownerDto = new OwnerDto();
+        for(Owner o:owners){
+            ownerDto = transferToDto(o);
+            dtos.add(ownerDto);
+        }
+        return dtos;
     }
 
-    public Owner getOwner(long id){
+    public OwnerDto getOwner(long id){
 
         Optional<Owner> optionalOwner = ownerRepository.findById(id);
 
         if(optionalOwner.isPresent()){
-            return optionalOwner.get();
+            OwnerDto ownerDto = transferToDto(optionalOwner.get());
+            return ownerDto;
         } else {
             throw new RecordNotFoundException("This ID does not exist");
         }
 
     }
 
-    public long createNewOwner(Owner owner){
-        Owner newOwner = ownerRepository.save(owner);
+    public long createNewOwner(OwnerInputDto ownerInputDto){
+        Owner newOwner = transferToOwner(ownerInputDto);
+        ownerRepository.save(newOwner);
         long newId = newOwner.getId();
         return newId;
     }
@@ -58,21 +66,43 @@ public class OwnerService {
         }
     }
 
-    public void updateOwner(long id, Owner owner){
+    public void updateOwner(long id, OwnerInputDto ownerInputDto){
 
         Optional<Owner> optionalOwner = ownerRepository.findById(id);
 
         if(optionalOwner.isPresent()){
             Owner storedOwner = optionalOwner.get();
 
-            Owner updatedOwner = new Owner();
-            updatedOwner.setEmailAddress(owner.getEmailAddress());
+            Owner updatedOwner = transferToOwner(ownerInputDto);
+            updatedOwner.setId(storedOwner.getId());
             ownerRepository.save(updatedOwner);
 
         } else {
             throw new RecordNotFoundException("This ID does not exist");
         }
+    }
 
+    public OwnerDto transferToDto(Owner owner){
+
+        OwnerDto dto = new OwnerDto();
+
+        dto.setId(owner.getId());
+        dto.setFirstName(owner.getFirstName());
+        dto.setLastName(owner.getLastName());
+        dto.setEmailAddress(owner.getEmailAddress());
+
+        return dto;
+    }
+
+    public Owner transferToOwner(OwnerInputDto ownerInputDto){
+
+        Owner owner = new Owner();
+
+        owner.setFirstName(ownerInputDto.getFirstName());
+        owner.setLastName(ownerInputDto.getLastName());
+        owner.setEmailAddress(ownerInputDto.getEmailAddress());
+
+        return owner;
     }
 
 }
