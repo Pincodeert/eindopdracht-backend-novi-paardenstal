@@ -30,3 +30,11 @@ VALUES
 (454.95, 'basic care', 'small outdoor box'),
 (479.95, 'extra care', 'large outdoor box');
 
+INSERT INTO users(username, password)
+VALUES
+('dirtyHarry', 'GoAhead!');
+
+INSERT INTO owners(first_name, last_name, email_address, user_id)
+VALUES
+('Clint', 'Eastwood', 'make@)myday.com', 1);
+

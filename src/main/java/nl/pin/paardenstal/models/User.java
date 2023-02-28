@@ -14,6 +14,12 @@ public class User {
 
     private String password;
 
+    @OneToOne (mappedBy = "user")
+    private Owner owner;
+
+    @OneToOne(mappedBy = "user")
+    private CustomerProfile customerProfile;
+
     public long getId() {
         return id;
     }
@@ -36,5 +42,21 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    public CustomerProfile getCustomerProfile() {
+        return customerProfile;
+    }
+
+    public void setCustomerProfile(CustomerProfile customerProfile) {
+        this.customerProfile = customerProfile;
     }
 }

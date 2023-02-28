@@ -3,10 +3,13 @@ package nl.pin.paardenstal.services;
 import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.CustomerProfileInputDto;
 import nl.pin.paardenstal.dtos.HorseDto;
+import nl.pin.paardenstal.dtos.UserDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.models.Horse;
+import nl.pin.paardenstal.models.User;
 import nl.pin.paardenstal.repositories.CustomerProfileRepository;
+import nl.pin.paardenstal.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -19,11 +22,15 @@ import java.util.Optional;
 public class CustomerProfileService {
 
     private final CustomerProfileRepository customerProfileRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
     private final HorseService horseService;
 
     @Autowired
-    public CustomerProfileService(CustomerProfileRepository customerProfileRepository, HorseService horseService){
+    public CustomerProfileService(CustomerProfileRepository customerProfileRepository, UserRepository userRepository, UserService userService,HorseService horseService){
         this.customerProfileRepository = customerProfileRepository;
+        this.userRepository = userRepository;
+        this.userService = userService;
         this.horseService = horseService;
     }
 
@@ -152,8 +159,29 @@ public class CustomerProfileService {
         dto.setResidence(customerProfile.getResidence());
         dto.setTelephoneNumber(customerProfile.getTelephoneNumber());
         dto.setEmailAddress(customerProfile.getEmailAddress());
-
+        if(customerProfile.getUser() != null){
+            UserDto userDto = userService.transferToDto(customerProfile.getUser());
+            dto.setUser(userDto);
+        }
         return dto;
+    }
+
+    public void assignUserToCustomerProfile(long id, long userId){
+        Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if(optionalCustomerProfile.isPresent() && optionalUser.isPresent()){
+            CustomerProfile customer = optionalCustomerProfile.get();
+            User user = optionalUser.get();
+            customer.setUser(user);
+            customerProfileRepository.save(customer);
+        } else if(!optionalCustomerProfile.isPresent() && !optionalUser.isPresent()){
+            throw new RecordNotFoundException("There's no customer nor user with this ID");
+        } else if (!optionalCustomerProfile.isPresent()){
+            throw new RecordNotFoundException("There's no customer with this ID");
+        } else if (!optionalUser.isPresent()){
+            throw new RecordNotFoundException("There's no user with this ID");
+        }
     }
 
 }

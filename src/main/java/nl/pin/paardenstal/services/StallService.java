@@ -29,11 +29,10 @@ public class StallService {
         this.horseService = horseService;
     }
 
-    List<Stall> stalls = new ArrayList<>();
-    List<StallDto> dtos = new ArrayList<>();
-
     public List<StallDto> getAllStalls(){
-        stalls = stallRepository.findAll();
+        List<Stall> stalls = stallRepository.findAll();
+        List<StallDto> dtos = new ArrayList<>();
+
         for(Stall s: stalls){
             StallDto dto = transferToDto(s);
             if(s.getHorse() != null){
@@ -42,7 +41,6 @@ public class StallService {
             }
             dtos.add(dto);
         }
-
         return dtos;
     }
 
@@ -88,7 +86,7 @@ public class StallService {
 
     public void assignHorseToStall(long id, long horseId){
         Optional<Stall> optionalStall = stallRepository.findById(id);
-        Optional<Horse> optionalHorse = horseRepository.findById(id);
+        Optional<Horse> optionalHorse = horseRepository.findById(horseId);
 
         if(optionalStall.isPresent() && optionalHorse.isPresent()){
             Stall stall = optionalStall.get();

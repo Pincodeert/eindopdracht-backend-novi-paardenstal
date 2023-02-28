@@ -22,12 +22,10 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    List<User> users = new ArrayList<>();
-    List<UserDto> dtos = new ArrayList<>();
 
     public List<UserDto> getAllUsers() {
-        users = userRepository.findAll();
-
+        List<User> users = userRepository.findAll();
+        List<UserDto> dtos = new ArrayList<>();
         for (User u : users) {
             UserDto dto = transferToDto(u);
             dtos.add(dto);

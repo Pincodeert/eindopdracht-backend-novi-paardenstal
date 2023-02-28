@@ -1,5 +1,6 @@
 package nl.pin.paardenstal.controllers;
 
+import nl.pin.paardenstal.dtos.IdInputDto;
 import nl.pin.paardenstal.dtos.OwnerDto;
 import nl.pin.paardenstal.dtos.OwnerInputDto;
 import nl.pin.paardenstal.models.Owner;
@@ -21,11 +22,10 @@ public class OwnerController {
         this.ownerService = ownerService;
     }
 
-    List<OwnerDto> owners = new ArrayList<>();
 
     @GetMapping("/owners")
     public ResponseEntity<List<OwnerDto>> getAllOwners(){
-        owners = ownerService.getAllOwners();
+        List<OwnerDto> owners = ownerService.getAllOwners();
         return ResponseEntity.ok(owners);
     }
 
@@ -53,6 +53,12 @@ public class OwnerController {
     @PutMapping("/owners/{id}")
     public ResponseEntity<Object> updateOwner(@PathVariable long id, @RequestBody OwnerInputDto ownerInputDto){
         ownerService.updateOwner(id,ownerInputDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/owners/{id}/user")
+    public ResponseEntity<Object> assignUserToOwner(@PathVariable long id, @RequestBody IdInputDto input){
+        ownerService.assignUserToOwner(id, input.id);
         return ResponseEntity.noContent().build();
     }
 

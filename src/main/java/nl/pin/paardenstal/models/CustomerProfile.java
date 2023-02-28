@@ -30,6 +30,9 @@ public class CustomerProfile {
 
     private String emailAddress;
 
+    @OneToOne
+    private User user;
+
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Horse> horses = new ArrayList<>();
@@ -108,6 +111,14 @@ public class CustomerProfile {
         this.emailAddress = emailAddress;
     }
 
+    public User getUser(){
+        return user;
+    }
+
+    public void setUser(User user){
+        this.user = user;
+    }
+
     public List<Horse> getHorses() {
         return horses;
     }
@@ -115,8 +126,6 @@ public class CustomerProfile {
     public void setHorses(List<Horse> horses) {
         this.horses = horses;
     }
-
-
 
     public void addHorseToList(Horse horse){
         horses.add(horse);

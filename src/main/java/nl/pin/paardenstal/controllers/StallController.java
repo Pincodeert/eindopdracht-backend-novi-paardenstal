@@ -25,11 +25,9 @@ public class StallController {
         this.stallService = stallService;
     }
 
-    List<StallDto> stallDtos = new ArrayList<>();
-
     @GetMapping("/stalls")
     public ResponseEntity<List<StallDto>> getAllStalls(){
-        stallDtos = stallService.getAllStalls();
+        List<StallDto> stallDtos = stallService.getAllStalls();
         return ResponseEntity.ok(stallDtos);
     }
 

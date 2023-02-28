@@ -2,9 +2,12 @@ package nl.pin.paardenstal.services;
 
 import nl.pin.paardenstal.dtos.OwnerDto;
 import nl.pin.paardenstal.dtos.OwnerInputDto;
+import nl.pin.paardenstal.dtos.UserDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Owner;
+import nl.pin.paardenstal.models.User;
 import nl.pin.paardenstal.repositories.OwnerRepository;
+import nl.pin.paardenstal.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,18 +19,21 @@ import java.util.Optional;
 public class OwnerService {
 
     private final OwnerRepository ownerRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public OwnerService(OwnerRepository ownerRepository){
+    public OwnerService(OwnerRepository ownerRepository, UserRepository userRepository, UserService userService){
         this.ownerRepository = ownerRepository;
+        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
-    List<Owner> owners = new ArrayList<>();
-    List<OwnerDto> dtos = new ArrayList<>();
 
     public List<OwnerDto> getAllOwners(){
-        owners = ownerRepository.findAll();
-        OwnerDto ownerDto = new OwnerDto();
+        List<Owner>  owners = ownerRepository.findAll();
+        List<OwnerDto> dtos = new ArrayList<>();
+         OwnerDto ownerDto = new OwnerDto();
         for(Owner o:owners){
             ownerDto = transferToDto(o);
             dtos.add(ownerDto);
@@ -40,7 +46,8 @@ public class OwnerService {
         Optional<Owner> optionalOwner = ownerRepository.findById(id);
 
         if(optionalOwner.isPresent()){
-            OwnerDto ownerDto = transferToDto(optionalOwner.get());
+            Owner storedOwner = optionalOwner.get();
+            OwnerDto ownerDto = transferToDto(storedOwner);
             return ownerDto;
         } else {
             throw new RecordNotFoundException("This ID does not exist");
@@ -90,7 +97,10 @@ public class OwnerService {
         dto.setFirstName(owner.getFirstName());
         dto.setLastName(owner.getLastName());
         dto.setEmailAddress(owner.getEmailAddress());
-
+        if(owner.getUser() != null){
+            UserDto userDto = userService.transferToDto(owner.getUser());
+            dto.setUser(userDto);
+        }
         return dto;
     }
 
@@ -104,5 +114,25 @@ public class OwnerService {
 
         return owner;
     }
+
+    public void assignUserToOwner(long id, long userId){
+        Optional<Owner> optionalOwner = ownerRepository.findById(id);
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if(optionalOwner.isPresent() && optionalUser.isPresent()){
+            Owner owner = optionalOwner.get();
+            User user = optionalUser.get();
+            owner.setUser(user);
+            ownerRepository.save(owner);
+        } else if(!optionalOwner.isPresent() && !optionalUser.isPresent()){
+            throw new RecordNotFoundException("There's no owner nor user by this ID");
+        } else if(!optionalOwner.isPresent()){
+            throw new RecordNotFoundException("There's no owner with this ID");
+        } else if(!optionalUser.isPresent()){
+            throw new RecordNotFoundException("There's no user with this ID");
+        }
+    }
+
+
 
 }

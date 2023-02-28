@@ -25,6 +25,8 @@ public class CustomerProfileDto {
 
     private String emailAddress;
 
+    private UserDto user;
+
     private List<HorseDto> horseDtos = new ArrayList<>();
 
 
@@ -98,6 +100,14 @@ public class CustomerProfileDto {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    public UserDto getUser() {
+        return user;
+    }
+
+    public void setUser(UserDto user) {
+        this.user = user;
     }
 
     public List<HorseDto> getHorseDtos(){

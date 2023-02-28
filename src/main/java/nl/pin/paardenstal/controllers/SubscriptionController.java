@@ -23,11 +23,9 @@ public class SubscriptionController {
         this.subscriptionService = subscriptionService;
     }
 
-    List<SubscriptionDto> subscriptionDtos = new ArrayList<>();
-
     @GetMapping("/subscriptions")
     public ResponseEntity<List<SubscriptionDto>> getAllSubscriptions(){
-        subscriptionDtos = subscriptionService.getAllSubscriptions();
+        List<SubscriptionDto> subscriptionDtos = subscriptionService.getAllSubscriptions();
         return ResponseEntity.ok(subscriptionDtos);
     }
 

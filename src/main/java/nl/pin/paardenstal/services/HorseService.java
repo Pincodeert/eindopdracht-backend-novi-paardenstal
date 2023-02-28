@@ -26,11 +26,9 @@ public class HorseService {
         this.customerProfileService = customerProfileService;
     }
 
-    List<Horse> horses = new ArrayList<>();
-    List<HorseDto> dtos = new ArrayList<>();
-
     public List<HorseDto> getAllHorses(){
-        horses = horseRepository.findAll();
+        List<Horse> horses = horseRepository.findAll();
+        List<HorseDto> dtos = new ArrayList<>();
 
         for(Horse h: horses){
             HorseDto dto = transfertoDto(h);
