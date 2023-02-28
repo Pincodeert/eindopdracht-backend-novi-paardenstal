@@ -16,6 +16,9 @@ public class Owner {
 
     private String emailAddress;
 
+    @OneToOne
+    private User user;
+
 
     public long getId() {
         return id;
@@ -47,5 +50,13 @@ public class Owner {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

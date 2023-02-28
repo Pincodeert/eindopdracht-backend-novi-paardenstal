@@ -10,6 +10,8 @@ public class OwnerDto {
 
     private String emailAddress;
 
+    private UserDto user;
+
 
     public long getId() {
         return id;
@@ -43,4 +45,11 @@ public class OwnerDto {
         this.emailAddress = emailAddress;
     }
 
+    public UserDto getUser() {
+        return user;
+    }
+
+    public void setUser(UserDto user) {
+        this.user = user;
+    }
 }

@@ -22,11 +22,9 @@ public class HorseController {
         this.horseService = horseService;
     }
 
-    List<HorseDto> horseDtos = new ArrayList<>();
-
     @GetMapping("/horses")
     public ResponseEntity<List<HorseDto>> getAllHorses(){
-        horseDtos = horseService.getAllHorses();
+        List<HorseDto> horseDtos = horseService.getAllHorses();
         return ResponseEntity.ok(horseDtos);
     }
 

@@ -22,11 +22,9 @@ public class SubscriptionService {
         this.subscriptionRepository = subscriptionRepository;
     }
 
-    List<Subscription> subscriptions = new ArrayList<>();
-    List<SubscriptionDto> dtos = new ArrayList<>();
-
     public List<SubscriptionDto> getAllSubscriptions(){
-        subscriptions = subscriptionRepository.findAll();
+        List<Subscription> subscriptions = subscriptionRepository.findAll();
+        List<SubscriptionDto> dtos = new ArrayList<>();
 
         for(Subscription s: subscriptions){
             SubscriptionDto dto = transferToSubscriptionDto(s);
