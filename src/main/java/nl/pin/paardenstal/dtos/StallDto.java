@@ -1,7 +1,5 @@
 package nl.pin.paardenstal.dtos;
 
-import nl.pin.paardenstal.models.Horse;
-
 public class StallDto {
 
     private long id;
@@ -12,7 +10,7 @@ public class StallDto {
 
     private String type;
 
-    private HorseDto horseDto;
+    private HorseDto horse;
 
     public long getId() {
         return id;
@@ -47,10 +45,10 @@ public class StallDto {
     }
 
     public HorseDto getHorseDto() {
-        return horseDto;
+        return horse;
     }
 
     public void setHorseDto(HorseDto horseDto) {
-        this.horseDto = horseDto;
+        this.horse = horseDto;
     }
 }

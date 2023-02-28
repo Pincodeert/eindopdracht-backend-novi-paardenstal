@@ -2,6 +2,7 @@ package nl.pin.paardenstal.controllers;
 
 import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.CustomerProfileInputDto;
+import nl.pin.paardenstal.dtos.IdInputDto;
 import nl.pin.paardenstal.services.CustomerProfileService;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,12 @@ public class CustomerProfileController {
     public ResponseEntity<Object> partialUpdateCustomerProfile(@PathVariable long id,
                                                                @RequestBody CustomerProfileInputDto inputDto){
         customerProfileService.partialUpdateCustomerProfile(id, inputDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/customerprofiles/{id}/user")
+    public ResponseEntity<Object> assignUserToCustomerProfile(@PathVariable long id, @RequestBody IdInputDto input){
+        customerProfileService.assignUserToCustomerProfile(id, input.id);
         return ResponseEntity.noContent().build();
     }
 
