@@ -18,6 +18,8 @@ public class Subscription {
 
     @OneToOne(mappedBy = "subscription")
     private Stall stall;
+    @OneToOne(mappedBy = "subscription")
+    private Cancellation cancellation;
 
 
     public long getId() {
@@ -58,5 +60,13 @@ public class Subscription {
 
     public void setStall(Stall stall) {
         this.stall = stall;
+    }
+
+    public Cancellation getCancellation(){
+        return cancellation;
+    }
+
+    public void setCancellation(Cancellation cancellation){
+        this.cancellation = cancellation;
     }
 }

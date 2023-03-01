@@ -2,6 +2,7 @@ package nl.pin.paardenstal.controllers;
 
 import nl.pin.paardenstal.dtos.CancellationDto;
 import nl.pin.paardenstal.dtos.CancellationInputDto;
+import nl.pin.paardenstal.dtos.IdInputDto;
 import nl.pin.paardenstal.models.Cancellation;
 import nl.pin.paardenstal.services.CancellationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,12 @@ public class CancellationController {
     @DeleteMapping("/cancellations/{id}")
     public ResponseEntity<Object> deleteCancellation(@PathVariable long id){
         cancellationService.deleteCancellation(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/cancellations/{id}/subscription")
+    public ResponseEntity<Object> assignSubscriptionToCancellation(@PathVariable long id, @RequestBody IdInputDto input){
+        cancellationService.assignSubscriptionToCancellation(id, input.id);
         return ResponseEntity.noContent().build();
     }
 

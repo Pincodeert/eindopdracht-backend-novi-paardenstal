@@ -11,6 +11,8 @@ public class Cancellation {
     private long id;
 
     private String endDate;
+    @OneToOne
+    private Subscription subscription;
 
 
     public long getId() {
@@ -29,5 +31,12 @@ public class Cancellation {
         this.endDate = endDate;
     }
 
+    public Subscription getSubscription(){
+        return subscription;
+    }
+
+    public void setSubscription(Subscription subscription){
+        this.subscription = subscription;
+    }
 
 }
