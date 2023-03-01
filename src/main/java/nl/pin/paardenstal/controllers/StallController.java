@@ -53,6 +53,10 @@ public class StallController {
         return ResponseEntity.noContent().build();
     }
 
-
+    @PutMapping("/stalls/{id}/subscription")
+    public ResponseEntity<Object> assignSubscriptionToStall(@PathVariable long id, @RequestBody IdInputDto input){
+        stallService.assignSubscriptionToStall(id, input.id);
+        return ResponseEntity.noContent().build();
+    }
 
 }

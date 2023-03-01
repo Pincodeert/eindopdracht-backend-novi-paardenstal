@@ -19,6 +19,9 @@ public class Stall {
     @OneToOne
     private Horse horse;
 
+    @OneToOne
+    private Subscription subscription;
+
     public long getId() {
         return id;
     }
@@ -57,5 +60,13 @@ public class Stall {
 
     public void setHorse(Horse horse) {
         this.horse = horse;
+    }
+
+    public Subscription getSubscription(){
+        return subscription;
+    }
+
+    public void setSubscription(Subscription subscription){
+        this.subscription = subscription;
     }
 }

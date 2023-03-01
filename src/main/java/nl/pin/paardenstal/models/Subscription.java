@@ -16,6 +16,9 @@ public class Subscription {
 
     private String typeOfStall;
 
+    @OneToOne(mappedBy = "subscription")
+    private Stall stall;
+
 
     public long getId() {
         return id;
@@ -47,5 +50,13 @@ public class Subscription {
 
     public void setTypeOfStall(String typeOfStall) {
         this.typeOfStall = typeOfStall;
+    }
+
+    public Stall getStall() {
+        return stall;
+    }
+
+    public void setStall(Stall stall) {
+        this.stall = stall;
     }
 }

@@ -12,6 +12,8 @@ public class StallDto {
 
     private HorseDto horse;
 
+    private SubscriptionDto subscription;
+
     public long getId() {
         return id;
     }
@@ -50,5 +52,13 @@ public class StallDto {
 
     public void setHorseDto(HorseDto horseDto) {
         this.horse = horseDto;
+    }
+
+    public SubscriptionDto getSubscription(){
+        return subscription;
+    }
+
+    public void setSubscription(SubscriptionDto subscription){
+        this.subscription = subscription;
     }
 }
