@@ -1,10 +1,9 @@
 package nl.pin.paardenstal.services;
 
-import nl.pin.paardenstal.dtos.OwnerDto;
-import nl.pin.paardenstal.dtos.OwnerInputDto;
-import nl.pin.paardenstal.dtos.UserDto;
+import nl.pin.paardenstal.dtos.*;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Owner;
+import nl.pin.paardenstal.models.Stall;
 import nl.pin.paardenstal.models.User;
 import nl.pin.paardenstal.repositories.OwnerRepository;
 import nl.pin.paardenstal.repositories.UserRepository;
@@ -131,6 +130,33 @@ public class OwnerService {
         } else if(!optionalUser.isPresent()){
             throw new RecordNotFoundException("There's no user with this ID");
         }
+    }
+
+    // hier methode uit StallService gebruiken? of opnieuw zelfde methode schrijven? >>
+    // Door de stallservice te gebruiken (middels Constructor injection) creeer je een circular depedency.
+    //public StallDto transferToDto (Stall stall){
+    //    StallDto dto = new StallDto();
+    //    stallService.transferToDto(stall);
+    //    return dto;
+    //}
+
+    public StallDto transferToDto (Stall stall){
+        StallDto dto = new StallDto();
+
+        dto.setId(stall.getId());
+        dto.setName(stall.getName());
+        dto.setSize(stall.getSize());
+        dto.setType(stall.getType());
+        return dto;
+    }
+
+    public List<StallDto> transferToStallDtoList (List<Stall> stalls){
+        List<StallDto> dtos = new ArrayList<>();
+
+        for(Stall s: stalls){
+        StallDto dto = transferToDto(s);
+        dtos.add(dto);
+        } return dtos;
     }
 
 

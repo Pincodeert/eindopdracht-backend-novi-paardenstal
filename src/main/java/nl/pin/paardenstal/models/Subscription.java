@@ -15,7 +15,7 @@ public class Subscription {
     private String typeOfCare;
 
     private String typeOfStall;
-
+    @Column(nullable = false)
     @OneToOne(mappedBy = "subscription")
     private Stall stall;
     @OneToOne(mappedBy = "subscription")

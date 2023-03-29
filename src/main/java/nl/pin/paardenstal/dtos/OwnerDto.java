@@ -1,5 +1,10 @@
 package nl.pin.paardenstal.dtos;
 
+import nl.pin.paardenstal.models.Stall;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class OwnerDto {
 
     private long id;
@@ -11,6 +16,8 @@ public class OwnerDto {
     private String emailAddress;
 
     private UserDto user;
+
+    private List<StallDto> stalls = new ArrayList<>();
 
 
     public long getId() {
@@ -52,4 +59,14 @@ public class OwnerDto {
     public void setUser(UserDto user) {
         this.user = user;
     }
+
+    public List<StallDto> getStalls(){
+        return stalls;
+    }
+
+    public void setStalls(List<StallDto> stalls){
+        this.stalls = stalls;
+    }
+
+
 }

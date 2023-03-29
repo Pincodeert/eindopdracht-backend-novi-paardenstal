@@ -36,7 +36,7 @@ public class SubscriptionController {
     }
 
     @PostMapping("/subscriptions")
-    public ResponseEntity<Long> addSubscription(@RequestBody SubscriptionInputDto subscriptionInputDto){
+    public ResponseEntity<Long> addSubscription(@RequestBody SubscriptionInputDto subscriptionInputDto, ){
         long newId = subscriptionService.addSubscription(subscriptionInputDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")

@@ -1,14 +1,13 @@
 package nl.pin.paardenstal.services;
 
-import nl.pin.paardenstal.dtos.HorseDto;
-import nl.pin.paardenstal.dtos.StallDto;
-import nl.pin.paardenstal.dtos.StallInputDto;
-import nl.pin.paardenstal.dtos.SubscriptionDto;
+import nl.pin.paardenstal.dtos.*;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Horse;
+import nl.pin.paardenstal.models.Owner;
 import nl.pin.paardenstal.models.Stall;
 import nl.pin.paardenstal.models.Subscription;
 import nl.pin.paardenstal.repositories.HorseRepository;
+import nl.pin.paardenstal.repositories.OwnerRepository;
 import nl.pin.paardenstal.repositories.StallRepository;
 import nl.pin.paardenstal.repositories.SubscriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +25,24 @@ public class StallService {
     private final HorseService horseService;
     private final SubscriptionRepository subscriptionRepository;
     private final SubscriptionService subscriptionService;
+    private final OwnerRepository ownerRepository;
+    private final OwnerService ownerService;
 
     @Autowired
-    public StallService(StallRepository stallRepository, HorseRepository horseRepository, HorseService horseService,
-                        SubscriptionRepository subscriptionRepository, SubscriptionService subscriptionService){
+    public StallService(StallRepository stallRepository,
+                        HorseRepository horseRepository,
+                        HorseService horseService,
+                        SubscriptionRepository subscriptionRepository,
+                        SubscriptionService subscriptionService,
+                        OwnerRepository ownerRepository,
+                        OwnerService ownerService){
         this.stallRepository = stallRepository;
         this.horseRepository = horseRepository;
         this.horseService = horseService;
         this.subscriptionRepository = subscriptionRepository;
         this.subscriptionService = subscriptionService;
+        this.ownerRepository = ownerRepository;
+        this.ownerService = ownerService;
     }
 
     public List<StallDto> getAllStalls(){
@@ -85,6 +93,10 @@ public class StallService {
             SubscriptionDto subscriptionDto = subscriptionService.transferToSubscriptionDto(stall.getSubscription());
             dto.setSubscription(subscriptionDto);
         }
+        if(stall.getOwner() != null){
+            OwnerDto ownerDto = ownerService.transferToDto(stall.getOwner());
+            dto.setOwner(ownerDto);
+        }
         return dto;
     }
 
@@ -130,8 +142,25 @@ public class StallService {
         } else if(!optionalSubscription.isPresent()){
             throw new RecordNotFoundException("Can't find any subscription by this ID");
         }
+    }
 
+    public void assignOwnerToStall(long id, long ownerId){
+        Optional<Stall> optionalStall = stallRepository.findById(id);
+        Optional<Owner> optionalOwner = ownerRepository.findById(ownerId);
 
+        if(optionalStall.isPresent() && optionalOwner.isPresent()){
+            Stall stall = optionalStall.get();
+            Owner owner = optionalOwner.get();
+            stall.setOwner(owner);
+            Stall assignedStall = stallRepository.save(stall);
+
+        } else if(!optionalStall.isPresent() && !optionalOwner.isPresent()) {
+            throw new RecordNotFoundException("Can't find neither a stall by this ID, nor an owner by this ID");
+        } else if(!optionalStall.isPresent()){
+            throw new RecordNotFoundException("Can't find any stall by this ID");
+        } else if(!optionalOwner.isPresent()){
+            throw new RecordNotFoundException("Can't find any owner by this ID");
+        }
     }
 
 

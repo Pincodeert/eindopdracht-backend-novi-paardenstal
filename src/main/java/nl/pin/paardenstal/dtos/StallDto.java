@@ -14,6 +14,8 @@ public class StallDto {
 
     private SubscriptionDto subscription;
 
+    private OwnerDto owner;
+
     public long getId() {
         return id;
     }
@@ -61,4 +63,13 @@ public class StallDto {
     public void setSubscription(SubscriptionDto subscription){
         this.subscription = subscription;
     }
+
+    public OwnerDto getOwner(){
+        return owner;
+    }
+
+    public void setOwner(OwnerDto owner){
+        this.owner = owner;
+    }
+
 }
