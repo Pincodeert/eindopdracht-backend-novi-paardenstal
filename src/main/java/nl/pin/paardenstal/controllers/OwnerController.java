@@ -4,6 +4,7 @@ import nl.pin.paardenstal.dtos.IdInputDto;
 import nl.pin.paardenstal.dtos.OwnerDto;
 import nl.pin.paardenstal.dtos.OwnerInputDto;
 import nl.pin.paardenstal.models.Owner;
+import nl.pin.paardenstal.models.Stall;
 import nl.pin.paardenstal.services.OwnerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,5 +62,7 @@ public class OwnerController {
         ownerService.assignUserToOwner(id, input.id);
         return ResponseEntity.noContent().build();
     }
+
+
 
 }

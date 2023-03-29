@@ -1,6 +1,10 @@
 package nl.pin.paardenstal.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "owners")
@@ -18,6 +22,9 @@ public class Owner {
 
     @OneToOne
     private User user;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Stall> stalls = new ArrayList<>();
 
 
     public long getId() {
@@ -58,5 +65,13 @@ public class Owner {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Stall> getStalls(){
+        return stalls;
+    }
+
+    public void setStalls(List<Stall> stalls){
+        this.stalls = stalls;
     }
 }

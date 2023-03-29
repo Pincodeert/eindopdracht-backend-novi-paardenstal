@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -21,6 +23,9 @@ public class Stall {
 
     @OneToOne
     private Subscription subscription;
+
+    @ManyToOne
+    private Owner owner;
 
     public long getId() {
         return id;
@@ -68,5 +73,13 @@ public class Stall {
 
     public void setSubscription(Subscription subscription){
         this.subscription = subscription;
+    }
+
+    public Owner getOwner(){
+        return owner;
+    }
+
+    public void setOwner(Owner owner){
+        this.owner = owner;
     }
 }

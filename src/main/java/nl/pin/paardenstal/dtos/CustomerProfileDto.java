@@ -27,7 +27,7 @@ public class CustomerProfileDto {
 
     private UserDto user;
 
-    private List<HorseDto> horseDtos = new ArrayList<>();
+    private List<HorseDto> horses = new ArrayList<>();
 
 
     public long getId() {
@@ -111,19 +111,19 @@ public class CustomerProfileDto {
     }
 
     public List<HorseDto> getHorseDtos(){
-        return horseDtos;
+        return horses;
     }
 
     public void setHorseDtos(List<HorseDto> horses){
-        this.horseDtos = horseDtos;
+        this.horses = horses;
     }
 
     public void addHorseDtoToList(HorseDto horseDto){
-        horseDtos.add(horseDto);
+        horses.add(horseDto);
     }
 
     public void deleteHorseDtoFromList(HorseDto horse){
-        horseDtos.remove(horse);
+        horses.remove(horse);
     }
 
 }
