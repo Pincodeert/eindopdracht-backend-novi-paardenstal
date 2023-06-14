@@ -2,6 +2,7 @@ package nl.pin.paardenstal.controllers;
 
 import nl.pin.paardenstal.dtos.SubscriptionDto;
 import nl.pin.paardenstal.dtos.SubscriptionInputDto;
+import nl.pin.paardenstal.models.Stall;
 import nl.pin.paardenstal.models.Subscription;
 import nl.pin.paardenstal.services.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,10 @@ public class SubscriptionController {
         return ResponseEntity.ok(subscriptionDto);
     }
 
+    //Hier in de Requestbody een Stall meegegeven, zodat in de code wordt afgedwongen dat er geen subscription kan
+    // worden gedaan zonder dat deze gekoppeld is aan een Stall. ( Beter hier de IdinputDto van stall gebruiken)
     @PostMapping("/subscriptions")
-    public ResponseEntity<Long> addSubscription(@RequestBody SubscriptionInputDto subscriptionInputDto, ){
+    public ResponseEntity<Long> addSubscription(@RequestBody SubscriptionInputDto subscriptionInputDto, Stall stall){
         long newId = subscriptionService.addSubscription(subscriptionInputDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")

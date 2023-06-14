@@ -52,7 +52,7 @@ public class StallService {
         for(Stall s: stalls){
             StallDto dto = transferToDto(s);
             if(s.getHorse() != null){
-                HorseDto horseDto = horseService.transfertoDto(s.getHorse());
+                HorseDto horseDto = horseService.transferToDto(s.getHorse());
                 dto.setHorseDto(horseDto);
             }
             dtos.add(dto);
@@ -66,7 +66,7 @@ public class StallService {
         if(optionalStall.isPresent()){
             StallDto dto = transferToDto(optionalStall.get());
             if(optionalStall.get().getHorse() != null){
-                HorseDto horseDto = horseService.transfertoDto(optionalStall.get().getHorse());
+                HorseDto horseDto = horseService.transferToDto(optionalStall.get().getHorse());
                 dto.setHorseDto(horseDto);
             }
             return dto;

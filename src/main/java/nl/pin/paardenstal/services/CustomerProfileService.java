@@ -1,14 +1,13 @@
 package nl.pin.paardenstal.services;
 
-import nl.pin.paardenstal.dtos.CustomerProfileDto;
-import nl.pin.paardenstal.dtos.CustomerProfileInputDto;
-import nl.pin.paardenstal.dtos.HorseDto;
-import nl.pin.paardenstal.dtos.UserDto;
+import nl.pin.paardenstal.dtos.*;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.models.Horse;
+import nl.pin.paardenstal.models.Subscription;
 import nl.pin.paardenstal.models.User;
 import nl.pin.paardenstal.repositories.CustomerProfileRepository;
+import nl.pin.paardenstal.repositories.SubscriptionRepository;
 import nl.pin.paardenstal.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -26,12 +25,23 @@ public class CustomerProfileService {
     private final UserService userService;
     private final HorseService horseService;
 
+    private final SubscriptionRepository subscriptionRepository;
+
+//    private final SubscriptionService subscriptionService;
+
     @Autowired
-    public CustomerProfileService(CustomerProfileRepository customerProfileRepository, UserRepository userRepository, UserService userService,HorseService horseService){
+    public CustomerProfileService(CustomerProfileRepository customerProfileRepository,
+                                  UserRepository userRepository,
+                                  UserService userService, HorseService horseService,
+                                  SubscriptionRepository subscriptionRepository
+//                                  SubscriptionService subscriptionService
+    ){
         this.customerProfileRepository = customerProfileRepository;
         this.userRepository = userRepository;
         this.userService = userService;
         this.horseService = horseService;
+        this.subscriptionRepository = subscriptionRepository;
+//        this.subscriptionService = subscriptionService;
     }
 
     public List<CustomerProfileDto> getAllCustomerProfiles(){
@@ -55,10 +65,10 @@ public class CustomerProfileService {
             List<Horse> horses = storedCustomer.getHorses();
             List<HorseDto> horseDtos = new ArrayList<>();
             for(Horse h: horses){
-                HorseDto horseDto = horseService.transfertoDto(h);
+                HorseDto horseDto = horseService.transferToDto(h);
                 horseDtos.add(horseDto);
             }
-            dto.setHorseDtos(horseDtos);
+            dto.setHorses(horseDtos);
 
 
             return dto;
@@ -159,10 +169,19 @@ public class CustomerProfileService {
         dto.setResidence(customerProfile.getResidence());
         dto.setTelephoneNumber(customerProfile.getTelephoneNumber());
         dto.setEmailAddress(customerProfile.getEmailAddress());
+
         if(customerProfile.getUser() != null){
             UserDto userDto = userService.transferToDto(customerProfile.getUser());
             dto.setUser(userDto);
         }
+
+        List<Long> subscriptionDtos = new ArrayList<>();
+        for (Subscription s: customerProfile.getSubscriptions()) {
+//            SubscriptionDto subscriptionDto = SubscriptionService.transferToSubscriptionDto(s);
+            subscriptionDtos.add(s.getId());
+        }
+        dto.setSubscriptions(subscriptionDtos);
+
         return dto;
     }
 
@@ -181,6 +200,61 @@ public class CustomerProfileService {
             throw new RecordNotFoundException("There's no customer with this ID");
         } else if (!optionalUser.isPresent()){
             throw new RecordNotFoundException("There's no user with this ID");
+        }
+    }
+
+    public void assignSubscriptionToCustomerProfile(long id, long subscriptionId) {
+        Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
+        Optional<Subscription> optionalSubscription = subscriptionRepository.findById(subscriptionId);
+
+        if(optionalCustomerProfile.isPresent() && optionalSubscription.isPresent()) {
+            CustomerProfile customer = optionalCustomerProfile.get();
+            Subscription subscription = optionalSubscription.get();
+
+            //voegt de opgegeven subscription toe aan de lijst van subscriptions van de opgegeven customer(profile)
+            List<Subscription> customerSubcriptions = customer.getSubscriptions();
+            customerSubcriptions.add(subscription);
+            customer.setSubscriptions(customerSubcriptions);
+            customerProfileRepository.save(customer);
+
+            //voegt de opgegeven customer(profile) toe aan de lijst van customer(profile)s van de opgegeven subscription
+            //List<CustomerProfile> customers = subscription.getCustomers();
+            //customers.add(customer);
+            //subscription.setCustomers(customers);
+            //subscriptionRepository.save(subscription);
+
+        } else if (!optionalCustomerProfile.isPresent() && !optionalSubscription.isPresent()){
+            throw new RecordNotFoundException("There's no customer nor subscription with this ID");
+        } else if (!optionalCustomerProfile.isPresent()){
+            throw new RecordNotFoundException("There's no customer with this ID");
+        } else if (!optionalSubscription.isPresent()){
+            throw new RecordNotFoundException("There's no subscription with this ID");
+        }
+    }
+
+    public void assignCustomerProfileToSubscription(long id, long subscriptionId) {
+
+        Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
+        Optional<Subscription> optionalSubscription = subscriptionRepository.findById(subscriptionId);
+
+        if(optionalCustomerProfile.isPresent() && optionalSubscription.isPresent()) {
+            CustomerProfile customer = optionalCustomerProfile.get();
+            Subscription subscription = optionalSubscription.get();
+
+
+
+            //voegt de opgegeven customer(profile) toe aan de lijst van customer(profile)s van de opgegeven subscription
+            List<CustomerProfile> customers = subscription.getCustomers();
+            customers.add(customer);
+            subscription.setCustomers(customers);
+            subscriptionRepository.save(subscription);
+
+        } else if (!optionalCustomerProfile.isPresent() && !optionalSubscription.isPresent()){
+            throw new RecordNotFoundException("There's no customer nor subscription with this ID");
+        } else if (!optionalCustomerProfile.isPresent()){
+            throw new RecordNotFoundException("There's no customer with this ID");
+        } else if (!optionalSubscription.isPresent()){
+            throw new RecordNotFoundException("There's no subscription with this ID");
         }
     }
 

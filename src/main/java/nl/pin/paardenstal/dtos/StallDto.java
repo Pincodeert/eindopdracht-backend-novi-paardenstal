@@ -11,7 +11,6 @@ public class StallDto {
     private String type;
 
     private HorseDto horse;
-
     private SubscriptionDto subscription;
 
     private OwnerDto owner;
@@ -52,8 +51,8 @@ public class StallDto {
         return horse;
     }
 
-    public void setHorseDto(HorseDto horseDto) {
-        this.horse = horseDto;
+    public void setHorseDto(HorseDto horse) {
+        this.horse = horse;
     }
 
     public SubscriptionDto getSubscription(){

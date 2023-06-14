@@ -1,8 +1,10 @@
 package nl.pin.paardenstal.services;
 
+import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.SubscriptionDto;
 import nl.pin.paardenstal.dtos.SubscriptionInputDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
+import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.models.Subscription;
 import nl.pin.paardenstal.repositories.SubscriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,13 @@ import java.util.Optional;
 public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
+    private final CustomerProfileService customerProfileService;
 
     @Autowired
-    public SubscriptionService(SubscriptionRepository subscriptionRepository){
+    public SubscriptionService(SubscriptionRepository subscriptionRepository,
+                               CustomerProfileService customerProfileService){
         this.subscriptionRepository = subscriptionRepository;
+        this.customerProfileService = customerProfileService;
     }
 
     public List<SubscriptionDto> getAllSubscriptions(){
@@ -62,13 +67,22 @@ public class SubscriptionService {
 
     }
 
-    public SubscriptionDto transferToSubscriptionDto(Subscription subscription){
+    public static SubscriptionDto transferToSubscriptionDto(Subscription subscription){
         SubscriptionDto dto = new SubscriptionDto();
 
         dto.setId(subscription.getId());
         dto.setPrice(subscription.getPrice());
         dto.setTypeOfCare(subscription.getTypeOfCare());
         dto.setTypeOfStall(subscription.getTypeOfStall());
+
+        List<CustomerProfile> customers = subscription.getCustomers();
+        List<CustomerProfileDto> customerDtos = new ArrayList<>();
+
+//        for(CustomerProfile cp: customers) {
+//            CustomerProfileDto customerDto = customerProfileService.transferToDto(cp);
+//            customerDtos.add(customerDto);
+//        }
+//        dto.setCustomers(customerDtos);
 
         return dto;
     }

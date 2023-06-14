@@ -31,7 +31,7 @@ public class HorseService {
         List<HorseDto> dtos = new ArrayList<>();
 
         for(Horse h: horses){
-            HorseDto dto = transfertoDto(h);
+            HorseDto dto = transferToDto(h);
             if(h.getOwner() != null){
                 CustomerProfileDto ownerDto = customerProfileService.transferToDto(h.getOwner());
                 dto.setOwnerDto(ownerDto);
@@ -45,7 +45,7 @@ public class HorseService {
         Optional<Horse> optionalHorse = horseRepository.findById(id);
 
         if(optionalHorse.isPresent()){
-            HorseDto horseDto = transfertoDto(optionalHorse.get());
+            HorseDto horseDto = transferToDto(optionalHorse.get());
 
             if(optionalHorse.get().getOwner() != null) {
                 CustomerProfileDto ownerDto = customerProfileService.transferToDto(optionalHorse.get().getOwner());
@@ -107,7 +107,7 @@ public class HorseService {
         }
     }
 
-    public HorseDto transfertoDto(Horse horse){
+    public HorseDto transferToDto(Horse horse){
         HorseDto dto = new HorseDto();
 
         dto.setId(horse.getId());

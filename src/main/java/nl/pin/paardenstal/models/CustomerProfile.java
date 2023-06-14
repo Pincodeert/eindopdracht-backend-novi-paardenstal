@@ -1,6 +1,7 @@
 package nl.pin.paardenstal.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -37,7 +38,13 @@ public class CustomerProfile {
     @JsonIgnore
     private List<Horse> horses = new ArrayList<>();
 
-
+    @ManyToMany
+    @JoinTable(
+            name = "customerprofiles_subscriptions",
+            joinColumns = @JoinColumn(name = "customerProfile_id"),
+            inverseJoinColumns = @JoinColumn(name = "subscription_id")
+    )
+    private List<Subscription> subscriptions = new ArrayList<>();
 
     public long getId(){
         return id;
@@ -125,6 +132,14 @@ public class CustomerProfile {
 
     public void setHorses(List<Horse> horses) {
         this.horses = horses;
+    }
+
+    public List<Subscription> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(List<Subscription> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 
     public void addHorseToList(Horse horse){

@@ -1,6 +1,10 @@
 package nl.pin.paardenstal.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "subscriptions")
@@ -15,12 +19,17 @@ public class Subscription {
     private String typeOfCare;
 
     private String typeOfStall;
-    @Column(nullable = false)
+
     @OneToOne(mappedBy = "subscription")
+    @JoinColumn(nullable = false)
     private Stall stall;
     @OneToOne(mappedBy = "subscription")
+    @JsonIgnore
     private Cancellation cancellation;
 
+    @ManyToMany(mappedBy = "subscriptions", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<CustomerProfile> customers = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -68,5 +77,13 @@ public class Subscription {
 
     public void setCancellation(Cancellation cancellation){
         this.cancellation = cancellation;
+    }
+
+    public List<CustomerProfile> getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(List<CustomerProfile> customers) {
+        this.customers = customers;
     }
 }
