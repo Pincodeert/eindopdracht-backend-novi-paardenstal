@@ -29,6 +29,8 @@ public class CustomerProfileDto {
 
     private List<HorseDto> horses = new ArrayList<>();
 
+    private List<Long> subscriptionIds = new ArrayList<>();
+
 
     public long getId() {
         return id;
@@ -110,12 +112,20 @@ public class CustomerProfileDto {
         this.user = user;
     }
 
-    public List<HorseDto> getHorseDtos(){
+    public List<HorseDto> getHorses(){
         return horses;
     }
 
-    public void setHorseDtos(List<HorseDto> horses){
+    public void setHorses(List<HorseDto> horses){
         this.horses = horses;
+    }
+
+    public List<Long> getSubscriptions() {
+        return subscriptionIds;
+    }
+
+    public void setSubscriptions(List<Long> subscriptions) {
+        this.subscriptionIds = subscriptions;
     }
 
     public void addHorseDtoToList(HorseDto horseDto){

@@ -1,5 +1,8 @@
 package nl.pin.paardenstal.dtos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SubscriptionDto {
 
     private long id;
@@ -10,6 +13,7 @@ public class SubscriptionDto {
 
     private String typeOfStall;
 
+//    private List<CustomerProfileDto> customers = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -43,4 +47,11 @@ public class SubscriptionDto {
         this.typeOfStall = typeOfStall;
     }
 
+    //public List<CustomerProfileDto> getCustomers() {
+    //    return customers;
+    //}
+
+    //public void setCustomers(List<CustomerProfileDto> customers) {
+    //    this.customers = customers;
+    //}
 }

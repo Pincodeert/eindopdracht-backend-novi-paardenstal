@@ -18,8 +18,10 @@ VALUES
 ('The Good', '3 x 3.5', 'indoor stall', 1),
 ('The Bad', '3 x 3.5', 'indoor stall', 2),
 ('The Ugly', '3 x 3.5', 'indoor stall', 3),
-('buitenstal 1', '3 x 3', 'outdoor stall', 4),
-('buitenstal 2', '3 x 3', 'outdoor stall', 5);
+('Buitenstal 1', '3 x 3', 'outdoor stall', 4),
+('Buitenstal 2', '3 x 3', 'outdoor stall', 5),
+('Buitenstal 3', '3 x 3', 'outdoor stall', null);
+
 
 INSERT INTO subscriptions(price, type_of_care, type_of_stall)
 VALUES
@@ -38,3 +40,6 @@ INSERT INTO owners(first_name, last_name, email_address, user_id)
 VALUES
 ('Clint', 'Eastwood', 'make@)myday.com', 1);
 
+INSERT INTO customerprofiles_subscriptions(customer_profile_id, subscription_id)
+VALUES
+(2, 3);

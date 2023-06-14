@@ -64,8 +64,15 @@ public class CustomerProfileController {
     }
 
     @PutMapping("/customerprofiles/{id}/user")
-    public ResponseEntity<Object> assignUserToCustomerProfile(@PathVariable long id, @RequestBody IdInputDto input){
-        customerProfileService.assignUserToCustomerProfile(id, input.id);
+    public ResponseEntity<Object> assignUserToCustomerProfile(@PathVariable long id, @RequestBody IdInputDto userInput){
+        customerProfileService.assignUserToCustomerProfile(id, userInput.id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/customerprofiles/{id}/subscription")
+    public ResponseEntity<Object> assignSubscriptionToCustomerProfile(@PathVariable long id,
+                                                                      @RequestBody IdInputDto subscriptionInput) {
+        customerProfileService.assignSubscriptionToCustomerProfile(id, subscriptionInput.id);
         return ResponseEntity.noContent().build();
     }
 

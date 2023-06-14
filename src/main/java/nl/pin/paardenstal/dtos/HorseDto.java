@@ -16,7 +16,7 @@ public class HorseDto {
 
     private String telephoneOfVet;
 
-    private CustomerProfileDto ownerDto;
+    private CustomerProfileDto owner;
 
 
     public long getId() {
@@ -75,11 +75,11 @@ public class HorseDto {
         this.telephoneOfVet = telephoneOfVet;
     }
 
-    public CustomerProfileDto getOwnerDto() {
-        return ownerDto;
+    public CustomerProfileDto getOwner() {
+        return owner;
     }
 
     public void setOwnerDto(CustomerProfileDto ownerDto) {
-        this.ownerDto = ownerDto;
+        this.owner = ownerDto;
     }
 }
