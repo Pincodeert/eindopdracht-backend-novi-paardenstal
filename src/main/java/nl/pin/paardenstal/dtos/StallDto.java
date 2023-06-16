@@ -13,7 +13,7 @@ public class StallDto {
     private HorseDto horse;
     private SubscriptionDto subscription;
 
-    private OwnerDto owner;
+
 
     public long getId() {
         return id;
@@ -63,12 +63,6 @@ public class StallDto {
         this.subscription = subscription;
     }
 
-    public OwnerDto getOwner(){
-        return owner;
-    }
 
-    public void setOwner(OwnerDto owner){
-        this.owner = owner;
-    }
 
 }

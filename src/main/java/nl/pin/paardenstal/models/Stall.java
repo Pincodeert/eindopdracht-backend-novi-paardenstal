@@ -24,8 +24,6 @@ public class Stall {
     @OneToOne
     private Subscription subscription;
 
-    @ManyToOne
-    private Owner owner;
 
     public long getId() {
         return id;
@@ -75,11 +73,5 @@ public class Stall {
         this.subscription = subscription;
     }
 
-    public Owner getOwner(){
-        return owner;
-    }
 
-    public void setOwner(Owner owner){
-        this.owner = owner;
-    }
 }

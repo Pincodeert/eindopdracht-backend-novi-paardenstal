@@ -59,18 +59,6 @@ public class StallController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/stalls/{id}/owner")
-    public ResponseEntity<Object> assignOwnerToStall(@PathVariable long id, @RequestBody IdInputDto input){
-        stallService.assignOwnerToStall(id,input.id);
-        return ResponseEntity.noContent().build();
-    }
 
-    //functionaliteit om alle stallen die een owner bezit, op te vragen, aanroepen via de many-kant (in dit geval dus Stall)
-    // samenvoegen met de GetMapping voor getStalls?
-    /*public ResponseEntity<List <Stall>> getAllStallsByOwner(// dit opzoeken in les Robert-Jan)
-    {
-       List<Stall> stalls = stallService.getAllStallsByOwner();
-       return ResponseEntity.ok(stalls);
-    }*/
 
 }
