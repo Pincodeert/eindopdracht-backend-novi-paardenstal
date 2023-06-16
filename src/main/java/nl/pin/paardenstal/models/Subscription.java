@@ -23,9 +23,6 @@ public class Subscription {
     @OneToOne(mappedBy = "subscription")
     @JoinColumn(nullable = false)
     private Stall stall;
-    @OneToOne(mappedBy = "subscription")
-    @JsonIgnore
-    private Cancellation cancellation;
 
     @ManyToMany(mappedBy = "subscriptions", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
@@ -69,14 +66,6 @@ public class Subscription {
 
     public void setStall(Stall stall) {
         this.stall = stall;
-    }
-
-    public Cancellation getCancellation(){
-        return cancellation;
-    }
-
-    public void setCancellation(Cancellation cancellation){
-        this.cancellation = cancellation;
     }
 
     public List<CustomerProfile> getCustomers() {
