@@ -71,6 +71,7 @@ public class SubscriptionService {
         SubscriptionDto dto = new SubscriptionDto();
 
         dto.setId(subscription.getId());
+        dto.setName(subscription.getName());
         dto.setPrice(subscription.getPrice());
         dto.setTypeOfCare(subscription.getTypeOfCare());
         dto.setTypeOfStall(subscription.getTypeOfStall());
@@ -90,6 +91,7 @@ public class SubscriptionService {
     public Subscription transferToSubscription(SubscriptionInputDto subscriptionInputDto){
         Subscription subscription = new Subscription();
 
+        subscription.setName(subscriptionInputDto.getName());
         subscription.setPrice(subscriptionInputDto.getPrice());
         subscription.setTypeOfCare(subscriptionInputDto.getTypeOfCare());
         subscription.setTypeOfStall(subscriptionInputDto.getTypeOfStall());

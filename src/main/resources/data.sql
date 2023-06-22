@@ -15,22 +15,29 @@ VALUES
 
 INSERT INTO stalls(name, size, type, horse_id)
 VALUES
-('The Good', '3 x 3.5', 'indoor stall', 1),
-('The Bad', '3 x 3.5', 'indoor stall', 2),
-('The Ugly', '3 x 3.5', 'indoor stall', 3),
-('Buitenstal 1', '3 x 3', 'outdoor stall', 4),
-('Buitenstal 2', '3 x 3', 'outdoor stall', 5),
-('Buitenstal 3', '3 x 3', 'outdoor stall', null);
+('The Good', '3 x 3.5', 'kleine binnenstal', 1),
+('The Bad', '3 x 3.5', 'kleine binnenstal', 2),
+('The Ugly', '3 x 3.5', 'kleine binnenstal', 3),
+('The Mule', '3 x 4', 'grote binnenstal', null),
+('The Dead Pool', '3 x 4', 'grote binnenstal', null),
+('Young Guns I', '3 x 3', 'kleine buitenstal', 4),
+('Young Guns II', '3 x 3', 'kleine buitenstal', 5),
+('Young Guns III', '3 x 3', 'kleine buitenstal', null),
+('Gran Torino', '3 x 4', 'grote buitenstal', null),
+('El Camino', '3 x 4', 'grote buitenstal', null),
+('Road House', '3 x 4', 'grote buitenstal', null);
 
 
-INSERT INTO subscriptions(price, type_of_care, type_of_stall)
+INSERT INTO subscriptions(name, price, type_of_care, type_of_stall)
 VALUES
-(490.95, 'basic care', 'small indoor box'),
-(515.95, 'extra care', 'small indoor box'),
-(505.95, 'basic care', 'large indoor box'),
-(530.95, 'extra care', 'large indoor box'),
-(454.95, 'basic care', 'small outdoor box'),
-(479.95, 'extra care', 'large outdoor box');
+('Lucky Luke abonnement', 490.95, 'halfpension', 'kleine binnenstal'),
+('Jolly Jumper abonnement', 515.95, 'volpension', 'kleine binnenstal'),
+('Joe Dalton abonnement', 505.95, 'halfpension', 'grote binnenstal'),
+('Jack Dalton abonnement' , 530.95, 'volpension', 'grote binnenstal'),
+('William Dalton abonnement', 454.95, 'halfpension', 'kleine buitenstal'),
+('Averell Dalton abonnement', 479.95, 'volpension', 'kleine buitenstal'),
+('Ma Dalton abonnement', 499.95, 'halfpension', 'grote buitenstal'),
+('Rataplan abonnement', 489.95, 'volpension', 'grote buitenstal');
 
 INSERT INTO users(username, password)
 VALUES

@@ -14,6 +14,7 @@ public class Subscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private String name;
     private double price;
 
     private String typeOfCare;
@@ -36,6 +37,13 @@ public class Subscription {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
     public double getPrice() {
         return price;
     }
