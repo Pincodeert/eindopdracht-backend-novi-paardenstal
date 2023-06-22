@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.controllers;
 
+import nl.pin.paardenstal.dtos.EnrollmentDto;
+import nl.pin.paardenstal.dtos.EnrollmentInputDto;
 import nl.pin.paardenstal.models.Enrollment;
 import nl.pin.paardenstal.services.EnrollmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,20 +23,20 @@ public class EnrollmentController {
     }
 
     @GetMapping("/enrollments")
-    public ResponseEntity<List<Enrollment>> getAllEnrollments() {
-        List<Enrollment> enrollments = enrollmentService.getAllEnrollments();
-        return ResponseEntity.ok(enrollments);
+    public ResponseEntity<List<EnrollmentDto>> getAllEnrollments() {
+        List<EnrollmentDto> dtos = enrollmentService.getAllEnrollments();
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/enrollments/{id}")
-    public ResponseEntity<Enrollment> getEnrollmentById(@PathVariable long id) {
-        Enrollment enrollment = enrollmentService.getEnrollmentById(id);
-        return ResponseEntity.ok(enrollment);
+    public ResponseEntity<EnrollmentDto> getEnrollmentById(@PathVariable long id) {
+        EnrollmentDto dto = enrollmentService.getEnrollmentById(id);
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/enrollments")
-    public ResponseEntity<Object> addNewEnrollment(@RequestBody Enrollment enrollment) {
-        long newId = enrollmentService.addNewEnrollment(enrollment);
+    public ResponseEntity<Object> addNewEnrollment(@RequestBody EnrollmentInputDto enrollmentInputDto) {
+        long newId = enrollmentService.addNewEnrollment(enrollmentInputDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newId).toUri();
@@ -49,8 +51,8 @@ public class EnrollmentController {
     }
 
     @PatchMapping("/enrollments/{id}")
-    public ResponseEntity<Object> updateEnrollment(@PathVariable long id, @RequestBody Enrollment enrollment) {
-        enrollmentService.updateEnrollment(id, enrollment);
+    public ResponseEntity<Object> updateEnrollment(@PathVariable long id, @RequestBody EnrollmentInputDto enrollmentInputDto) {
+        enrollmentService.updateEnrollment(id, enrollmentInputDto);
         return ResponseEntity.noContent().build();
     }
 }
