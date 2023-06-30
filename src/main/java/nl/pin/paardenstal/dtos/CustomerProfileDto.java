@@ -32,6 +32,9 @@ public class CustomerProfileDto {
     private List<Long> subscriptionIds = new ArrayList<>();
 
 
+    private List<EnrollmentDto> enrollments = new ArrayList<>();
+
+
     public long getId() {
         return id;
     }
@@ -128,12 +131,28 @@ public class CustomerProfileDto {
         this.subscriptionIds = subscriptions;
     }
 
+    public List<EnrollmentDto> getEnrollments() {
+        return enrollments;
+    }
+
+    public void setEnrollments(List<EnrollmentDto> enrollments) {
+        this.enrollments = enrollments;
+    }
+
     public void addHorseDtoToList(HorseDto horseDto){
         horses.add(horseDto);
     }
 
     public void deleteHorseDtoFromList(HorseDto horse){
         horses.remove(horse);
+    }
+
+    public void addEnrollmentDtoToList(EnrollmentDto enrollmentDto) {
+        enrollments.add(enrollmentDto);
+    }
+
+    public void deleteEnrollmentDtoFromList(EnrollmentDto enrollmentDto) {
+        enrollments.remove(enrollmentDto);
     }
 
 }

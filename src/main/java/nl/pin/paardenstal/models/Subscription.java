@@ -14,6 +14,7 @@ public class Subscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private String name;
     private double price;
 
     private String typeOfCare;
@@ -28,6 +29,10 @@ public class Subscription {
     @JsonIgnore
     private List<CustomerProfile> customers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "subscription", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Enrollment> enrollments;
+
     public long getId() {
         return id;
     }
@@ -36,6 +41,13 @@ public class Subscription {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
     public double getPrice() {
         return price;
     }
@@ -74,5 +86,13 @@ public class Subscription {
 
     public void setCustomers(List<CustomerProfile> customers) {
         this.customers = customers;
+    }
+
+    public List<Enrollment> getEnrollments() {
+        return enrollments;
+    }
+
+    public void setEnrollments(List<Enrollment> enrollments) {
+        this.enrollments = enrollments;
     }
 }
