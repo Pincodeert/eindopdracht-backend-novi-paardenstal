@@ -5,7 +5,7 @@ VALUES
 ('Barry', 'Hay', 'Zeeweg', '179', '7754', 'Willemstad', '0658972311', 'barry.hay@goingtotherun.com'),
 ('Eddie', 'Vedder', 'Long Road', '10', '2208','Seattle', '0657993254', 'eddie.vedder@stillalive.com');
 
-INSERT INTO horses(name, type_of_feed, type_of_bedding, name_of_vet, residence_of_vet, telephone_of_vet ,customer_profile_id)
+INSERT INTO horses(name, type_of_feed, type_of_bedding, name_of_vet, residence_of_vet, telephone_of_vet, customer_profile_id)
 VALUES
 ('Crazy Horse', 'oats', 'straw', 'Dr John', 'New Orleans', '0612345678', 1),
 ('Steel Horse', 'hay', 'shavings', 'Dr Hook', 'Trenton', '0611223344', 2),
@@ -50,3 +50,9 @@ VALUES
 INSERT INTO customerprofiles_subscriptions(customer_profile_id, subscription_id)
 VALUES
 (2, 3);
+
+INSERT INTO enrollments(start_date, expire_date, duration, is_ongoing, cancellation_requested, subscription_id,
+customer_profile_id)
+VALUES
+('12-05-2023', '12-05-2024', 1, true, false, 1, 1),
+('23-04-2023', '23-04-2024', 2, true, false, 2, 1);

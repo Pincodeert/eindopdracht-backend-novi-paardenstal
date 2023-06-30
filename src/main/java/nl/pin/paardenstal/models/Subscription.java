@@ -29,6 +29,10 @@ public class Subscription {
     @JsonIgnore
     private List<CustomerProfile> customers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "subscription", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Enrollment> enrollments;
+
     public long getId() {
         return id;
     }
@@ -82,5 +86,13 @@ public class Subscription {
 
     public void setCustomers(List<CustomerProfile> customers) {
         this.customers = customers;
+    }
+
+    public List<Enrollment> getEnrollments() {
+        return enrollments;
+    }
+
+    public void setEnrollments(List<Enrollment> enrollments) {
+        this.enrollments = enrollments;
     }
 }

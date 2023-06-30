@@ -11,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class EnrollmentController {
@@ -23,8 +24,15 @@ public class EnrollmentController {
     }
 
     @GetMapping("/enrollments")
-    public ResponseEntity<List<EnrollmentDto>> getAllEnrollments() {
+    public ResponseEntity<List<EnrollmentDto>> getAllEnrollments(@RequestParam(value = "cancellationRequested",
+            required = false) Optional<Boolean> cancellationRequested) {
         List<EnrollmentDto> dtos = enrollmentService.getAllEnrollments();
+
+        if(cancellationRequested.isEmpty()) {
+            dtos = enrollmentService.getAllEnrollments();
+        } else {
+            dtos = enrollmentService.getAllCancellationRequests(cancellationRequested.get());
+        }
         return ResponseEntity.ok(dtos);
     }
 
@@ -34,9 +42,15 @@ public class EnrollmentController {
         return ResponseEntity.ok(dto);
     }
 
+    @DeleteMapping("/enrollments/{id}")
+    public ResponseEntity<Object> deleteEnrollment(@PathVariable long id) {
+        enrollmentService.deleteEnrollment(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/enrollments")
-    public ResponseEntity<Object> addNewEnrollment(@RequestBody EnrollmentInputDto enrollmentInputDto) {
-        long newId = enrollmentService.addNewEnrollment(enrollmentInputDto);
+    public ResponseEntity<Object> assignCustomerToSubscription(@RequestBody EnrollmentInputDto input) {
+        Long newId = enrollmentService.assignCustomerToSubscription(input.id1, input.id2, input.date);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newId).toUri();
@@ -44,15 +58,18 @@ public class EnrollmentController {
         return ResponseEntity.created(location).build();
     }
 
-    @DeleteMapping("/enrollments/{id}")
-    public ResponseEntity<Object> deleteEnrollment(@PathVariable long id) {
-        enrollmentService.deleteEnrollment(id);
+    @PatchMapping("/enrollments/{id}")
+    public ResponseEntity<Object> askForCancellation(@PathVariable Long id) {
+        enrollmentService.askForCancellation(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/enrollments/{id}")
-    public ResponseEntity<Object> updateEnrollment(@PathVariable long id, @RequestBody EnrollmentInputDto enrollmentInputDto) {
-        enrollmentService.updateEnrollment(id, enrollmentInputDto);
+    @PatchMapping("/enrollments")
+    public ResponseEntity<Object> terminateSubscription(@RequestBody EnrollmentInputDto input) {
+        enrollmentService.terminateSubscription(input.id1);
         return ResponseEntity.noContent().build();
     }
 }
+
+
+

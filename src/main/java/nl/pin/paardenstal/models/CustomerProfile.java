@@ -46,6 +46,10 @@ public class CustomerProfile {
     )
     private List<Subscription> subscriptions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Enrollment> enrollments;
+
     public long getId(){
         return id;
     }
@@ -140,6 +144,14 @@ public class CustomerProfile {
 
     public void setSubscriptions(List<Subscription> subscriptions) {
         this.subscriptions = subscriptions;
+    }
+
+    public List<Enrollment> getEnrollments() {
+        return enrollments;
+    }
+
+    public void setEnrollments(List<Enrollment> enrollments) {
+        this.enrollments = enrollments;
     }
 
     public void addHorseToList(Horse horse){
