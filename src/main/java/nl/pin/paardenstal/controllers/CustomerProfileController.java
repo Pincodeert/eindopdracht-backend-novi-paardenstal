@@ -4,7 +4,6 @@ import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.CustomerProfileInputDto;
 import nl.pin.paardenstal.dtos.IdInputDto;
 import nl.pin.paardenstal.services.CustomerProfileService;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -66,13 +65,6 @@ public class CustomerProfileController {
     @PutMapping("/customerprofiles/{id}/user")
     public ResponseEntity<Object> assignUserToCustomerProfile(@PathVariable long id, @RequestBody IdInputDto userInput){
         customerProfileService.assignUserToCustomerProfile(id, userInput.id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/customerprofiles/{id}/subscription")
-    public ResponseEntity<Object> assignSubscriptionToCustomerProfile(@PathVariable long id,
-                                                                      @RequestBody IdInputDto subscriptionInput) {
-        customerProfileService.assignSubscriptionToCustomerProfile(id, subscriptionInput.id);
         return ResponseEntity.noContent().build();
     }
 

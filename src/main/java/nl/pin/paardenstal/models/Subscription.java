@@ -25,10 +25,6 @@ public class Subscription {
     @JoinColumn(nullable = false)
     private Stall stall;
 
-    @ManyToMany(mappedBy = "subscriptions", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<CustomerProfile> customers = new ArrayList<>();
-
     @OneToMany(mappedBy = "subscription", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Enrollment> enrollments;
@@ -78,14 +74,6 @@ public class Subscription {
 
     public void setStall(Stall stall) {
         this.stall = stall;
-    }
-
-    public List<CustomerProfile> getCustomers() {
-        return customers;
-    }
-
-    public void setCustomers(List<CustomerProfile> customers) {
-        this.customers = customers;
     }
 
     public List<Enrollment> getEnrollments() {

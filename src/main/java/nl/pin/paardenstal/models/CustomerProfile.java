@@ -38,17 +38,10 @@ public class CustomerProfile {
     @JsonIgnore
     private List<Horse> horses = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "customerprofiles_subscriptions",
-            joinColumns = @JoinColumn(name = "customerProfile_id"),
-            inverseJoinColumns = @JoinColumn(name = "subscription_id")
-    )
-    private List<Subscription> subscriptions = new ArrayList<>();
-
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Enrollment> enrollments;
+
 
     public long getId(){
         return id;
@@ -136,14 +129,6 @@ public class CustomerProfile {
 
     public void setHorses(List<Horse> horses) {
         this.horses = horses;
-    }
-
-    public List<Subscription> getSubscriptions() {
-        return subscriptions;
-    }
-
-    public void setSubscriptions(List<Subscription> subscriptions) {
-        this.subscriptions = subscriptions;
     }
 
     public List<Enrollment> getEnrollments() {

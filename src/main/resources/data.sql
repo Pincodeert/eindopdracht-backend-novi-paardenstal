@@ -47,10 +47,6 @@ INSERT INTO owners(first_name, last_name, email_address, user_id)
 VALUES
 ('Clint', 'Eastwood', 'make@)myday.com', 1);
 
-INSERT INTO customerprofiles_subscriptions(customer_profile_id, subscription_id)
-VALUES
-(2, 3);
-
 INSERT INTO enrollments(start_date, expire_date, duration, is_ongoing, cancellation_requested, subscription_id,
 customer_profile_id)
 VALUES
