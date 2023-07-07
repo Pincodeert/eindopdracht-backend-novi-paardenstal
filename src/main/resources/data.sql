@@ -51,4 +51,8 @@ INSERT INTO enrollments(start_date, expire_date, duration, is_ongoing, cancellat
 customer_profile_id)
 VALUES
 ('12-05-2023', '12-05-2024', 1, true, false, 1, 1),
-('23-04-2023', '23-04-2024', 2, true, false, 2, 1);
+('23-04-2023', '23-04-2024', 2, true, false, 2, 2),
+('18-09-2022', '18-09-2023', 9, true, false, 2, 1),
+('01-01-2023', '01-01-2024', 6, true, true, 1, 2),
+('15-02-2023', '15-02-2024', 5, false, false, 2, 2),
+('01-07-2023', '01-07-2024', 0, false, false, 3, 1);

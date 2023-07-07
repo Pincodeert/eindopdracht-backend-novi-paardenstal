@@ -61,7 +61,7 @@ public class SubscriptionService {
         }
     }
 
-    public static SubscriptionDto transferToSubscriptionDto(Subscription subscription){
+    public /*static*/ SubscriptionDto transferToSubscriptionDto(Subscription subscription){
         SubscriptionDto dto = new SubscriptionDto();
 
         dto.setId(subscription.getId());
@@ -83,5 +83,7 @@ public class SubscriptionService {
 
         return subscription;
     }
+
+
 
 }

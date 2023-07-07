@@ -7,5 +7,8 @@ import java.util.List;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
-    List<Enrollment> findAllEnrollmentsByCancellationRequested(Boolean cancellationRequested);
+    List<Enrollment> findAllByCancellationRequested(Boolean cancellationRequested);
+    List<Enrollment> findAllByCustomerProfileId(Long customerProfileId);
+    List<Enrollment> findAllBySubscriptionId(Long subscriptionId);
+    List<Enrollment> findAllEnrollmentsByIsOngoing(Boolean isOngoing);
 }

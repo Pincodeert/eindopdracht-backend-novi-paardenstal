@@ -2,12 +2,17 @@ package nl.pin.paardenstal.controllers;
 
 import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.CustomerProfileInputDto;
+import nl.pin.paardenstal.dtos.EnrollmentDto;
 import nl.pin.paardenstal.dtos.IdInputDto;
+import nl.pin.paardenstal.models.Enrollment;
 import nl.pin.paardenstal.services.CustomerProfileService;
+import nl.pin.paardenstal.services.EnrollmentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
@@ -15,9 +20,13 @@ import java.util.List;
 public class CustomerProfileController {
 
     private final CustomerProfileService customerProfileService;
+    private final EnrollmentService enrollmentService;
 
-    public CustomerProfileController(CustomerProfileService customerProfileService){
+    @Autowired
+    public CustomerProfileController(CustomerProfileService customerProfileService,
+                                     EnrollmentService enrollmentService){
         this.customerProfileService = customerProfileService;
+        this.enrollmentService = enrollmentService;
     }
 
     @GetMapping("/customerprofiles")
@@ -68,4 +77,16 @@ public class CustomerProfileController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/customerprofiles/{id}/enrollments")
+    public ResponseEntity<List<EnrollmentDto>> getAllEnrollmentsByCustomerProfileId(@PathVariable Long id) {
+        List<EnrollmentDto> enrollments = enrollmentService.getAllEnrollmentsByCustomerProfileId(id);
+        return ResponseEntity.ok(enrollments);
+    }
+
+    @GetMapping("customerprofiles/enrollments/{customerProfileId}")
+    public ResponseEntity<BigDecimal> getTotalPriceOfAssignedSubscriptions(@PathVariable("customerProfileId")
+                                                                           Long customerProfileId) {
+        BigDecimal totalPrice = enrollmentService.getTotalPriceOfAssignedSubscriptionsByCustomerId(customerProfileId);
+        return ResponseEntity.ok(totalPrice);
+    }
 }

@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.dtos;
 
+import nl.pin.paardenstal.models.Enrollment;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,8 @@ public class SubscriptionDto {
     private String typeOfCare;
 
     private String typeOfStall;
+
+    private List<EnrollmentDto> enrollments = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -54,5 +58,12 @@ public class SubscriptionDto {
         this.typeOfStall = typeOfStall;
     }
 
+    public List<EnrollmentDto> getEnrollments() {
+        return enrollments;
+    }
+
+    public void setEnrollments(List<EnrollmentDto> enrollments) {
+        this.enrollments = enrollments;
+    }
 
 }

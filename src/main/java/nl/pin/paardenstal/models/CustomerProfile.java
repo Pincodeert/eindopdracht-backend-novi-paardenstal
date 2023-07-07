@@ -38,7 +38,7 @@ public class CustomerProfile {
     @JsonIgnore
     private List<Horse> horses = new ArrayList<>();
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "customerProfile", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Enrollment> enrollments;
 

@@ -1,12 +1,14 @@
 package nl.pin.paardenstal.dtos;
 
+import java.time.LocalDate;
+
 public class EnrollmentDto {
 
     private long id;
 
-    private String startDate;
+    private LocalDate startDate;
 
-    private String expireDate;
+    private LocalDate expireDate;
 
     private int duration;
 
@@ -14,9 +16,8 @@ public class EnrollmentDto {
 
     private boolean cancellationRequested;
 
-
-
-
+    private CustomerProfileDto customer;
+    private SubscriptionDto subscription;
 
     public long getId() {
         return id;
@@ -26,19 +27,19 @@ public class EnrollmentDto {
         this.id = id;
     }
 
-    public String getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public String getExpireDate() {
+    public LocalDate getExpireDate() {
         return expireDate;
     }
 
-    public void setExpireDate(String expireDate) {
+    public void setExpireDate(LocalDate expireDate) {
         this.expireDate = expireDate;
     }
 
@@ -66,19 +67,20 @@ public class EnrollmentDto {
         this.cancellationRequested = cancellationRequested;
     }
 
-    /*public CustomerProfile getCustomer() {
+    public CustomerProfileDto getCustomer() {
         return customer;
     }
 
-    public void setCustomer(CustomerProfile customer) {
+    public void setCustomer(CustomerProfileDto customer) {
         this.customer = customer;
     }
 
-    public Subscription getSubscription() {
+    public SubscriptionDto getSubscription() {
         return subscription;
     }
 
-    public void setSubscription(Subscription subscription) {
+    public void setSubscription(SubscriptionDto subscription) {
         this.subscription = subscription;
-    }*/
+    }
+
 }
