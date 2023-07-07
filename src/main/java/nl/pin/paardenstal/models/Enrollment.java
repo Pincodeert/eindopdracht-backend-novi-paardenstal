@@ -3,6 +3,7 @@ package nl.pin.paardenstal.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -16,10 +17,10 @@ public class Enrollment {
     //private LocalDate startDate;
     // vooralsnog String ipv LocalDate gebruiken:
     //vooralsnog in deze applicatie als startdatum het moment van aanmaken van de instantie gebruiken: LocalDat.now()
-    private String startDate;
+    private LocalDate startDate;
 
     //standaard instellen 12 maanden later. wordt door de applicatie berekend
-    private String expireDate;
+    private LocalDate expireDate;
 
     //looptijd in maanden. wordt berekend vanaf de LocalDate .now
     private int duration;
@@ -32,14 +33,16 @@ public class Enrollment {
     @ManyToOne
     @JoinColumn(name = "customer_profile_id", referencedColumnName = "id")
     @JsonIgnore
-    private CustomerProfile customer;
+    private CustomerProfile customerProfile;
 
     @ManyToOne
     @JoinColumn(name = "subscription_id", referencedColumnName = "id")
     @JsonIgnore
     private Subscription subscription;
 
-    //No args constructor (nodig, omdat Java niet meer default no args constructor aanmaakt omdat we zelf een
+
+
+    //No-args-constructor, hier nodig omdat we  (nodig, omdat Java niet meer default no args constructor aanmaakt omdat we zelf een
     // (gedeeltelijke) args constructor maken, nodig om in de associatieklasse af te dwingen dat de instantie van de
     // associatieklasse alleen wordt aangemaakt wanneer de addCustomerProfileToSubscription()-operatie wordt aangeroepen.
     public Enrollment(){};
@@ -48,10 +51,20 @@ public class Enrollment {
     //associatieklasse alleen wordt aangemaakt wanneer de addCustomerProfileToSubscription()-operatie wordt aangeroepen.
     // Vooralsnog startDate ook in de Constructor gezet omdat we vooralsnog een String gebruiken. Wanneer we LocalDate
     // gaan gebruiken, lossen we dit elders op.
-    public Enrollment(Subscription s, CustomerProfile cp, String startDate ) {
+    public Enrollment(Subscription s, CustomerProfile cp) {
         this.subscription = s;
-        this.customer = cp;
+        this.customerProfile = cp;
+        this.startDate = LocalDate.now();
+        this.expireDate = startDate.plusMonths(12);
+    }
+
+    //all args constructor (handig voor als je bv zelf een andere startdatum wil meegeven dan de datum van vandaag
+    public Enrollment(Subscription s, CustomerProfile cp, LocalDate startDate) {
+        this.subscription = s;
+        this.customerProfile = cp;
         this.startDate = startDate;
+        this.expireDate = startDate.plusMonths(12);
+        //this.duration = LocalDate.now().getMonthValue() - startDate.getMonthValue();
     }
 
     public long getId() {
@@ -62,30 +75,22 @@ public class Enrollment {
         this.id = id;
     }
 
-    /*public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-    */
-    public String getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
     //vooralsnog, omdat set startDate in de constructor wordt geregeld, nu geen setter nodig
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
+    //public void setStartDate(String startDate) {
+    //    this.startDate = startDate;
+    //}
 
-    public String getExpireDate() {
+    public LocalDate getExpireDate() {
         return expireDate;
     }
 
-    public void setExpireDate(String expireDate) {
+    /*public void setExpireDate(LocalDate expireDate) {
         this.expireDate = expireDate;
-    }
+    }*/
 
     public int getDuration() {
         return duration;
@@ -112,9 +117,8 @@ public class Enrollment {
 
     //voor CustomerProfile en Subscription is alleen een getter nodig, omdat ze al in de constructor zijn opgenomen.
     public CustomerProfile getCustomer() {
-        return customer;
+        return customerProfile;
     }
-
 
     public Subscription getSubscription() {
         return subscription;

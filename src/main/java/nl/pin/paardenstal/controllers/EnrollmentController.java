@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -25,13 +26,16 @@ public class EnrollmentController {
 
     @GetMapping("/enrollments")
     public ResponseEntity<List<EnrollmentDto>> getAllEnrollments(@RequestParam(value = "cancellationRequested",
-            required = false) Optional<Boolean> cancellationRequested) {
+            required = false) Optional<Boolean> cancellationRequested, @RequestParam(value = "isOngoing",
+            required = false) Optional<Boolean> isOngoing) {
         List<EnrollmentDto> dtos = enrollmentService.getAllEnrollments();
 
-        if(cancellationRequested.isEmpty()) {
+        if(cancellationRequested.isEmpty() && isOngoing.isEmpty()) {
             dtos = enrollmentService.getAllEnrollments();
-        } else {
+        } else if(isOngoing.isEmpty()) {
             dtos = enrollmentService.getAllCancellationRequests(cancellationRequested.get());
+        } else {
+            dtos = enrollmentService.getAllOngoingEnrollments(isOngoing.get());
         }
         return ResponseEntity.ok(dtos);
     }
@@ -69,6 +73,7 @@ public class EnrollmentController {
         enrollmentService.terminateSubscription(input.id1);
         return ResponseEntity.noContent().build();
     }
+
 }
 
 

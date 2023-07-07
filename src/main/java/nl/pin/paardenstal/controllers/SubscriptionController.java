@@ -1,9 +1,12 @@
 package nl.pin.paardenstal.controllers;
 
+import nl.pin.paardenstal.dtos.EnrollmentDto;
 import nl.pin.paardenstal.dtos.SubscriptionDto;
 import nl.pin.paardenstal.dtos.SubscriptionInputDto;
+import nl.pin.paardenstal.models.Enrollment;
 import nl.pin.paardenstal.models.Stall;
 import nl.pin.paardenstal.models.Subscription;
+import nl.pin.paardenstal.services.EnrollmentService;
 import nl.pin.paardenstal.services.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +21,12 @@ import java.util.List;
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
+    private final EnrollmentService enrollmentService;
 
     @Autowired
-    public SubscriptionController(SubscriptionService subscriptionService){
+    public SubscriptionController(SubscriptionService subscriptionService, EnrollmentService enrollmentService){
         this.subscriptionService = subscriptionService;
+        this.enrollmentService = enrollmentService;
     }
 
     @GetMapping("/subscriptions")
@@ -52,6 +57,19 @@ public class SubscriptionController {
     public ResponseEntity<Object> deleteSubscription(@PathVariable long id){
         subscriptionService.deleteSubscription(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/subscriptions/{id}/enrollments")
+    public ResponseEntity<List<EnrollmentDto>> getAllEnrollmentsBySubscriptionId(@PathVariable Long id) {
+        List<EnrollmentDto> enrollments = enrollmentService.getAllEnrollmentsBySubscriptionId(id);
+        return ResponseEntity.ok(enrollments);
+    }
+
+    @GetMapping("subscriptions/enrollments/{subscriptionId}")
+    public ResponseEntity<List<EnrollmentDto>> getOngoingEnrollmentsBySubscriptionId(@PathVariable("subscriptionId")
+                                                                                         Long subscriptionId) {
+        List<EnrollmentDto> enrollments = enrollmentService.getOngoingEnrollmentsBySubscriptionId(subscriptionId);
+        return ResponseEntity.ok(enrollments);
     }
 
 }

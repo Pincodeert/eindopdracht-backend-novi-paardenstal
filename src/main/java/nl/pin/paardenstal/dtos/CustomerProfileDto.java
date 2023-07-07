@@ -29,9 +29,6 @@ public class CustomerProfileDto {
 
     private List<HorseDto> horses = new ArrayList<>();
 
-    private List<Long> subscriptionIds = new ArrayList<>();
-
-
     private List<EnrollmentDto> enrollments = new ArrayList<>();
 
 
@@ -121,14 +118,6 @@ public class CustomerProfileDto {
 
     public void setHorses(List<HorseDto> horses){
         this.horses = horses;
-    }
-
-    public List<Long> getSubscriptions() {
-        return subscriptionIds;
-    }
-
-    public void setSubscriptions(List<Long> subscriptions) {
-        this.subscriptionIds = subscriptions;
     }
 
     public List<EnrollmentDto> getEnrollments() {

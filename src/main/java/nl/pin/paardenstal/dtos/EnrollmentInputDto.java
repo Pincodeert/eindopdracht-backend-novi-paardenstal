@@ -8,4 +8,6 @@ public class EnrollmentInputDto {
 
    public String date;
 
+   public boolean isOngoing;
+
 }
