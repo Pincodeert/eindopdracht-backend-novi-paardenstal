@@ -1,17 +1,26 @@
 package nl.pin.paardenstal.dtos;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 public class HorseInputDto {
 
+    @Size(min=2, max=60, message = "naam moet tussen 2 en 60 tekens lang zijn")
     private String name;
 
+    @NotBlank
     private String typeOfFeed;
 
+    @NotBlank
     private String typeOfBedding;
 
+    @Size(min=2, max=60, message = "naam moet tussen 2 en 60 tekens lang zijn")
     private String nameOfVet;
 
+    @Size(min=2, max=60, message = "plaats moet tussen 2 en 60 tekens lang zijn")
     private String residenceOfVet;
 
+    @Size(min=10, max=10, message = "telefoonnummer moet uit 10 cijfers bestaan")
     private String telephoneOfVet;
 
 

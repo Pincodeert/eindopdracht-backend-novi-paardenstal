@@ -14,6 +14,8 @@ public class User {
 
     private String password;
 
+    private String emailAdress;
+
 
     @OneToOne(mappedBy = "user")
     private CustomerProfile customerProfile;
@@ -40,6 +42,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmailAdress() {
+        return emailAdress;
+    }
+
+    public void setEmailAdress(String emailAdress) {
+        this.emailAdress = emailAdress;
     }
 
 

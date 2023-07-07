@@ -1,21 +1,33 @@
 package nl.pin.paardenstal.dtos;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 public class CustomerProfileInputDto {
 
+    @Size(min=2, max=60, message = "voornaam moet tussen 2 en 60 tekens lang zijn")
     private String firstName;
 
+    @Size(min=2, max=60, message = "achternaam moet tussen 2 en 60 tekens lang zijn")
     private String lastName;
 
+    @Size(min=3, max=60, message = "straat moet tussen 3 en 60 tekens lang zijn")
     private String street;
 
+    @Size(max = 20, message = "huisnummer moet tussen 1 en 20 tekens lang zijn")
     private String houseNumber;
 
+    @Size(min=4, max=6, message = "postcode moet 4 tot 6 tekens lang zijn")
     private String postalCode;
 
+    @Size(min=2, max=60, message = "woonplaats moet tussen 2 en 60 tekens lang zijn")
     private String residence;
 
+    @Size(min=10, max=10, message = "telefoonnummer moet uit 10 cijfers bestaan")
     private String telephoneNumber;
 
+    @Email(message = "ongeldig emailadres")
     private String emailAddress;
 
 

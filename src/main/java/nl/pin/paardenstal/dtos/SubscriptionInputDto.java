@@ -1,13 +1,23 @@
 package nl.pin.paardenstal.dtos;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class SubscriptionInputDto {
 
+    @NotBlank(message = "het invullen van een naam is verplicht")
     private String name;
 
+    @Min(value = 1, message = "prijs moet minimaal 1 zijn")
+    @Max(value = 2000, message = "meer dan 2000 is een beetje teveel van het goede")
     private double price;
 
+    @NotBlank(message = "het invullen van een type verzorging is verplicht")
     private String typeOfCare;
 
+    @NotBlank(message = "het invullen van een type stall is verplicht")
     private String typeOfStall;
 
 
