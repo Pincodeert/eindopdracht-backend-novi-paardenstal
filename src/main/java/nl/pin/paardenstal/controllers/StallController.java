@@ -7,9 +7,12 @@ import nl.pin.paardenstal.models.Stall;
 import nl.pin.paardenstal.services.StallService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +41,21 @@ public class StallController {
     }
 
     @PostMapping("/stalls")
-    public ResponseEntity<Object> addStable(@RequestBody StallInputDto stallInputDto){
-        long newId = stallService.addStall(stallInputDto);
-
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(newId).toUri();
-
-        return ResponseEntity.created(location).build();
+    public ResponseEntity<Object> addStable(@Valid @RequestBody StallInputDto stallInputDto,
+                                            BindingResult bindingResult){
+        if(bindingResult.hasErrors()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                stringBuilder.append(fieldError.getDefaultMessage());
+                stringBuilder.append("\n");
+            }
+            return ResponseEntity.badRequest().body(stringBuilder.toString());
+        } else {
+            long newId = stallService.addStall(stallInputDto);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(newId).toUri();
+            return ResponseEntity.created(location).build();
+        }
     }
 
     @PutMapping("/stalls/{id}/horse")

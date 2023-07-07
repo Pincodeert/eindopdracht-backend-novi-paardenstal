@@ -15,7 +15,7 @@ public class CustomerProfileInputDto {
     @Size(min=3, max=60, message = "straat moet tussen 3 en 60 tekens lang zijn")
     private String street;
 
-    @Size(max = 20, message = "huisnummer moet tussen 1 en 20 tekens lang zijn")
+    @Size(min=1, max = 20, message = "huisnummer moet tussen 1 en 20 tekens lang zijn")
     private String houseNumber;
 
     @Size(min=4, max=6, message = "postcode moet 4 tot 6 tekens lang zijn")

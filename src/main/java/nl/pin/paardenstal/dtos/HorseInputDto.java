@@ -8,10 +8,10 @@ public class HorseInputDto {
     @Size(min=2, max=60, message = "naam moet tussen 2 en 60 tekens lang zijn")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "type voeding mag niet leeg zijn")
     private String typeOfFeed;
 
-    @NotBlank
+    @NotBlank(message = "type stalbedekking mag niet leeg zijn")
     private String typeOfBedding;
 
     @Size(min=2, max=60, message = "naam moet tussen 2 en 60 tekens lang zijn")

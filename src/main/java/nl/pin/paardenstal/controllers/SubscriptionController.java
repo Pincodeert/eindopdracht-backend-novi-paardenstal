@@ -10,9 +10,12 @@ import nl.pin.paardenstal.services.EnrollmentService;
 import nl.pin.paardenstal.services.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,13 +47,23 @@ public class SubscriptionController {
     //Hier in de Requestbody een Stall meegegeven, zodat in de code wordt afgedwongen dat er geen subscription kan
     // worden gedaan zonder dat deze gekoppeld is aan een Stall. ( Beter hier de IdinputDto van stall gebruiken)
     @PostMapping("/subscriptions")
-    public ResponseEntity<Long> addSubscription(@RequestBody SubscriptionInputDto subscriptionInputDto, Stall stall){
-        long newId = subscriptionService.addSubscription(subscriptionInputDto);
+    public ResponseEntity<Object> addSubscription(@Valid @RequestBody SubscriptionInputDto subscriptionInputDto,
+                                                BindingResult bindingResult, Stall stall){
+        if(bindingResult.hasErrors()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                stringBuilder.append(fieldError.getDefaultMessage());
+                stringBuilder.append("\n");
+            }
+            return ResponseEntity.badRequest().body(stringBuilder.toString());
+        } else {
+            long newId = subscriptionService.addSubscription(subscriptionInputDto);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(newId).toUri();
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(newId).toUri();
 
-        return ResponseEntity.created(location). build();
+            return ResponseEntity.created(location).build();
+        }
     }
 
     @DeleteMapping("/subscriptions/{id}")
