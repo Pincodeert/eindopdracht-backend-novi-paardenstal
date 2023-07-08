@@ -5,9 +5,12 @@ import nl.pin.paardenstal.dtos.HorseInputDto;
 import nl.pin.paardenstal.services.HorseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +38,23 @@ public class HorseController {
     }
 
     @PostMapping("/horses")
-    public ResponseEntity<Object> addNewHorse(@RequestBody HorseInputDto horseInputDto){
-        long newId = horseService.addNewHorse(horseInputDto);
+    public ResponseEntity<Object> addNewHorse(@Valid @RequestBody HorseInputDto horseInputDto,
+                                              BindingResult bindingResult){
+        if(bindingResult.hasErrors()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for(FieldError fieldError: bindingResult.getFieldErrors()) {
+                stringBuilder.append(fieldError.getDefaultMessage());
+                stringBuilder.append("\n");
+            }
+            return ResponseEntity.badRequest().body(stringBuilder.toString());
+        } else {
+            long newId = horseService.addNewHorse(horseInputDto);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(newId).toUri();
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(newId).toUri();
 
-        return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).build();
+        }
     }
 
     @DeleteMapping("/horses/{id}")
@@ -51,9 +64,19 @@ public class HorseController {
     }
 
     @PatchMapping("/horses/{id}")
-    public ResponseEntity<Object> updateHorse(@PathVariable long id, @RequestBody HorseInputDto horseInputDto){
-        horseService.updateHorse(id, horseInputDto);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Object> updateHorse(@PathVariable long id, @Valid @RequestBody HorseInputDto horseInputDto,
+                                              BindingResult bindingResult){
+        if(bindingResult.hasErrors()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for(FieldError fieldError: bindingResult.getFieldErrors()) {
+                stringBuilder.append(fieldError.getDefaultMessage());
+                stringBuilder.append("\n");
+            }
+            return ResponseEntity.badRequest().body(stringBuilder.toString());
+        } else {
+            horseService.updateHorse(id, horseInputDto);
+            return ResponseEntity.noContent().build();
+        }
     }
 
 

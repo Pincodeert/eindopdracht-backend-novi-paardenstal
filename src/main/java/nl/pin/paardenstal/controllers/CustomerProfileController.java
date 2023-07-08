@@ -8,10 +8,14 @@ import nl.pin.paardenstal.models.Enrollment;
 import nl.pin.paardenstal.services.CustomerProfileService;
 import nl.pin.paardenstal.services.EnrollmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
@@ -42,13 +46,24 @@ public class CustomerProfileController {
     }
 
     @PostMapping("/customerprofiles")
-    public ResponseEntity<Long> createNewCustomerProfile(@RequestBody CustomerProfileInputDto customerProfileInputDto){
-        long newId = customerProfileService.createNewCustomerProfile(customerProfileInputDto);
+    public ResponseEntity<Object> createNewCustomerProfile(@Valid @RequestBody CustomerProfileInputDto customerInputDto,
+                                                         BindingResult bindingResult){
+        if(bindingResult.hasErrors()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for(FieldError fieldError: bindingResult.getFieldErrors()) {
+                stringBuilder.append(fieldError.getDefaultMessage());
+                stringBuilder.append("\n");
+            }
+            return ResponseEntity.badRequest().body(stringBuilder.toString());
+        } else {
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(newId).toUri();
+            long newId = customerProfileService.createNewCustomerProfile(customerInputDto);
 
-        return ResponseEntity.created(location).build();
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                    .buildAndExpand(newId).toUri();
+
+            return ResponseEntity.created(location).build();
+        }
     }
 
     @DeleteMapping("/customerprofiles/{id}")
@@ -57,6 +72,7 @@ public class CustomerProfileController {
         return ResponseEntity.noContent().build();
     }
 
+    //PutMapping overbodig en niet realistisch
     @PutMapping("/customerprofiles/{id}")
     public ResponseEntity<Object> updateCustomerProfile(@PathVariable long id, @RequestBody CustomerProfileInputDto
             inputDto){
@@ -65,10 +81,20 @@ public class CustomerProfileController {
     }
 
     @PatchMapping("/customerprofiles/{id}")
-    public ResponseEntity<Object> partialUpdateCustomerProfile(@PathVariable long id,
-                                                               @RequestBody CustomerProfileInputDto inputDto){
-        customerProfileService.partialUpdateCustomerProfile(id, inputDto);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Object> partialUpdateCustomerProfile(@PathVariable long id, @Valid
+                                                               @RequestBody CustomerProfileInputDto inputDto,
+                                                               BindingResult bindingResult){
+        if(bindingResult.hasErrors()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                stringBuilder.append(fieldError.getDefaultMessage());
+                stringBuilder.append("\n");
+            }
+            return ResponseEntity.badRequest().body(stringBuilder.toString());
+        } else {
+            customerProfileService.partialUpdateCustomerProfile(id, inputDto);
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @PutMapping("/customerprofiles/{id}/user")

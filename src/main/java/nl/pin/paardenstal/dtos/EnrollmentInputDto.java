@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.dtos;
 
+import javax.validation.constraints.Min;
+
 public class EnrollmentInputDto {
 
    public Long id1;
