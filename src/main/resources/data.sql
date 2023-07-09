@@ -2,7 +2,7 @@ INSERT INTO customerprofiles(first_name, last_name, street, house_number, postal
 VALUES
 ('Neil', 'Young', 'Country Lane', '1120', '2230', 'Albuquerque', '0612121212', 'neil.young@harvestmoon.com'),
 ('Jon', 'Bonjovi', 'Lost Highway', '7800','5588', 'Sayreville', '0677119966', 'jon.bonjovi@badmedicine.com'),
-('Barry', 'Hay', 'Zeeweg', '179', '7754', 'Willemstad', '0658972311', 'barry.hay@goingtotherun.com'),
+('Barry', 'Hay', 'Radarweg', '179', '7754', 'Willemstad', '0658972311', 'barry.hay@goingtotherun.com'),
 ('Eddie', 'Vedder', 'Long Road', '10', '2208','Seattle', '0657993254', 'eddie.vedder@stillalive.com');
 
 INSERT INTO horses(name, type_of_feed, type_of_bedding, name_of_vet, residence_of_vet, telephone_of_vet, customer_profile_id)
@@ -21,7 +21,7 @@ VALUES
 ('The Mule', '3 x 4', 'grote binnenstal', null),
 ('The Dead Pool', '3 x 4', 'grote binnenstal', null),
 ('Young Guns I', '3 x 3', 'kleine buitenstal', 4),
-('Young Guns II', '3 x 3', 'kleine buitenstal', 5),
+('Young Guns II', '3 x 3', 'kleine buitenstal', null),
 ('Young Guns III', '3 x 3', 'kleine buitenstal', null),
 ('Gran Torino', '3 x 4', 'grote buitenstal', null),
 ('El Camino', '3 x 4', 'grote buitenstal', null),

@@ -1,6 +1,7 @@
 package nl.pin.paardenstal.services;
 
 import nl.pin.paardenstal.dtos.*;
+import nl.pin.paardenstal.exceptions.AlreadyAssignedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.models.Stall;
@@ -100,17 +101,24 @@ public class StallService {
         Optional<Stall> optionalStall = stallRepository.findById(id);
         Optional<Horse> optionalHorse = horseRepository.findById(horseId);
 
-        if(optionalStall.isPresent() && optionalHorse.isPresent()){
-            Stall stall = optionalStall.get();
-            Horse horse = optionalHorse.get();
-            stall.setHorse(horse);
-            stallRepository.save(stall);
-        } else if(!optionalStall.isPresent() && !optionalHorse.isPresent()) {
+        if(!optionalStall.isPresent() && !optionalHorse.isPresent()) {
             throw new RecordNotFoundException("Can't find neither a stall by this ID, nor a horse by this ID");
         } else if(!optionalStall.isPresent()){
             throw new RecordNotFoundException("Can't find any stall by this ID");
         } else if(!optionalHorse.isPresent()){
             throw new RecordNotFoundException("Can't find any horse by this ID");
+        }
+        Stall stall = optionalStall.get();
+        Horse horse = optionalHorse.get();
+        //zorgt ervoor dat een paard niet toegewezen kan worden aan een stal die al bezet is en dat een paard niet aan
+        // 2 stallen kan worden toegewezen.
+        if(stall.getHorse() == null && horse.getStall() == null) {
+            stall.setHorse(horse);
+            stallRepository.save(stall);
+        } else if (stall.getHorse() != null){
+            throw new AlreadyAssignedException("deze stal is al bezet");
+        } else if (horse.getStall() != null){
+            throw new AlreadyAssignedException("dit paard is al aan een andere stal toegewezen");
         }
     }
 

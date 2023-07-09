@@ -41,7 +41,7 @@ public class StallController {
     }
 
     @PostMapping("/stalls")
-    public ResponseEntity<Object> addStable(@Valid @RequestBody StallInputDto stallInputDto,
+    public ResponseEntity<Object> addStall(@Valid @RequestBody StallInputDto stallInputDto,
                                             BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
             StringBuilder stringBuilder = new StringBuilder();
