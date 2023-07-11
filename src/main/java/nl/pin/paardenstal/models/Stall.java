@@ -18,6 +18,8 @@ public class Stall {
 
     private String type;
 
+    private boolean isOccupied;
+
     @OneToOne
     private Horse horse;
 
@@ -55,6 +57,14 @@ public class Stall {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isOccupied() {
+        return isOccupied;
+    }
+
+    public void setOccupied(boolean occupied) {
+        isOccupied = occupied;
     }
 
     public Horse getHorse() {
