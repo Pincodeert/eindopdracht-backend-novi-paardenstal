@@ -13,6 +13,6 @@ public interface StallRepository extends JpaRepository<Stall, Long> {
 
     public List<Stall> findAllByTypeIgnoreCase(String type);
 
-    public List<Stall> findAllByTypeAndIsOccupied(String type, Boolean isOccupied);
+    public List<Stall> findAllByTypeIgnoreCaseAndIsOccupied(String type, Boolean isOccupied);
 
 }

@@ -24,6 +24,13 @@ public class Horse {
 
     private String telephoneOfVet;
 
+    //alternatief als variable binnen klasse Horse
+    //private byte[] LOB;
+
+    //upload als aparte klasse
+    @OneToOne
+    private FileUploadResponse passport;
+
     @OneToOne(mappedBy = "horse")
     private Stall stall;
 
@@ -87,6 +94,14 @@ public class Horse {
 
     public void setTelephoneOfVet(String telephoneOfVet) {
         this.telephoneOfVet = telephoneOfVet;
+    }
+
+    public FileUploadResponse getPassport() {
+        return passport;
+    }
+
+    public void setPassport(FileUploadResponse passport) {
+        this.passport = passport;
     }
 
     public Stall getStall() {

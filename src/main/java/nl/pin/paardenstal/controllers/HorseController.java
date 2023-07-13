@@ -2,17 +2,19 @@ package nl.pin.paardenstal.controllers;
 
 import nl.pin.paardenstal.dtos.HorseDto;
 import nl.pin.paardenstal.dtos.HorseInputDto;
+import nl.pin.paardenstal.models.FileUploadResponse;
 import nl.pin.paardenstal.services.HorseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,18 +22,23 @@ public class HorseController {
 
     private final HorseService horseService;
 
+    private final FileController fileController;
+
     @Autowired
-    public HorseController(HorseService horseService){
+    public HorseController(HorseService horseService, FileController fileController){
         this.horseService = horseService;
+        this.fileController = fileController;
     }
 
     @GetMapping("/horses")
+    @Transactional
     public ResponseEntity<List<HorseDto>> getAllHorses(){
         List<HorseDto> horseDtos = horseService.getAllHorses();
         return ResponseEntity.ok(horseDtos);
     }
 
     @GetMapping("/horses/{id}")
+    @Transactional
     public ResponseEntity<HorseDto> getHorse(@PathVariable long id){
         HorseDto horseDto = horseService.getHorse(id);
         return ResponseEntity.ok(horseDto);
@@ -79,5 +86,14 @@ public class HorseController {
         }
     }
 
+    @PostMapping("horses/{id}/passport")
+    public ResponseEntity<Object> assignPassportToHorse(@PathVariable("id") Long horseId, @RequestBody MultipartFile file) {
+        FileUploadResponse passport = fileController.singleFileUpload(file);
+
+        horseService.assignPassportToHorse(passport.getFileName(), horseId);
+
+        //zorgt ervoor dat de url voor de get-methode in de response in Postman wordt meegestuurd:
+        return ResponseEntity.ok(passport.getUrl());
+    }
 
 }

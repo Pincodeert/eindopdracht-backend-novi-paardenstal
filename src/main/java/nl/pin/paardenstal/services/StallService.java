@@ -53,7 +53,7 @@ public class StallService {
                 dtos.add(dto);
             }
         } else {
-            List<Stall> stalls = stallRepository.findAllByTypeAndIsOccupied(type, isOccupied);
+            List<Stall> stalls = stallRepository.findAllByTypeIgnoreCaseAndIsOccupied(type, isOccupied);
 
             for(Stall s: stalls) {
                 StallDto dto = transferToDto(s);
@@ -79,17 +79,6 @@ public class StallService {
     public List<StallDto> getAllStallsByType(String type) {
         List<StallDto> dtos = new ArrayList<>();
         List<Stall> stalls = stallRepository.findAllByTypeIgnoreCase(type);
-
-        for(Stall s: stalls) {
-            StallDto dto = transferToDto(s);
-            dtos.add(dto);
-        }
-        return dtos;
-    }
-
-    public List<StallDto> getAllStallsByTypeAndIsOccupied(String type, boolean isOccupied) {
-        List<StallDto> dtos = new ArrayList<>();
-        List<Stall> stalls = stallRepository.findAllByTypeAndIsOccupied(type, isOccupied);
 
         for(Stall s: stalls) {
             StallDto dto = transferToDto(s);
