@@ -21,10 +21,6 @@ public class Subscription {
 
     private String typeOfStall;
 
-    @OneToOne(mappedBy = "subscription")
-    @JoinColumn(nullable = false)
-    private Stall stall;
-
     @OneToMany(mappedBy = "subscription", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Enrollment> enrollments;
@@ -66,14 +62,6 @@ public class Subscription {
 
     public void setTypeOfStall(String typeOfStall) {
         this.typeOfStall = typeOfStall;
-    }
-
-    public Stall getStall() {
-        return stall;
-    }
-
-    public void setStall(Stall stall) {
-        this.stall = stall;
     }
 
     public List<Enrollment> getEnrollments() {

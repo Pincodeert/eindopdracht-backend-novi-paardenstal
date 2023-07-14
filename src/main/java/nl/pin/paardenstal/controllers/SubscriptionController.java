@@ -44,11 +44,9 @@ public class SubscriptionController {
         return ResponseEntity.ok(subscriptionDto);
     }
 
-    //Hier in de Requestbody een Stall meegegeven, zodat in de code wordt afgedwongen dat er geen subscription kan
-    // worden gedaan zonder dat deze gekoppeld is aan een Stall. ( Beter hier de IdinputDto van stall gebruiken)
     @PostMapping("/subscriptions")
     public ResponseEntity<Object> addSubscription(@Valid @RequestBody SubscriptionInputDto subscriptionInputDto,
-                                                BindingResult bindingResult, Stall stall){
+                                                BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
             StringBuilder stringBuilder = new StringBuilder();
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
