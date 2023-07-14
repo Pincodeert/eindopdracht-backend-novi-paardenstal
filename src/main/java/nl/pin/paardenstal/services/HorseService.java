@@ -4,7 +4,9 @@ import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.HorseDto;
 import nl.pin.paardenstal.dtos.HorseInputDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
+import nl.pin.paardenstal.models.FileUploadResponse;
 import nl.pin.paardenstal.models.Horse;
+import nl.pin.paardenstal.repositories.FileUploadRepository;
 import nl.pin.paardenstal.repositories.HorseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -20,10 +22,14 @@ public class HorseService {
     private final HorseRepository horseRepository;
     private final CustomerProfileService customerProfileService;
 
+    private final FileUploadRepository fileUploadRepository;
+
     @Autowired
-    public HorseService(HorseRepository horseRepository, @Lazy CustomerProfileService customerProfileService){
+    public HorseService(HorseRepository horseRepository, @Lazy CustomerProfileService customerProfileService,
+                        FileUploadRepository fileUploadRepository){
         this.horseRepository = horseRepository;
         this.customerProfileService = customerProfileService;
+        this.fileUploadRepository = fileUploadRepository;
     }
 
     public List<HorseDto> getAllHorses(){
@@ -135,5 +141,17 @@ public class HorseService {
 
     }
 
+    public void assignPassportToHorse(String fileName, Long horseId) {
+        Optional<Horse> optionalHorse = horseRepository.findById(horseId);
+        Optional<FileUploadResponse> fileUploadResponse = fileUploadRepository.findByFileName(fileName);
 
+        if (optionalHorse.isPresent() && fileUploadResponse.isPresent()) {
+            Horse horse = optionalHorse.get();
+            FileUploadResponse passport = fileUploadResponse.get();
+            horse.setPassport(passport);
+            horseRepository.save(horse);
+        } else {
+            throw new RecordNotFoundException("kan geen paard met deze Id vinden");
+        }
+    }
 }

@@ -3,6 +3,7 @@ package nl.pin.paardenstal.controllers;
 import nl.pin.paardenstal.dtos.IdInputDto;
 import nl.pin.paardenstal.dtos.StallDto;
 import nl.pin.paardenstal.dtos.StallInputDto;
+import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.models.Stall;
 import nl.pin.paardenstal.services.StallService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -29,9 +31,22 @@ public class StallController {
     }
 
     @GetMapping("/stalls")
-    public ResponseEntity<List<StallDto>> getAllStalls(){
-        List<StallDto> stallDtos = stallService.getAllStalls();
+    public ResponseEntity<List<StallDto>> getAllStalls(@RequestParam(name = "type", defaultValue = "") String type,
+                                                       @RequestParam(name="isOccupied", defaultValue = "false") boolean isOccupied){
+        List<StallDto> stallDtos = stallService.getAllStalls(type, isOccupied);
         return ResponseEntity.ok(stallDtos);
+    }
+
+    @GetMapping("/stalls/isOccupied/{isOccupied}")
+    public ResponseEntity<List<StallDto>> getAllStallsByIsOccupied(@PathVariable boolean isOccupied) {
+        List<StallDto> dtos = stallService.getAllStallsByIsOccupied(isOccupied);
+        return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/stalls/type/{type}")
+    public ResponseEntity<List<StallDto>> getAllStallsByType(@PathVariable String type) {
+        List<StallDto> dtos = stallService.getAllStallsByType(type);
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/stalls/{id}")
@@ -41,7 +56,7 @@ public class StallController {
     }
 
     @PostMapping("/stalls")
-    public ResponseEntity<Object> addStable(@Valid @RequestBody StallInputDto stallInputDto,
+    public ResponseEntity<Object> addStall(@Valid @RequestBody StallInputDto stallInputDto,
                                             BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
             StringBuilder stringBuilder = new StringBuilder();

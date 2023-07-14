@@ -10,6 +10,8 @@ public class StallDto {
 
     private String type;
 
+    private boolean isOccupied;
+
     private HorseDto horse;
     private SubscriptionDto subscription;
 
@@ -47,13 +49,23 @@ public class StallDto {
         this.type = type;
     }
 
-    public HorseDto getHorseDto() {
+    public boolean isOccupied() {
+        return isOccupied;
+    }
+
+    public void setOccupied(boolean occupied) {
+        isOccupied = occupied;
+    }
+
+    public HorseDto getHorse() {
         return horse;
     }
 
-    public void setHorseDto(HorseDto horse) {
+    public void setHorse(HorseDto horse) {
         this.horse = horse;
     }
+
+
 
     public SubscriptionDto getSubscription(){
         return subscription;

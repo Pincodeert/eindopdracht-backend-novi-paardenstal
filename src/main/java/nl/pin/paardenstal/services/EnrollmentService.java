@@ -85,7 +85,7 @@ public class EnrollmentService {
     //zorgt ervoor dat alle lopende abonnementen worden opgehaald
     public List<EnrollmentDto> getAllOngoingEnrollments(boolean isOngoing) {
         List<EnrollmentDto> dtos = new ArrayList<>();
-        List<Enrollment> ongoingEnrollments = enrollmentRepository.findAllEnrollmentsByIsOngoing(isOngoing);
+        List<Enrollment> ongoingEnrollments = enrollmentRepository.findAllByIsOngoing(isOngoing);
 
         for(Enrollment e: ongoingEnrollments) {
             EnrollmentDto dto = transferToDto(e);

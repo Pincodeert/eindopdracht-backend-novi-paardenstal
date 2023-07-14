@@ -2,7 +2,7 @@ INSERT INTO customerprofiles(first_name, last_name, street, house_number, postal
 VALUES
 ('Neil', 'Young', 'Country Lane', '1120', '2230', 'Albuquerque', '0612121212', 'neil.young@harvestmoon.com'),
 ('Jon', 'Bonjovi', 'Lost Highway', '7800','5588', 'Sayreville', '0677119966', 'jon.bonjovi@badmedicine.com'),
-('Barry', 'Hay', 'Zeeweg', '179', '7754', 'Willemstad', '0658972311', 'barry.hay@goingtotherun.com'),
+('Barry', 'Hay', 'Radarweg', '179', '7754', 'Willemstad', '0658972311', 'barry.hay@goingtotherun.com'),
 ('Eddie', 'Vedder', 'Long Road', '10', '2208','Seattle', '0657993254', 'eddie.vedder@stillalive.com');
 
 INSERT INTO horses(name, type_of_feed, type_of_bedding, name_of_vet, residence_of_vet, telephone_of_vet, customer_profile_id)
@@ -13,19 +13,19 @@ VALUES
 ('Jeremy', 'oats', 'straw', 'Dr Alban', 'Seattle', '0613572468', 4),
 ('Black', 'oats', 'straw', 'Dr Alban', 'Seattle', '0613572468', 4);
 
-INSERT INTO stalls(name, size, type, horse_id)
+INSERT INTO stalls(name, size, type, is_occupied, horse_id)
 VALUES
-('The Good', '3 x 3.5', 'kleine binnenstal', 1),
-('The Bad', '3 x 3.5', 'kleine binnenstal', 2),
-('The Ugly', '3 x 3.5', 'kleine binnenstal', 3),
-('The Mule', '3 x 4', 'grote binnenstal', null),
-('The Dead Pool', '3 x 4', 'grote binnenstal', null),
-('Young Guns I', '3 x 3', 'kleine buitenstal', 4),
-('Young Guns II', '3 x 3', 'kleine buitenstal', 5),
-('Young Guns III', '3 x 3', 'kleine buitenstal', null),
-('Gran Torino', '3 x 4', 'grote buitenstal', null),
-('El Camino', '3 x 4', 'grote buitenstal', null),
-('Road House', '3 x 4', 'grote buitenstal', null);
+('The Good', '3 x 3.5', 'kleine binnenstal', true, 1),
+('The Bad', '3 x 3.5', 'kleine binnenstal', true, 2),
+('The Ugly', '3 x 3.5', 'kleine binnenstal',true, 3),
+('The Mule', '3 x 4', 'grote binnenstal', false, null),
+('The Dead Pool', '3 x 4', 'grote binnenstal', false, null),
+('Young Guns I', '3 x 3', 'kleine buitenstal', true, 4),
+('Young Guns II', '3 x 3', 'kleine buitenstal', false, null),
+('Young Guns III', '3 x 3', 'kleine buitenstal', false, null),
+('Gran Torino', '3 x 4', 'grote buitenstal', false, null),
+('El Camino', '3 x 4', 'grote buitenstal', false, null),
+('Road House', '3 x 4', 'grote buitenstal', false, null);
 
 
 INSERT INTO subscriptions(name, price, type_of_care, type_of_stall)

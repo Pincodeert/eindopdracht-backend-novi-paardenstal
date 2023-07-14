@@ -10,5 +10,5 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     List<Enrollment> findAllByCancellationRequested(Boolean cancellationRequested);
     List<Enrollment> findAllByCustomerProfileId(Long customerProfileId);
     List<Enrollment> findAllBySubscriptionId(Long subscriptionId);
-    List<Enrollment> findAllEnrollmentsByIsOngoing(Boolean isOngoing);
+    List<Enrollment> findAllByIsOngoing(Boolean isOngoing);
 }

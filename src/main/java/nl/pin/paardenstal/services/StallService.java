@@ -1,6 +1,7 @@
 package nl.pin.paardenstal.services;
 
 import nl.pin.paardenstal.dtos.*;
+import nl.pin.paardenstal.exceptions.AlreadyAssignedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.models.Stall;
@@ -37,16 +38,50 @@ public class StallService {
         this.subscriptionService = subscriptionService;
     }
 
-    public List<StallDto> getAllStalls(){
-        List<Stall> stalls = stallRepository.findAll();
+    public List<StallDto> getAllStalls(String type, boolean isOccupied){
         List<StallDto> dtos = new ArrayList<>();
 
-        for(Stall s: stalls){
-            StallDto dto = transferToDto(s);
-            if(s.getHorse() != null){
-                HorseDto horseDto = horseService.transferToDto(s.getHorse());
-                dto.setHorseDto(horseDto);
+        if(type.isEmpty()) {
+            List<Stall> stalls = stallRepository.findAll();
+
+            for(Stall s: stalls){
+                StallDto dto = transferToDto(s);
+                if(s.getHorse() != null){
+                    HorseDto horseDto = horseService.transferToDto(s.getHorse());
+                    dto.setHorse(horseDto);
+                }
+                dtos.add(dto);
             }
+        } else {
+            List<Stall> stalls = stallRepository.findAllByTypeIgnoreCaseAndIsOccupied(type, isOccupied);
+
+            for(Stall s: stalls) {
+                StallDto dto = transferToDto(s);
+                dtos.add(dto);
+            }
+        }
+        return dtos;
+    }
+
+    //zorgt ervoor dat stallen kunnen worden opgehaald obv beschikbaarheid
+    public List<StallDto> getAllStallsByIsOccupied(boolean isOccupied) {
+        List<StallDto> dtos = new ArrayList<>();
+        List<Stall> stalls = stallRepository.findAllByIsOccupied(isOccupied);
+
+        for(Stall s: stalls) {
+            StallDto dto = transferToDto(s);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
+    //zorgt ervoor dat er gezocht kan worden op type stal.
+    public List<StallDto> getAllStallsByType(String type) {
+        List<StallDto> dtos = new ArrayList<>();
+        List<Stall> stalls = stallRepository.findAllByTypeIgnoreCase(type);
+
+        for(Stall s: stalls) {
+            StallDto dto = transferToDto(s);
             dtos.add(dto);
         }
         return dtos;
@@ -59,7 +94,7 @@ public class StallService {
             StallDto dto = transferToDto(optionalStall.get());
             if(optionalStall.get().getHorse() != null){
                 HorseDto horseDto = horseService.transferToDto(optionalStall.get().getHorse());
-                dto.setHorseDto(horseDto);
+                dto.setHorse(horseDto);
             }
             return dto;
         } else {
@@ -81,6 +116,7 @@ public class StallService {
         dto.setName(stall.getName());
         dto.setSize(stall.getSize());
         dto.setType(stall.getType());
+        dto.setOccupied(stall.isOccupied());
         if(stall.getSubscription() != null){
             SubscriptionDto subscriptionDto = subscriptionService.transferToSubscriptionDto(stall.getSubscription());
             dto.setSubscription(subscriptionDto);
@@ -100,17 +136,25 @@ public class StallService {
         Optional<Stall> optionalStall = stallRepository.findById(id);
         Optional<Horse> optionalHorse = horseRepository.findById(horseId);
 
-        if(optionalStall.isPresent() && optionalHorse.isPresent()){
-            Stall stall = optionalStall.get();
-            Horse horse = optionalHorse.get();
-            stall.setHorse(horse);
-            stallRepository.save(stall);
-        } else if(!optionalStall.isPresent() && !optionalHorse.isPresent()) {
+        if(!optionalStall.isPresent() && !optionalHorse.isPresent()) {
             throw new RecordNotFoundException("Can't find neither a stall by this ID, nor a horse by this ID");
         } else if(!optionalStall.isPresent()){
             throw new RecordNotFoundException("Can't find any stall by this ID");
         } else if(!optionalHorse.isPresent()){
             throw new RecordNotFoundException("Can't find any horse by this ID");
+        }
+        Stall stall = optionalStall.get();
+        Horse horse = optionalHorse.get();
+        //zorgt ervoor dat een paard niet toegewezen kan worden aan een stal die al bezet is en dat een paard niet aan
+        // 2 stallen kan worden toegewezen.
+        if(stall.getHorse() == null && horse.getStall() == null) {
+            stall.setHorse(horse);
+            stall.setOccupied(true);
+            stallRepository.save(stall);
+        } else if (stall.getHorse() != null){
+            throw new AlreadyAssignedException("deze stal is al bezet");
+        } else if (horse.getStall() != null){
+            throw new AlreadyAssignedException("dit paard is al aan een andere stal toegewezen");
         }
     }
 
