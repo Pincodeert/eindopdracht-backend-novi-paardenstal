@@ -2,12 +2,15 @@ package nl.pin.paardenstal.services;
 
 import nl.pin.paardenstal.dtos.EnrollmentDto;
 import nl.pin.paardenstal.dtos.EnrollmentInputDto;
+import nl.pin.paardenstal.exceptions.AlreadyAssignedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.models.Enrollment;
+import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.models.Subscription;
 import nl.pin.paardenstal.repositories.CustomerProfileRepository;
 import nl.pin.paardenstal.repositories.EnrollmentRepository;
+import nl.pin.paardenstal.repositories.HorseRepository;
 import nl.pin.paardenstal.repositories.SubscriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,18 +30,22 @@ public class EnrollmentService {
     private final SubscriptionService subscriptionService;
     private final CustomerProfileRepository customerProfileRepository;
     private final CustomerProfileService customerProfileService;
+    private final HorseRepository horseRepository;
+    private final HorseService horseService;
 
     @Autowired
     public EnrollmentService(EnrollmentRepository enrollmentRepository,
                              SubscriptionRepository subscriptionRepository,
                              SubscriptionService subscriptionService,
                              CustomerProfileRepository customerProfileRepository,
-                             CustomerProfileService customerProfileService) {
+                             CustomerProfileService customerProfileService, HorseRepository horseRepository, HorseService horseService) {
         this.enrollmentRepository = enrollmentRepository;
         this.subscriptionRepository = subscriptionRepository;
         this.subscriptionService = subscriptionService;
         this.customerProfileRepository = customerProfileRepository;
         this.customerProfileService = customerProfileService;
+        this.horseRepository = horseRepository;
+        this.horseService = horseService;
     }
 
     public List<EnrollmentDto> getAllEnrollments() {
@@ -147,27 +154,40 @@ public class EnrollmentService {
     }
 
 
-    // zorgt ervoor dat een klant voor een bepaald abonnement wordt ingeschreven en  en waarbij er een inschrijving
-    // (enrollment-object) wordt aangemaakt waarbij deze twee aan elkaar gekoppeld zijn en de datum van inschrijving
-    // wordt toegevoegd
-    public Long assignCustomerToSubscription(Long subscriptionId, Long customerId, String date) {
+    // zorgt ervoor dat een klant voor een bepaald paard een bepaald abonnement wordt ingeschreven en waarbij er een
+    // inschrijving (enrollment-object) wordt aangemaakt waarbij deze drie aan elkaar gekoppeld zijn en de datum van
+    // inschrijving wordt toegevoegd.
+    public Long assignCustomerToSubscription(Long subscriptionId, Long customerId, Long horseId, String date) {
         Optional<Subscription> optionalSubscription = subscriptionRepository.findById(subscriptionId);
         Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(customerId);
+        Optional<Horse> optionalHorse = horseRepository.findById(horseId);
 
-        if (optionalSubscription.isPresent() && optionalCustomerProfile.isPresent()) {
+        if (optionalSubscription.isPresent() && optionalCustomerProfile.isPresent() && optionalHorse.isPresent()){
             Subscription subscription = optionalSubscription.get();
             CustomerProfile customer = optionalCustomerProfile.get();
+            Horse horse = optionalHorse.get();
 
-            Enrollment enrollment = new Enrollment(subscription, customer);
-            Enrollment newEnrollment = enrollmentRepository.save(enrollment);
+            //zorgt ervoor dat de applicatie niet vastloopt, wanneer (per ongeluk) een horseId wordt opgegeven dat al
+            // gekoppeld is aan een enrollment
+            if(horse.getEnrollment() != null){
+                throw new AlreadyAssignedException("This horse already has a subscription");
+            } else {
 
-            Long newId = newEnrollment.getId();
-            return newId;
+                Enrollment enrollment = new Enrollment(subscription, customer, horse);
+                Enrollment newEnrollment = enrollmentRepository.save(enrollment);
 
-        } else if (!optionalSubscription.isPresent() && !optionalCustomerProfile.isPresent()) {
-            throw new RecordNotFoundException("There's no subscruption nor customer with this ID");
+                Long newId = newEnrollment.getId();
+                return newId;
+            }
+
+        } else if (!optionalSubscription.isPresent()) {
+            throw new RecordNotFoundException("There's no subscruption with this ID");
+        } else if (!optionalCustomerProfile.isPresent()){
+            throw new RecordNotFoundException("There's no customer with this ID");
         } else if (!optionalSubscription.isPresent()) {
             throw new RecordNotFoundException("There's no subscription with this ID");
+        } else if (!optionalHorse.isPresent()) {
+            throw new RecordNotFoundException("There's no horse with this ID");
             // De if-statement hier weggehaald, omdat anders om return-waarde blijft vragen.
         } else //if (!optionalCustomerProfile.isPresent())
         {
@@ -215,6 +235,9 @@ public class EnrollmentService {
             // altijd een subscription te koppelen. dus if-statement hier in principe niet nodig?
             if(e.getSubscription() != null) {
                 dto.setSubscription(subscriptionService.transferToSubscriptionDto(e.getSubscription()));
+            }
+            if(e.getHorse() != null) {
+                dto.setHorse(horseService.transferToDto(e.getHorse()));
             }
             dtos.add(dto);
         }

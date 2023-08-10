@@ -4,8 +4,10 @@ import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.HorseDto;
 import nl.pin.paardenstal.dtos.HorseInputDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
+import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.models.FileUploadResponse;
 import nl.pin.paardenstal.models.Horse;
+import nl.pin.paardenstal.repositories.CustomerProfileRepository;
 import nl.pin.paardenstal.repositories.FileUploadRepository;
 import nl.pin.paardenstal.repositories.HorseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +22,16 @@ import java.util.Optional;
 public class HorseService {
 
     private final HorseRepository horseRepository;
+    private final CustomerProfileRepository customerProfileRepository;
     private final CustomerProfileService customerProfileService;
 
     private final FileUploadRepository fileUploadRepository;
 
     @Autowired
-    public HorseService(HorseRepository horseRepository, @Lazy CustomerProfileService customerProfileService,
-                        FileUploadRepository fileUploadRepository){
+    public HorseService(HorseRepository horseRepository, @Lazy CustomerProfileRepository customerProfileRepository,
+                        @Lazy CustomerProfileService customerProfileService, FileUploadRepository fileUploadRepository){
         this.horseRepository = horseRepository;
+        this.customerProfileRepository = customerProfileRepository;
         this.customerProfileService = customerProfileService;
         this.fileUploadRepository = fileUploadRepository;
     }
@@ -138,7 +142,22 @@ public class HorseService {
         horse.setTelephoneOfVet(horseInputDto.getTelephoneOfVet());
 
         return horse;
+    }
 
+    public void assignCustomerProfileToHorse(Long horseId, Long ownerId) {
+        Optional<Horse> optionalHorse = horseRepository.findById(horseId);
+        Optional<CustomerProfile> optionalOwner = customerProfileRepository.findById(ownerId);
+
+        if (optionalHorse.isPresent() && optionalOwner.isPresent()) {
+            Horse horse = optionalHorse.get();
+            CustomerProfile owner = optionalOwner.get();
+            horse.setOwner(owner);
+            horseRepository.save(horse);
+        } else if (!optionalHorse.isPresent()){
+            throw new RecordNotFoundException("Kan geen paard vinden met deze Id");
+        } else {
+            throw new RecordNotFoundException("Kan geen klant vinden met deze Id");
+        }
     }
 
     public void assignPassportToHorse(String fileName, Long horseId) {

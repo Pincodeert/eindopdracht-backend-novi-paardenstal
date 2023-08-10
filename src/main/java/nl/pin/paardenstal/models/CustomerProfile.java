@@ -13,7 +13,7 @@ public class CustomerProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String firstName;
 
@@ -38,17 +38,17 @@ public class CustomerProfile {
     @JsonIgnore
     private List<Horse> horses = new ArrayList<>();
 
-    //tijdelijk hier FetchType.EAGER veranderd in FetchType.LAZY, vanwege MultipleBagFetchException igv 2 collecties met FetchType.EAGER
+    //(tijdelijk) hier FetchType.EAGER veranderd in FetchType.LAZY, vanwege MultipleBagFetchException igv 2 collecties met FetchType.EAGER
     @OneToMany(mappedBy = "customerProfile", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Enrollment> enrollments;
 
 
-    public long getId(){
+    public Long getId(){
         return id;
     }
 
-    public void setId(long id){
+    public void setId(Long id){
         this.id = id;
     }
 
@@ -138,14 +138,6 @@ public class CustomerProfile {
 
     public void setEnrollments(List<Enrollment> enrollments) {
         this.enrollments = enrollments;
-    }
-
-    public void addHorseToList(Horse horse){
-        horses.add(horse);
-    }
-
-    public void deleteHorseFromList(Horse horse){
-        horses.remove(horse);
     }
 
 }

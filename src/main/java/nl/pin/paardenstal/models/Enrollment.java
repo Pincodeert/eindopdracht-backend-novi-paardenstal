@@ -35,6 +35,9 @@ public class Enrollment {
     @JsonIgnore
     private CustomerProfile customerProfile;
 
+    @OneToOne
+    private Horse horse;
+
     @ManyToOne
     @JoinColumn(name = "subscription_id", referencedColumnName = "id")
     @JsonIgnore
@@ -58,6 +61,14 @@ public class Enrollment {
         this.expireDate = startDate.plusMonths(12);
     }
 
+    public Enrollment(Subscription s, CustomerProfile cp, Horse h) {
+        this.subscription = s;
+        this.customerProfile =cp;
+        this.horse = h;
+        this.startDate = LocalDate.now();
+        this.expireDate = startDate.plusMonths(12);
+    }
+
     //all args constructor (handig voor als je bv zelf een andere startdatum wil meegeven dan de datum van vandaag
     public Enrollment(Subscription s, CustomerProfile cp, LocalDate startDate) {
         this.subscription = s;
@@ -65,6 +76,15 @@ public class Enrollment {
         this.startDate = startDate;
         this.expireDate = startDate.plusMonths(12);
         //this.duration = LocalDate.now().getMonthValue() - startDate.getMonthValue();
+    }
+
+    public Enrollment(Subscription s,  CustomerProfile cp, Horse h, LocalDate startDate) {
+        this.subscription = s;
+        this.customerProfile = cp;
+        this.horse = h;
+        this.startDate = startDate;
+        this.startDate = LocalDate.now();
+        this.expireDate = startDate.plusMonths(12);
     }
 
     public long getId() {
@@ -124,5 +144,12 @@ public class Enrollment {
         return subscription;
     }
 
+    public Horse getHorse() {
+        return horse;
+    }
+
+    public void setHorse(Horse horse) {
+        this.horse = horse;
+    }
 
 }
