@@ -45,6 +45,13 @@ public class HorseController {
         return ResponseEntity.ok(horseDto);
     }
 
+    @GetMapping("/horses/customerprofile")
+    @Transactional
+    public ResponseEntity<List<HorseDto>> getAllHorsesByCustomerProfileId(@RequestBody IdInputDto input) {
+        List<HorseDto> dtos = horseService.getAllHorsesByCustomerProfileId(input.id);
+        return ResponseEntity.ok(dtos);
+    }
+
     @PostMapping("/horses")
     public ResponseEntity<Object> addNewHorse(@Valid @RequestBody HorseInputDto horseInputDto,
                                               BindingResult bindingResult){

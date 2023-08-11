@@ -3,6 +3,7 @@ package nl.pin.paardenstal.services;
 import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.HorseDto;
 import nl.pin.paardenstal.dtos.HorseInputDto;
+import nl.pin.paardenstal.dtos.StallDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.models.FileUploadResponse;
@@ -10,6 +11,7 @@ import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.repositories.CustomerProfileRepository;
 import nl.pin.paardenstal.repositories.FileUploadRepository;
 import nl.pin.paardenstal.repositories.HorseRepository;
+import nl.pin.paardenstal.repositories.StallRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -24,15 +26,17 @@ public class HorseService {
     private final HorseRepository horseRepository;
     private final CustomerProfileRepository customerProfileRepository;
     private final CustomerProfileService customerProfileService;
-
+    private final StallService stallService;
     private final FileUploadRepository fileUploadRepository;
 
     @Autowired
-    public HorseService(HorseRepository horseRepository, @Lazy CustomerProfileRepository customerProfileRepository,
-                        @Lazy CustomerProfileService customerProfileService, FileUploadRepository fileUploadRepository){
+    public HorseService(HorseRepository horseRepository, CustomerProfileRepository customerProfileRepository,
+                        @Lazy CustomerProfileService customerProfileService, @Lazy StallService stallService,
+                        FileUploadRepository fileUploadRepository){
         this.horseRepository = horseRepository;
         this.customerProfileRepository = customerProfileRepository;
         this.customerProfileService = customerProfileService;
+        this.stallService = stallService;
         this.fileUploadRepository = fileUploadRepository;
     }
 
@@ -65,6 +69,20 @@ public class HorseService {
         } else {
             throw new RecordNotFoundException("This ID does not exist");
         }
+    }
+
+    public List<HorseDto> getAllHorsesByCustomerProfileId(Long customerProfileId) {
+        List<HorseDto> dtos = new ArrayList<>();
+        List<Horse> horses = horseRepository.findAllByOwnerId(customerProfileId);
+        for(Horse h: horses) {
+            HorseDto dto = transferToDto(h);
+            if(h.getStall() != null) {
+                StallDto stallDto = stallService.transferToDto(h.getStall());
+                dto.setStall(stallDto);
+            }
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
     public long addNewHorse(HorseInputDto horseInputDto){

@@ -3,6 +3,7 @@ package nl.pin.paardenstal.services;
 import nl.pin.paardenstal.dtos.EnrollmentDto;
 import nl.pin.paardenstal.dtos.EnrollmentInputDto;
 import nl.pin.paardenstal.exceptions.AlreadyAssignedException;
+import nl.pin.paardenstal.exceptions.NotYetAssignedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.models.Enrollment;
@@ -169,10 +170,12 @@ public class EnrollmentService {
 
             //zorgt ervoor dat de applicatie niet vastloopt, wanneer (per ongeluk) een horseId wordt opgegeven dat al
             // gekoppeld is aan een enrollment
-            if(horse.getEnrollment() != null){
+            if(horse.getEnrollment() != null) {
                 throw new AlreadyAssignedException("This horse already has a subscription");
+            } //zorgt ervoor dat een paard altijd gekoppeld moet zijn aan een stal om een abonnement te kunnen afsluiten:
+              else if (horse.getStall() == null) {
+                throw new NotYetAssignedException("Horse must be assigned to a stall first");
             } else {
-
                 Enrollment enrollment = new Enrollment(subscription, customer, horse);
                 Enrollment newEnrollment = enrollmentRepository.save(enrollment);
 

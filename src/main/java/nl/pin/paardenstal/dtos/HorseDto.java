@@ -18,7 +18,7 @@ public class HorseDto {
 
     private CustomerProfileDto owner;
 
-    private HorseDto horse;
+    private StallDto stall;
 
 
     public Long getId() {
@@ -85,11 +85,13 @@ public class HorseDto {
         this.owner = ownerDto;
     }
 
-    public HorseDto getHorse() {
-        return horse;
+    public StallDto getStall() {
+        return stall;
     }
 
-    public void setHorse(HorseDto horse) {
-        this.horse = horse;
+    public void setStall(StallDto stall) {
+        this.stall = stall;
     }
+
+
 }

@@ -109,6 +109,8 @@ public class CustomerProfileController {
         return ResponseEntity.ok(enrollments);
     }
 
+
+
     @GetMapping("customerprofiles/enrollments/{customerProfileId}")
     public ResponseEntity<BigDecimal> getTotalPriceOfAssignedSubscriptions(@PathVariable("customerProfileId")
                                                                            Long customerProfileId) {
