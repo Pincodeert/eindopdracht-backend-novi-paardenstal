@@ -19,6 +19,8 @@ public class EnrollmentDto {
     private CustomerProfileDto customer;
     private SubscriptionDto subscription;
 
+    private HorseDto horse;
+
     public long getId() {
         return id;
     }
@@ -81,6 +83,14 @@ public class EnrollmentDto {
 
     public void setSubscription(SubscriptionDto subscription) {
         this.subscription = subscription;
+    }
+
+    public HorseDto getHorse() {
+        return horse;
+    }
+
+    public void setHorse(HorseDto horse) {
+        this.horse = horse;
     }
 
 }

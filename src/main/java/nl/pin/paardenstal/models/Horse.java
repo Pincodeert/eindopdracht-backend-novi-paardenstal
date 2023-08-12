@@ -3,6 +3,7 @@ package nl.pin.paardenstal.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "horses")
@@ -10,7 +11,7 @@ public class Horse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String name;
 
@@ -39,6 +40,8 @@ public class Horse {
     @JsonIgnore
     private CustomerProfile owner;
 
+    @OneToOne(mappedBy = "horse")
+    private Enrollment enrollment;
 
     public long getId() {
         return id;
@@ -118,5 +121,13 @@ public class Horse {
 
     public void setOwner(CustomerProfile owner) {
         this.owner = owner;
+    }
+
+    public Enrollment getEnrollment() {
+        return enrollment;
+    }
+
+    public void setEnrollment(Enrollment enrollment) {
+        this.enrollment = enrollment;
     }
 }

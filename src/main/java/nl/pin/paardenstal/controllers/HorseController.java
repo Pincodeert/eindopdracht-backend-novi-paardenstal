@@ -2,6 +2,7 @@ package nl.pin.paardenstal.controllers;
 
 import nl.pin.paardenstal.dtos.HorseDto;
 import nl.pin.paardenstal.dtos.HorseInputDto;
+import nl.pin.paardenstal.dtos.IdInputDto;
 import nl.pin.paardenstal.models.FileUploadResponse;
 import nl.pin.paardenstal.services.HorseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +40,16 @@ public class HorseController {
 
     @GetMapping("/horses/{id}")
     @Transactional
-    public ResponseEntity<HorseDto> getHorse(@PathVariable long id){
+    public ResponseEntity<HorseDto> getHorse(@PathVariable Long id){
         HorseDto horseDto = horseService.getHorse(id);
         return ResponseEntity.ok(horseDto);
+    }
+
+    @GetMapping("/horses/customerprofile")
+    @Transactional
+    public ResponseEntity<List<HorseDto>> getAllHorsesByCustomerProfileId(@RequestBody IdInputDto input) {
+        List<HorseDto> dtos = horseService.getAllHorsesByCustomerProfileId(input.id);
+        return ResponseEntity.ok(dtos);
     }
 
     @PostMapping("/horses")
@@ -65,13 +73,13 @@ public class HorseController {
     }
 
     @DeleteMapping("/horses/{id}")
-    public ResponseEntity<Object> deleteHorse(@PathVariable long id){
+    public ResponseEntity<Object> deleteHorse(@PathVariable Long id){
         horseService.deleteHorse(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/horses/{id}")
-    public ResponseEntity<Object> updateHorse(@PathVariable long id, @Valid @RequestBody HorseInputDto horseInputDto,
+    public ResponseEntity<Object> updateHorse(@PathVariable Long id, @Valid @RequestBody HorseInputDto horseInputDto,
                                               BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -84,6 +92,12 @@ public class HorseController {
             horseService.updateHorse(id, horseInputDto);
             return ResponseEntity.noContent().build();
         }
+    }
+
+    @PutMapping("/horses/{id}/customerprofile")
+    public ResponseEntity<Object> assignCustomerProfileToHorse(@PathVariable Long horseId, @RequestBody IdInputDto input) {
+        horseService.assignCustomerProfileToHorse(horseId, input.id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("horses/{id}/passport")

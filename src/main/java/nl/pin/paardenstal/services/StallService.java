@@ -22,8 +22,8 @@ public class StallService {
     private final StallRepository stallRepository;
     private final HorseRepository horseRepository;
     private final HorseService horseService;
-    private final SubscriptionRepository subscriptionRepository;
-    private final SubscriptionService subscriptionService;
+
+
 
     @Autowired
     public StallService(StallRepository stallRepository,
@@ -34,8 +34,6 @@ public class StallService {
         this.stallRepository = stallRepository;
         this.horseRepository = horseRepository;
         this.horseService = horseService;
-        this.subscriptionRepository = subscriptionRepository;
-        this.subscriptionService = subscriptionService;
     }
 
     public List<StallDto> getAllStalls(String type, boolean isOccupied){
@@ -117,10 +115,6 @@ public class StallService {
         dto.setSize(stall.getSize());
         dto.setType(stall.getType());
         dto.setOccupied(stall.isOccupied());
-        if(stall.getSubscription() != null){
-            SubscriptionDto subscriptionDto = subscriptionService.transferToSubscriptionDto(stall.getSubscription());
-            dto.setSubscription(subscriptionDto);
-        }
         return dto;
     }
 
@@ -155,24 +149,6 @@ public class StallService {
             throw new AlreadyAssignedException("deze stal is al bezet");
         } else if (horse.getStall() != null){
             throw new AlreadyAssignedException("dit paard is al aan een andere stal toegewezen");
-        }
-    }
-
-    public void assignSubscriptionToStall(long id, long subscriptionId){
-        Optional<Stall> optionalStall = stallRepository.findById(id);
-        Optional<Subscription> optionalSubscription = subscriptionRepository.findById(subscriptionId);
-
-        if(optionalStall.isPresent() && optionalSubscription.isPresent()){
-            Stall stall = optionalStall.get();
-            Subscription subscription = optionalSubscription.get();
-            stall.setSubscription(subscription);
-            stallRepository.save(stall);
-        } else if(!optionalStall.isPresent() && !optionalSubscription.isPresent()) {
-            throw new RecordNotFoundException("Can't find neither a stall by this ID, nor a subscription by this ID");
-        } else if(!optionalStall.isPresent()){
-            throw new RecordNotFoundException("Can't find any stall by this ID");
-        } else if(!optionalSubscription.isPresent()){
-            throw new RecordNotFoundException("Can't find any subscription by this ID");
         }
     }
 

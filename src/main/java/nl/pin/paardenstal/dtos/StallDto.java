@@ -13,7 +13,6 @@ public class StallDto {
     private boolean isOccupied;
 
     private HorseDto horse;
-    private SubscriptionDto subscription;
 
 
 
@@ -63,16 +62,6 @@ public class StallDto {
 
     public void setHorse(HorseDto horse) {
         this.horse = horse;
-    }
-
-
-
-    public SubscriptionDto getSubscription(){
-        return subscription;
-    }
-
-    public void setSubscription(SubscriptionDto subscription){
-        this.subscription = subscription;
     }
 
 

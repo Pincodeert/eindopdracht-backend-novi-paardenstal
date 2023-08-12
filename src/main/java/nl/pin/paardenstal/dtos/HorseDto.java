@@ -2,7 +2,7 @@ package nl.pin.paardenstal.dtos;
 
 public class HorseDto {
 
-    private long id;
+    private Long id;
 
     private String name;
 
@@ -18,12 +18,14 @@ public class HorseDto {
 
     private CustomerProfileDto owner;
 
+    private StallDto stall;
 
-    public long getId() {
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -82,4 +84,14 @@ public class HorseDto {
     public void setOwnerDto(CustomerProfileDto ownerDto) {
         this.owner = ownerDto;
     }
+
+    public StallDto getStall() {
+        return stall;
+    }
+
+    public void setStall(StallDto stall) {
+        this.stall = stall;
+    }
+
+
 }
