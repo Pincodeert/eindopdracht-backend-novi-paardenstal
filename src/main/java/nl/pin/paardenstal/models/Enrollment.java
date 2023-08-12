@@ -54,13 +54,6 @@ public class Enrollment {
     //associatieklasse alleen wordt aangemaakt wanneer de addCustomerProfileToSubscription()-operatie wordt aangeroepen.
     // Vooralsnog startDate ook in de Constructor gezet omdat we vooralsnog een String gebruiken. Wanneer we LocalDate
     // gaan gebruiken, lossen we dit elders op.
-    public Enrollment(Subscription s, CustomerProfile cp) {
-        this.subscription = s;
-        this.customerProfile = cp;
-        this.startDate = LocalDate.now();
-        this.expireDate = startDate.plusMonths(12);
-    }
-
     public Enrollment(Subscription s, CustomerProfile cp, Horse h) {
         this.subscription = s;
         this.customerProfile =cp;
@@ -70,20 +63,11 @@ public class Enrollment {
     }
 
     //all args constructor (handig voor als je bv zelf een andere startdatum wil meegeven dan de datum van vandaag
-    public Enrollment(Subscription s, CustomerProfile cp, LocalDate startDate) {
-        this.subscription = s;
-        this.customerProfile = cp;
-        this.startDate = startDate;
-        this.expireDate = startDate.plusMonths(12);
-        //this.duration = LocalDate.now().getMonthValue() - startDate.getMonthValue();
-    }
-
     public Enrollment(Subscription s,  CustomerProfile cp, Horse h, LocalDate startDate) {
         this.subscription = s;
         this.customerProfile = cp;
         this.horse = h;
         this.startDate = startDate;
-        this.startDate = LocalDate.now();
         this.expireDate = startDate.plusMonths(12);
     }
 

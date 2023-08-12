@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -175,6 +176,14 @@ public class EnrollmentService {
             } //zorgt ervoor dat een paard altijd gekoppeld moet zijn aan een stal om een abonnement te kunnen afsluiten:
               else if (horse.getStall() == null) {
                 throw new NotYetAssignedException("Horse must be assigned to a stall first");
+            } else if(date != null){
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy");
+                LocalDate futureDate = LocalDate.parse(date, formatter);
+                Enrollment enrollment = new Enrollment(subscription, customer, horse, futureDate);
+                Enrollment newEnrollment = enrollmentRepository.save(enrollment);
+
+                Long newId = newEnrollment.getId();
+                return newId;
             } else {
                 Enrollment enrollment = new Enrollment(subscription, customer, horse);
                 Enrollment newEnrollment = enrollmentRepository.save(enrollment);
