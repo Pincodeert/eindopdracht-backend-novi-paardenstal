@@ -140,11 +140,15 @@ public class StallService {
         }
         Stall stall = optionalStall.get();
         Horse horse = optionalHorse.get();
+        //zorgt ervoor dat een paard niet kan worden toegewezen aan een stal, wanneer het paar nog niet is gekoppeld aan
+        // een klant;
+        //if(horse.getOwner() == null) {
+        //    throw new NotYetAssignedException("het paard moet eerst gekoppeld zijn aan een klant");
+        //}
         //zorgt ervoor dat een paard niet toegewezen kan worden aan een stal die al bezet is en dat een paard niet aan
         // 2 stallen kan worden toegewezen.
         if(stall.getHorse() == null && horse.getStall() == null) {
             stall.setHorse(horse);
-
             stall.setOccupied(true);
             stallRepository.save(stall);
         } else if (stall.getHorse() != null){

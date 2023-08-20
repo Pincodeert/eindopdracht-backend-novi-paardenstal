@@ -3,6 +3,7 @@ package nl.pin.paardenstal.services;
 import nl.pin.paardenstal.dtos.*;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.CustomerProfile;
+import nl.pin.paardenstal.models.Enrollment;
 import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.models.User;
 import nl.pin.paardenstal.repositories.CustomerProfileRepository;
@@ -80,6 +81,17 @@ public class CustomerProfileService {
         Optional<CustomerProfile> customerProfile = customerProfileRepository.findById(id);
 
         if(customerProfile.isPresent()){
+            CustomerProfile customer = customerProfile.get();
+            List<Enrollment> enrollments = customer.getEnrollments();
+            List<Enrollment> updatedEnrollments = new ArrayList<>();
+            //om customerProfile te kunnen deleten, moet eerst de foreignkey verwijderd worden voor iedere Enrollment
+            if(enrollments != null) {
+                for(Enrollment e: enrollments) {
+                    e.setCustomer(null);
+                    updatedEnrollments.add(e);
+                }
+                customer.setEnrollments(updatedEnrollments);
+            }
             customerProfileRepository.deleteById(id);
         } else {
             throw new RecordNotFoundException("This Id doesn't exist");

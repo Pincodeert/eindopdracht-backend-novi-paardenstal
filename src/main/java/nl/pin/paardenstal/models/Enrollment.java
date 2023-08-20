@@ -114,13 +114,20 @@ public class Enrollment {
         this.cancellationRequested = cancellationRequested;
     }
 
-    //voor CustomerProfile en Subscription is alleen een getter nodig, omdat ze al in de constructor zijn opgenomen.
     public CustomerProfile getCustomer() {
         return customerProfile;
     }
 
+    public void setCustomer(CustomerProfile customerProfile) {
+        this.customerProfile = customerProfile;
+    }
+
     public Subscription getSubscription() {
         return subscription;
+    }
+
+    public void setSubscription(Subscription subscription) {
+        this.subscription = subscription;
     }
 
     public Horse getHorse() {

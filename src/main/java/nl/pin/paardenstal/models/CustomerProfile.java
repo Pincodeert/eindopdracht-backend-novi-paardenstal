@@ -36,12 +36,12 @@ public class CustomerProfile {
     @OneToOne
     private User user;
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Horse> horses = new ArrayList<>();
 
     //(tijdelijk) hier FetchType.EAGER veranderd in FetchType.LAZY, vanwege MultipleBagFetchException igv 2 collecties met FetchType.EAGER
-    @OneToMany(mappedBy = "customerProfile", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = false)
+    @OneToMany(mappedBy = "customerProfile", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = false)
     @JsonIgnore
     private List<Enrollment> enrollments;
 

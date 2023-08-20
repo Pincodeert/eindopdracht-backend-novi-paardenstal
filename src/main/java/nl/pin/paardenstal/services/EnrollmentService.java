@@ -233,6 +233,7 @@ public class EnrollmentService {
             Enrollment enrollment = optionalEnrollment.get();
             enrollment.setOngoing(false);
             enrollment.setCancellationRequested(false);
+            enrollment.setHorse(null);
             enrollmentRepository.save(enrollment);
         } else {
             throw new RecordNotFoundException("Er bestaat geen abonnement met deze Id");
