@@ -31,6 +31,8 @@ public class CustomerProfile {
 
     private String emailAddress;
 
+    private String bankAccountNumber;
+
     @OneToOne
     private User user;
 
@@ -39,7 +41,7 @@ public class CustomerProfile {
     private List<Horse> horses = new ArrayList<>();
 
     //(tijdelijk) hier FetchType.EAGER veranderd in FetchType.LAZY, vanwege MultipleBagFetchException igv 2 collecties met FetchType.EAGER
-    @OneToMany(mappedBy = "customerProfile", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "customerProfile", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = false)
     @JsonIgnore
     private List<Enrollment> enrollments;
 
@@ -114,6 +116,14 @@ public class CustomerProfile {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    public String getBankAccountNumber() {
+        return bankAccountNumber;
+    }
+
+    public void setBankAccountNumber(String bankAccountNumber) {
+        this.bankAccountNumber = bankAccountNumber;
     }
 
     public User getUser(){

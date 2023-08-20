@@ -46,7 +46,7 @@ public class CustomerProfileService {
         return dtos;
     }
 
-    public CustomerProfileDto getCustomerProfile(long id){
+    public CustomerProfileDto getCustomerProfile(Long id){
         Optional<CustomerProfile> customerProfile = customerProfileRepository.findById(id);
 
         if(customerProfile.isPresent()){
@@ -69,14 +69,14 @@ public class CustomerProfileService {
 
     }
 
-    public long createNewCustomerProfile(CustomerProfileInputDto inputDto){
+    public Long createNewCustomerProfile(CustomerProfileInputDto inputDto){
         CustomerProfile newCustomerProfile = transferToCustomerProfile(inputDto);
                 customerProfileRepository.save(newCustomerProfile);
-        long id = newCustomerProfile.getId();
+        Long id = newCustomerProfile.getId();
         return id;
     }
 
-    public void deleteCustomerProfile(long id){
+    public void deleteCustomerProfile(Long id){
         Optional<CustomerProfile> customerProfile = customerProfileRepository.findById(id);
 
         if(customerProfile.isPresent()){
@@ -86,7 +86,7 @@ public class CustomerProfileService {
         }
     }
 
-    public void updateCustomerProfile(long id, CustomerProfileInputDto inputDto){
+    public void updateCustomerProfile(Long id, CustomerProfileInputDto inputDto){
         Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
 
         if(optionalCustomerProfile.isPresent()){
@@ -99,18 +99,18 @@ public class CustomerProfileService {
         }
     }
 
-    public void partialUpdateCustomerProfile(long id, CustomerProfileInputDto inputDto){
+    public void partialUpdateCustomerProfile(Long id, CustomerProfileInputDto inputDto){
         Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
 
         if(optionalCustomerProfile.isPresent()){
             CustomerProfile storedCustomerProfile = customerProfileRepository.findById(id).orElse(null);
             CustomerProfile customerProfile = transferToCustomerProfile(inputDto);
-            if(customerProfile.getFirstName()!= null && !customerProfile.getFirstName().isEmpty()){
-                storedCustomerProfile.setFirstName(customerProfile.getFirstName());
-            }
-            if(customerProfile.getLastName() != null && !customerProfile.getLastName().isEmpty()){
-                storedCustomerProfile.setLastName(customerProfile.getLastName());
-            }
+            //if(customerProfile.getFirstName()!= null && !customerProfile.getFirstName().isEmpty()){
+            //    storedCustomerProfile.setFirstName(customerProfile.getFirstName());
+            //}
+            //if(customerProfile.getLastName() != null && !customerProfile.getLastName().isEmpty()){
+            //    storedCustomerProfile.setLastName(customerProfile.getLastName());
+            //}
             if(customerProfile.getStreet() != null && !customerProfile.getStreet().isEmpty()){
                 storedCustomerProfile.setHouseNumber(customerProfile.getHouseNumber());
             }
@@ -129,7 +129,12 @@ public class CustomerProfileService {
             if(customerProfile.getEmailAddress() != null && !customerProfile.getEmailAddress().isEmpty()){
                 storedCustomerProfile.setEmailAddress(customerProfile.getEmailAddress());
             }
+            if(customerProfile.getBankAccountNumber() !=null && !customerProfile.getBankAccountNumber().isEmpty()){
+                storedCustomerProfile.setBankAccountNumber(customerProfile.getBankAccountNumber());
+            }
             customerProfileRepository.save(storedCustomerProfile);
+        } else {
+            throw new RecordNotFoundException("Geen klant bekend met deze ID");
         }
     }
 
@@ -144,6 +149,7 @@ public class CustomerProfileService {
         customerProfile.setResidence(customerProfileInputDto.getResidence());
         customerProfile.setTelephoneNumber(customerProfileInputDto.getTelephoneNumber());
         customerProfile.setEmailAddress(customerProfileInputDto.getEmailAddress());
+        customerProfile.setBankAccountNumber(customerProfileInputDto.getBankAccountNumber());
 
         return customerProfile;
     }
@@ -160,6 +166,7 @@ public class CustomerProfileService {
         dto.setResidence(customerProfile.getResidence());
         dto.setTelephoneNumber(customerProfile.getTelephoneNumber());
         dto.setEmailAddress(customerProfile.getEmailAddress());
+        dto.setBankAccountNumber(customerProfile.getBankAccountNumber());
 
         if(customerProfile.getUser() != null){
             UserDto userDto = userService.transferToDto(customerProfile.getUser());
@@ -168,7 +175,7 @@ public class CustomerProfileService {
         return dto;
     }
 
-    public void assignUserToCustomerProfile(long id, long userId){
+    public void assignUserToCustomerProfile(Long id, Long userId){
         Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
         Optional<User> optionalUser = userRepository.findById(userId);
 

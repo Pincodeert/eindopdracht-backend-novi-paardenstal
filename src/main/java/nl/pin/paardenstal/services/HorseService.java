@@ -50,12 +50,16 @@ public class HorseService {
                 CustomerProfileDto ownerDto = customerProfileService.transferToDto(h.getOwner());
                 dto.setOwnerDto(ownerDto);
             }
+            if(h.getStall() != null) {
+                StallDto stallDto = stallService.transferToDto(h.getStall());
+                dto.setStall(stallDto);
+            }
             dtos.add(dto);
         }
         return dtos;
     }
 
-    public HorseDto getHorse(long id){
+    public HorseDto getHorse(Long id){
         Optional<Horse> optionalHorse = horseRepository.findById(id);
 
         if(optionalHorse.isPresent()){
@@ -64,6 +68,10 @@ public class HorseService {
             if(optionalHorse.get().getOwner() != null) {
                 CustomerProfileDto ownerDto = customerProfileService.transferToDto(optionalHorse.get().getOwner());
                 horseDto.setOwnerDto(ownerDto);
+            }
+            if(optionalHorse.get().getStall() != null) {
+                StallDto stallDto = stallService.transferToDto(optionalHorse.get().getStall());
+                horseDto.setStall(stallDto);
             }
             return horseDto;
         } else {
@@ -85,14 +93,14 @@ public class HorseService {
         return dtos;
     }
 
-    public long addNewHorse(HorseInputDto horseInputDto){
+    public Long addNewHorse(HorseInputDto horseInputDto){
         Horse newHorse = transferToHorse(horseInputDto);
                 horseRepository.save(newHorse);
-        long newId = newHorse.getId();
+        Long newId = newHorse.getId();
         return newId;
     }
 
-    public void updateHorse(long id, HorseInputDto horseInputDto){
+    public void updateHorse(Long id, HorseInputDto horseInputDto){
         Optional<Horse> optionalHorse = horseRepository.findById(id);
 
         if (optionalHorse.isPresent()){
@@ -124,7 +132,7 @@ public class HorseService {
         }
     }
 
-    public void deleteHorse(long id) {
+    public void deleteHorse(Long id) {
 
         Optional<Horse> optionalHorse = horseRepository.findById(id);
 

@@ -12,11 +12,8 @@ public class Enrollment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    //private LocalDate startDate;
-    // vooralsnog String ipv LocalDate gebruiken:
-    //vooralsnog in deze applicatie als startdatum het moment van aanmaken van de instantie gebruiken: LocalDat.now()
     private LocalDate startDate;
 
     //standaard instellen 12 maanden later. wordt door de applicatie berekend
@@ -25,7 +22,7 @@ public class Enrollment {
     //looptijd in maanden. wordt berekend vanaf de LocalDate .now
     private int duration;
 
-    //de default van Boolean is false. Bij aanmaken van een Enrollmant willen we dat isOngoing op true staat:
+    //de default waarde van Boolean is false. Bij aanmaken van een Enrollment willen we dat isOngoing op true staat:
     private boolean isOngoing = true;
 
     private boolean cancellationRequested;
@@ -52,8 +49,6 @@ public class Enrollment {
 
     //Constructor die we nodig hebben om af te dwingen dat in associatieklasse de instantie van de
     //associatieklasse alleen wordt aangemaakt wanneer de addCustomerProfileToSubscription()-operatie wordt aangeroepen.
-    // Vooralsnog startDate ook in de Constructor gezet omdat we vooralsnog een String gebruiken. Wanneer we LocalDate
-    // gaan gebruiken, lossen we dit elders op.
     public Enrollment(Subscription s, CustomerProfile cp, Horse h) {
         this.subscription = s;
         this.customerProfile =cp;
@@ -71,11 +66,11 @@ public class Enrollment {
         this.expireDate = startDate.plusMonths(12);
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

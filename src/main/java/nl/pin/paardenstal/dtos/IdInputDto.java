@@ -4,6 +4,6 @@ import javax.validation.constraints.Min;
 
 public class IdInputDto {
 
-    public long id;
+    public Long id;
 
 }

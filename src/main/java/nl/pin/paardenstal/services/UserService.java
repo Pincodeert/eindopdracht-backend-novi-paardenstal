@@ -33,7 +33,7 @@ public class UserService {
         return dtos;
     }
 
-    public UserDto getUser(long id) {
+    public UserDto getUser(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
 
         if (optionalUser.isPresent()) {
@@ -46,14 +46,14 @@ public class UserService {
 
     }
 
-    public long addNewUser(UserInputDto userInputDto) {
+    public Long addNewUser(UserInputDto userInputDto) {
         User newUser = transferToUser(userInputDto);
         userRepository.save(newUser);
-        long newId = newUser.getId();
+        Long newId = newUser.getId();
         return newId;
     }
 
-    public void deleteUser(long id) {
+    public void deleteUser(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
 
         if (optionalUser.isPresent()) {

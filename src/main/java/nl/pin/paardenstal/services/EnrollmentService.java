@@ -86,6 +86,9 @@ public class EnrollmentService {
             if(e.getSubscription() != null) {
                 dto.setSubscription(subscriptionService.transferToSubscriptionDto(e.getSubscription()));
             }
+            if(e.getHorse() != null) {
+                dto.setHorse(horseService.transferToDto(e.getHorse()));
+            }
             dtos.add(dto);
         }
         return dtos;
@@ -98,9 +101,10 @@ public class EnrollmentService {
 
         for(Enrollment e: ongoingEnrollments) {
             EnrollmentDto dto = transferToDto(e);
-            //omdat deze methode alleen gebruikt gaat worden om de totale prijs te berekenen, hoeft de customerProfile
-            // niet te worden meegenomen in de dto
-            //de subscription daarentegen wel.
+
+            if(e.getCustomer() != null) {
+                dto.setCustomer(customerProfileService.transferToDto(e.getCustomer()));
+            }
             if(e.getSubscription() != null) {
                 dto.setSubscription(subscriptionService.transferToSubscriptionDto(e.getSubscription()));
             }
@@ -109,7 +113,7 @@ public class EnrollmentService {
         return dtos;
     }
 
-    public EnrollmentDto getEnrollmentById(long id) {
+    public EnrollmentDto getEnrollmentById(Long id) {
 
         Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(id);
         if(optionalEnrollment.isPresent()){
@@ -134,7 +138,7 @@ public class EnrollmentService {
     // het deleten van een enrollment is over het algemeen niet wenselijk. Wel deze functionaliteit gemaakt, om het
     // mogelijk te maken een enrollment-object te deleten wanneer het per ongeluk is aangemaakt met een verkeerde
     // subscription Id?
-    public void deleteEnrollment(long id) {
+    public void deleteEnrollment(Long id) {
         Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(id);
         if(optionalEnrollment.isPresent()){
             enrollmentRepository.deleteById(id);

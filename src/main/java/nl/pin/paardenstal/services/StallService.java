@@ -2,6 +2,7 @@ package nl.pin.paardenstal.services;
 
 import nl.pin.paardenstal.dtos.*;
 import nl.pin.paardenstal.exceptions.AlreadyAssignedException;
+import nl.pin.paardenstal.exceptions.NotYetAssignedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.models.Stall;
@@ -85,7 +86,7 @@ public class StallService {
         return dtos;
     }
 
-    public StallDto getStall(long id){
+    public StallDto getStall(Long id){
         Optional<Stall> optionalStall = stallRepository.findById(id);
 
         if(optionalStall.isPresent()){
@@ -100,10 +101,10 @@ public class StallService {
         }
     }
 
-    public long addStall(StallInputDto stallInputDto){
+    public Long addStall(StallInputDto stallInputDto){
         Stall stall = transferToStall(stallInputDto);
         Stall newStall = stallRepository.save(stall);
-        long newId = newStall.getId();
+        Long newId = newStall.getId();
         return newId;
     }
 
@@ -126,7 +127,7 @@ public class StallService {
         return stall;
     }
 
-    public void assignHorseToStall(long id, long horseId){
+    public void assignHorseToStall(Long id, Long horseId){
         Optional<Stall> optionalStall = stallRepository.findById(id);
         Optional<Horse> optionalHorse = horseRepository.findById(horseId);
 
@@ -143,12 +144,28 @@ public class StallService {
         // 2 stallen kan worden toegewezen.
         if(stall.getHorse() == null && horse.getStall() == null) {
             stall.setHorse(horse);
+
             stall.setOccupied(true);
             stallRepository.save(stall);
         } else if (stall.getHorse() != null){
             throw new AlreadyAssignedException("deze stal is al bezet");
         } else if (horse.getStall() != null){
             throw new AlreadyAssignedException("dit paard is al aan een andere stal toegewezen");
+        }
+    }
+
+    public void removeHorseFromStall(Long id) {
+        Optional<Stall> optionalStall = stallRepository.findById(id);
+
+        if(optionalStall.isPresent() && optionalStall.get().getHorse() != null) {
+            Stall stall = optionalStall.get();
+            stall.setHorse(null);
+            stall.setOccupied(false);
+            stallRepository.save(stall);
+        } else if(!optionalStall.isPresent()) {
+            throw new RecordNotFoundException("geen stal met deze id bekend");
+        } else if (optionalStall.get().getHorse() == null) {
+            throw new NotYetAssignedException("er staat helemaal geen paard in deze stal");
         }
     }
 

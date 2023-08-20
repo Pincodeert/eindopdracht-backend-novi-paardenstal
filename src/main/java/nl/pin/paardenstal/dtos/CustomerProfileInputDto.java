@@ -30,6 +30,9 @@ public class CustomerProfileInputDto {
     @Email(message = "ongeldig emailadres")
     private String emailAddress;
 
+    @Size(min = 16, max = 16, message = "bankrekeningnummer moet uit 16 tekens bestaan")
+    private String bankAccountNumber;
+
 
     public String getFirstName() {
         return firstName;
@@ -93,5 +96,13 @@ public class CustomerProfileInputDto {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    public String getBankAccountNumber() {
+        return bankAccountNumber;
+    }
+
+    public void setBankAccountNumber(String bankAccountNumber) {
+        this.bankAccountNumber = bankAccountNumber;
     }
 }

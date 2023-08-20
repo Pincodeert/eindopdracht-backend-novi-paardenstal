@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable long id){
+    public ResponseEntity<UserDto> getUser(@PathVariable Long id){
         UserDto userDto = userService.getUser(id);
         return ResponseEntity.ok(userDto);
     }
@@ -47,7 +47,7 @@ public class UserController {
             }
             return ResponseEntity.badRequest().body(stringBuilder.toString());
         } else {
-            long newId = userService.addNewUser(userInputDto);
+            Long newId = userService.addNewUser(userInputDto);
 
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                     .buildAndExpand(newId).toUri();
@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable long id){
+    public ResponseEntity<Object> deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }

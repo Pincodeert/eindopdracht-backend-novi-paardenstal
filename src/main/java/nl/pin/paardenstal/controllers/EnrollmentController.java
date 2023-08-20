@@ -41,13 +41,13 @@ public class EnrollmentController {
     }
 
     @GetMapping("/enrollments/{id}")
-    public ResponseEntity<EnrollmentDto> getEnrollmentById(@PathVariable long id) {
+    public ResponseEntity<EnrollmentDto> getEnrollmentById(@PathVariable Long id) {
         EnrollmentDto dto = enrollmentService.getEnrollmentById(id);
         return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/enrollments/{id}")
-    public ResponseEntity<Object> deleteEnrollment(@PathVariable long id) {
+    public ResponseEntity<Object> deleteEnrollment(@PathVariable Long id) {
         enrollmentService.deleteEnrollment(id);
         return ResponseEntity.noContent().build();
     }

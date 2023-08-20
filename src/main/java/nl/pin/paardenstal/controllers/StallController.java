@@ -50,7 +50,7 @@ public class StallController {
     }
 
     @GetMapping("/stalls/{id}")
-    public ResponseEntity<StallDto> getStall(@PathVariable long id){
+    public ResponseEntity<StallDto> getStall(@PathVariable Long id){
         StallDto stallDto = stallService.getStall(id);
         return ResponseEntity.ok(stallDto);
     }
@@ -66,7 +66,7 @@ public class StallController {
             }
             return ResponseEntity.badRequest().body(stringBuilder.toString());
         } else {
-            long newId = stallService.addStall(stallInputDto);
+            Long newId = stallService.addStall(stallInputDto);
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                     .buildAndExpand(newId).toUri();
             return ResponseEntity.created(location).build();
@@ -74,8 +74,14 @@ public class StallController {
     }
 
     @PutMapping("/stalls/{id}/horse")
-    public ResponseEntity<Object> assignHorseToStall(@PathVariable long id, @RequestBody IdInputDto input){
+    public ResponseEntity<Object> assignHorseToStall(@PathVariable Long id, @RequestBody IdInputDto input){
         stallService.assignHorseToStall(id, input.id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/stalls/{id}")
+    public ResponseEntity<Object> removeHorseFromStall(@PathVariable Long id) {
+        stallService.removeHorseFromStall(id);
         return ResponseEntity.noContent().build();
     }
 

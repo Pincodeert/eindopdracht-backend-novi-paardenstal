@@ -33,7 +33,7 @@ public class SubscriptionService {
         return dtos;
     }
 
-    public SubscriptionDto getSubscription(long id){
+    public SubscriptionDto getSubscription(Long id){
         Optional<Subscription> optionalSubscription = subscriptionRepository.findById(id);
 
         if(optionalSubscription.isPresent()){
@@ -44,14 +44,14 @@ public class SubscriptionService {
         }
     }
 
-    public long addSubscription(SubscriptionInputDto subscriptionInputDto){
+    public Long addSubscription(SubscriptionInputDto subscriptionInputDto){
         Subscription newSubscription = transferToSubscription(subscriptionInputDto);
                 subscriptionRepository.save(newSubscription);
-        long newId = newSubscription.getId();
+        Long newId = newSubscription.getId();
         return newId;
     }
 
-    public void deleteSubscription(long id){
+    public void deleteSubscription(Long id){
         Optional<Subscription> optionalSubscription = subscriptionRepository.findById(id);
 
         if(optionalSubscription.isPresent()){
