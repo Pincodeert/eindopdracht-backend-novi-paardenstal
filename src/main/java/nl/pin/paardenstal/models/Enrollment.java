@@ -65,6 +65,7 @@ public class Enrollment {
         this.subscription = s;
         this.customerProfile = cp;
         this.horse = h;
+        this.horseNumber = h.getHorseNumber();
         this.startDate = startDate;
         this.expireDate = startDate.plusMonths(12);
     }

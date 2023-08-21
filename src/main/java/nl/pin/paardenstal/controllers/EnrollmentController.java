@@ -54,7 +54,7 @@ public class EnrollmentController {
 
     @PostMapping("/enrollments")
     public ResponseEntity<Object> assignCustomerToSubscription(@RequestBody EnrollmentInputDto input) {
-        Long newId = enrollmentService.assignCustomerToSubscription(input.id1, input.id2, input.id3, input.date);
+        Long newId = enrollmentService.assignCustomerToSubscription(input.subscriptionId, input.customerId, input.horseId, input.date);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newId).toUri();
@@ -70,7 +70,7 @@ public class EnrollmentController {
 
     @PatchMapping("/enrollments")
     public ResponseEntity<Object> terminateSubscription(@RequestBody EnrollmentInputDto input) {
-        enrollmentService.terminateSubscription(input.id1);
+        enrollmentService.terminateSubscription(input.subscriptionId);
         return ResponseEntity.noContent().build();
     }
 

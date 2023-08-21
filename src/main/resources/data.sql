@@ -5,7 +5,8 @@ VALUES
 ('Barry', 'Hay', 'Radarweg', '179', '7754', 'Willemstad', '0658972311', 'barry.hay@goingtotherun.com', '83EARS0987654321'),
 ('Eddie', 'Vedder', 'Long Road', '10', '2208','Seattle', '0657993254', 'eddie.vedder@stillalive.com', '10EVEN05544332211'),
 ('Mick', 'Jagger', 'Sympathy Road', '12', '3333', 'Richmond', '0677336611', 'mick.jagger@movelikeme.com', '12HORS0639008652'),
-('Rocky', 'Balboa', 'Stair Way', '118A', '1876', 'Philadelphia', '0629983321', 'rocky.balboa@adrian.com', '88BOKS0777444999');
+('Rocky', 'Balboa', 'Stair Way', '118A', '1876', 'Philadelphia', '0629983321', 'rocky.balboa@adrian.com', '88BOKS0777444999'),
+('Axl', 'Rose', 'Road to Nowhere', '1', '8854', 'Paradise City', '0691827364', 'axl.rose@youcouldbemine.com', '43ROSE0843223859');
 
 INSERT INTO horses(name, horse_number, type_of_feed, type_of_bedding, name_of_vet, residence_of_vet, telephone_of_vet, preferred_subscription, customer_profile_id)
 VALUES
@@ -18,7 +19,8 @@ VALUES
 ('Angie', 'NL033667766922', 'oats', 'shavings', 'Dr Robert', 'London', '0666776677', 'William Dalton abonnement', 5),
 ('Wild Horse', 'NL011887766999', 'hay', 'straw', 'Dr Robert', 'London', '0666776677', 'Averell Dalton abonnement', 5),
 ('Savage Horse', 'NL024247767456', 'hay', 'straw', 'Dr Robert', 'London', '0666776677', 'Averell Dalton abonnement', 5),
-('Italian Stallion', 'NL076547766123', 'oats', 'shavings', 'Dr Strange', 'Philadelphia', '0612883479', 'Ma Dalton abonnement', 6);
+('Italian Stallion', 'NL076547766123', 'oats', 'shavings', 'Dr Strange', 'Philadelphia', '0612883479', 'Ma Dalton abonnement', 6),
+('Sweet Horse O Mine', 'NL089247764781', 'oats', 'straw', 'Dr John', 'New Orleans', '0612345678', 'Averell Dalton abonnement', 7);
 
 INSERT INTO stalls(name, size, type, is_occupied, horse_id)
 VALUES
@@ -33,7 +35,7 @@ VALUES
 ('Los Pollos', '3 x 4', 'grote binnenstal', false, null),
 ('Young Guns I', '3 x 3', 'kleine buitenstal', true, 6),
 ('Young Guns II', '3 x 3', 'kleine buitenstal', true, 7),
-('Young Guns III', '3 x 3', 'kleine buitenstal', false, null),
+('Young Guns III', '3 x 3', 'kleine buitenstal', true, 11),
 ('The Quick', '3 x 3', 'kleine buitenstal', false, null),
 ('The Dead', '3 x 3', 'kleine buitenstal', false, null),
 ('Gran Torino', '3 x 4', 'grote buitenstal', true, 8),
@@ -60,14 +62,14 @@ INSERT INTO owners(first_name, last_name, email_address, user_id)
 VALUES
 ('Clint', 'Eastwood', 'make@)myday.com', 1);
 
-INSERT INTO enrollments(start_date, expire_date, duration, is_ongoing, cancellation_requested, subscription_id,
+INSERT INTO enrollments(start_date, expire_date, duration, is_ongoing, cancellation_requested, horse_number, subscription_id,
 customer_profile_id, horse_id)
 VALUES
-('12-05-2023', '12-05-2024', 1, true, false, 1, 1, 1),
-('23-04-2023', '23-04-2024', 2, true, false, 2, 2, 2),
-('18-09-2022', '18-09-2023', 9, true, false, 3, 4, 4),
-('01-01-2023', '01-01-2024', 6, true, true, 3, 4, 5),
-('15-02-2023', '15-02-2024', 5, true, true, 5, 5, 6),
-('15-02-2023', '15-02-2024', 5, true, false, 5, 5, 7),
-('01-07-2023', '01-07-2024', 1, true, false, 8, 5, 8),
-('01-09-2023', '01-09-2024', 0, false, false, 8, 5, 9);
+('12-05-2023', '12-05-2024', 1, true, false, 'NL012345678912', 1, 1, 1),
+('23-04-2023', '23-04-2024', 2, false, false, 'NL011212121212', 2, 2, 2),
+('18-09-2022', '18-09-2023', 9, true, false, 'NL099887766543', 3, 4, 4),
+('01-01-2023', '01-01-2024', 6, true, true, 'NL098765432123', 3, 4, 5),
+('15-02-2023', '15-02-2024', 5, true, true, 'NL011887766999', 5, 5, 6),
+('15-02-2023', '15-02-2024', 5, true, false, 'NL033667766922', 5, 5, 7),
+('01-07-2023', '01-07-2024', 1, true, false, 'NL011887766999', 8, 5, 8),
+('01-09-2023', '01-09-2024', 0, false, false, 'NL024247767456', 8, 5, 9);
