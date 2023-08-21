@@ -180,14 +180,14 @@ public class CustomerProfileService {
         dto.setEmailAddress(customerProfile.getEmailAddress());
         dto.setBankAccountNumber(customerProfile.getBankAccountNumber());
 
-        if(customerProfile.getUser() != null){
+        /*if(customerProfile.getUser() != null){
             UserDto userDto = userService.transferToDto(customerProfile.getUser());
             dto.setUser(userDto);
-        }
+        }*/
         return dto;
     }
 
-    public void assignUserToCustomerProfile(Long id, Long userId){
+    /*public void assignUserToCustomerProfile(Long id, Long userId){
         Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
         Optional<User> optionalUser = userRepository.findById(userId);
 
@@ -203,6 +203,6 @@ public class CustomerProfileService {
         } else if (!optionalUser.isPresent()){
             throw new RecordNotFoundException("There's no user with this ID");
         }
-    }
+    }*/
 
 }

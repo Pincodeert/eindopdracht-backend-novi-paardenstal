@@ -97,11 +97,11 @@ public class CustomerProfileController {
         }
     }
 
-    @PutMapping("/customerprofiles/{id}/user")
+    /*@PutMapping("/customerprofiles/{id}/user")
     public ResponseEntity<Object> assignUserToCustomerProfile(@PathVariable Long id, @RequestBody IdInputDto userInput){
         customerProfileService.assignUserToCustomerProfile(id, userInput.id);
         return ResponseEntity.noContent().build();
-    }
+    }*/
 
     @GetMapping("/customerprofiles/{id}/enrollments")
     public ResponseEntity<List<EnrollmentDto>> getAllEnrollmentsByCustomerProfileId(@PathVariable Long id) {

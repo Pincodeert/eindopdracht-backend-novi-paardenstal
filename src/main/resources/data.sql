@@ -54,13 +54,9 @@ VALUES
 ('Ma Dalton abonnement', 499.95, 'halfpension', 'grote buitenstal'),
 ('Rataplan abonnement', 489.95, 'volpension', 'grote buitenstal');
 
-INSERT INTO users(username, password)
-VALUES
-('dirtyHarry', 'GoAhead!');
 
-INSERT INTO owners(first_name, last_name, email_address, user_id)
-VALUES
-('Clint', 'Eastwood', 'make@)myday.com', 1);
+
+
 
 INSERT INTO enrollments(start_date, expire_date, duration, is_ongoing, cancellation_requested, horse_number, subscription_id,
 customer_profile_id, horse_id)

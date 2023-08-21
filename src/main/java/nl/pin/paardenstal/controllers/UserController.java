@@ -23,20 +23,20 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users")
+    /*@GetMapping("/users")
     public ResponseEntity<List<UserDto>> getAllUsers(){
         List<UserDto> userDtos = new ArrayList<>();
         userDtos = userService.getAllUsers();
         return ResponseEntity.ok(userDtos);
-    }
+    }*/
 
-    @GetMapping("/users/{id}")
+    /*@GetMapping("/users/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable Long id){
         UserDto userDto = userService.getUser(id);
         return ResponseEntity.ok(userDto);
-    }
+    }*/
 
-    @PostMapping("/users")
+    /*@PostMapping("/users")
     public ResponseEntity<Object> addNewUser(@Valid @RequestBody UserInputDto userInputDto,
                                              BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
@@ -54,12 +54,12 @@ public class UserController {
 
             return ResponseEntity.created(location).build();
         }
-    }
+    }*/
 
-    @DeleteMapping("/users/{id}")
+    /*@DeleteMapping("/users/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
-    }
+    }*/
 
 }

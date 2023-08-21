@@ -23,7 +23,7 @@ public class UserService {
     }
 
 
-    public List<UserDto> getAllUsers() {
+    /*public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
         List<UserDto> dtos = new ArrayList<>();
         for (User u : users) {
@@ -31,9 +31,9 @@ public class UserService {
             dtos.add(dto);
         }
         return dtos;
-    }
+    }*/
 
-    public UserDto getUser(Long id) {
+    /*public UserDto getUser(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
 
         if (optionalUser.isPresent()) {
@@ -44,16 +44,16 @@ public class UserService {
             throw new RecordNotFoundException("This ID does not exist");
         }
 
-    }
+    }*/
 
-    public Long addNewUser(UserInputDto userInputDto) {
+    /*public Long addNewUser(UserInputDto userInputDto) {
         User newUser = transferToUser(userInputDto);
         userRepository.save(newUser);
         Long newId = newUser.getId();
         return newId;
-    }
+    }*/
 
-    public void deleteUser(Long id) {
+    /*public void deleteUser(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
 
         if (optionalUser.isPresent()) {
@@ -61,15 +61,15 @@ public class UserService {
         } else {
             throw new RecordNotFoundException("This ID does not exist");
         }
-    }
+    }*/
 
-    public UserDto transferToDto(User user) {
+    /*public UserDto transferToDto(User user) {
         UserDto dto = new UserDto();
 
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
         return dto;
-    }
+    }*/
 
     public User transferToUser(UserInputDto userInputDto) {
         User user = new User();
