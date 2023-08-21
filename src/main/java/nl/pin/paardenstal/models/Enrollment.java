@@ -27,6 +27,8 @@ public class Enrollment {
 
     private boolean cancellationRequested;
 
+    private String horseNumber;
+
     @ManyToOne
     @JoinColumn(name = "customer_profile_id", referencedColumnName = "id")
     @JsonIgnore
@@ -53,6 +55,7 @@ public class Enrollment {
         this.subscription = s;
         this.customerProfile =cp;
         this.horse = h;
+        this.horseNumber = h.getHorseNumber();
         this.startDate = LocalDate.now();
         this.expireDate = startDate.plusMonths(12);
     }
@@ -112,6 +115,14 @@ public class Enrollment {
 
     public void setCancellationRequested(boolean cancellationRequested) {
         this.cancellationRequested = cancellationRequested;
+    }
+
+    public String getHorseNumber() {
+        return horseNumber;
+    }
+
+    public void setHorseNumber(String horseNumber) {
+        this.horseNumber = horseNumber;
     }
 
     public CustomerProfile getCustomer() {

@@ -16,6 +16,8 @@ public class EnrollmentDto {
 
     private boolean cancellationRequested;
 
+    private String horseNumber;
+
     private CustomerProfileDto customer;
     private SubscriptionDto subscription;
 
@@ -67,6 +69,14 @@ public class EnrollmentDto {
 
     public void setCancellationRequested(boolean cancellationRequested) {
         this.cancellationRequested = cancellationRequested;
+    }
+
+    public String getHorseNumber() {
+        return horseNumber;
+    }
+
+    public void setHorseNumber(String horseNumber) {
+        this.horseNumber = horseNumber;
     }
 
     public CustomerProfileDto getCustomer() {

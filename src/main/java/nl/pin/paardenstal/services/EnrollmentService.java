@@ -156,6 +156,7 @@ public class EnrollmentService {
         dto.setDuration(enrollment.getDuration());
         dto.setOngoing(enrollment.isOngoing());
         dto.setCancellationRequested(enrollment.isCancellationRequested());
+        dto.setHorseNumber(enrollment.getHorseNumber());
         return dto;
     }
 

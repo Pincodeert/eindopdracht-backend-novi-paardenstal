@@ -164,11 +164,13 @@ public class HorseService {
 
         dto.setId(horse.getId());
         dto.setName(horse.getName());
+        dto.setHorseNumber(horse.getHorseNumber());
         dto.setTypeOfFeed(horse.getTypeOfFeed());
         dto.setTypeOfBedding(horse.getTypeOfBedding());
         dto.setNameOfVet(horse.getNameOfVet());
         dto.setResidenceOfVet(horse.getResidenceOfVet());
         dto.setTelephoneOfVet(horse.getTelephoneOfVet());
+        dto.setPreferredSubscription(horse.getPreferredSubscription());
 
         return dto;
     }
@@ -177,11 +179,13 @@ public class HorseService {
         Horse horse = new Horse();
 
         horse.setName(horseInputDto.getName());
+        horse.setHorseNumber(horseInputDto.getHorseNumber());
         horse.setTypeOfFeed(horseInputDto.getTypeOfFeed());
         horse.setTypeOfBedding(horseInputDto.getTypeOfBedding());
         horse.setNameOfVet(horseInputDto.getNameOfVet());
         horse.setResidenceOfVet(horseInputDto.getResidenceOfVet());
         horse.setTelephoneOfVet(horseInputDto.getTelephoneOfVet());
+        horse.setPreferredSubscription(horseInputDto.getPreferredSubscription());
 
         return horse;
     }

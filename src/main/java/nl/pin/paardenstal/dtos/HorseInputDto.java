@@ -8,6 +8,9 @@ public class HorseInputDto {
     @Size(min=2, max=60, message = "naam moet tussen 2 en 60 tekens lang zijn")
     private String name;
 
+    @Size(min=14, max=14, message = "het paardnummer(levensnummer) moet uit 15 tekens bestaan")
+    private String horseNumber;
+
     @NotBlank(message = "type voeding mag niet leeg zijn")
     private String typeOfFeed;
 
@@ -23,6 +26,9 @@ public class HorseInputDto {
     @Size(min=10, max=10, message = "telefoonnummer moet uit 10 cijfers bestaan")
     private String telephoneOfVet;
 
+    @NotBlank
+    private String preferredSubscription;
+
 
 
     public String getName() {
@@ -31,6 +37,14 @@ public class HorseInputDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getHorseNumber() {
+        return horseNumber;
+    }
+
+    public void setHorseNumber(String horseNumber) {
+        this.horseNumber = horseNumber;
     }
 
     public String getTypeOfFeed() {
@@ -71,6 +85,14 @@ public class HorseInputDto {
 
     public void setTelephoneOfVet(String telephoneOfVet) {
         this.telephoneOfVet = telephoneOfVet;
+    }
+
+    public String getPreferredSubscription() {
+        return preferredSubscription;
+    }
+
+    public void setPreferredSubscription(String preferredSubscription) {
+        this.preferredSubscription = preferredSubscription;
     }
 
 }
