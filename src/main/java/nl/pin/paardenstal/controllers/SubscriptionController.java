@@ -39,7 +39,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("/subscriptions/{id}")
-    public ResponseEntity<SubscriptionDto> getSubscription(@PathVariable long id){
+    public ResponseEntity<SubscriptionDto> getSubscription(@PathVariable Long id){
         SubscriptionDto subscriptionDto = subscriptionService.getSubscription(id);
         return ResponseEntity.ok(subscriptionDto);
     }
@@ -55,7 +55,7 @@ public class SubscriptionController {
             }
             return ResponseEntity.badRequest().body(stringBuilder.toString());
         } else {
-            long newId = subscriptionService.addSubscription(subscriptionInputDto);
+            Long newId = subscriptionService.addSubscription(subscriptionInputDto);
 
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                     .buildAndExpand(newId).toUri();
@@ -65,7 +65,7 @@ public class SubscriptionController {
     }
 
     @DeleteMapping("/subscriptions/{id}")
-    public ResponseEntity<Object> deleteSubscription(@PathVariable long id){
+    public ResponseEntity<Object> deleteSubscription(@PathVariable Long id){
         subscriptionService.deleteSubscription(id);
         return ResponseEntity.noContent().build();
     }

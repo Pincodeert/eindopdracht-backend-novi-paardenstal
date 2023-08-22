@@ -12,11 +12,8 @@ public class Enrollment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    //private LocalDate startDate;
-    // vooralsnog String ipv LocalDate gebruiken:
-    //vooralsnog in deze applicatie als startdatum het moment van aanmaken van de instantie gebruiken: LocalDat.now()
     private LocalDate startDate;
 
     //standaard instellen 12 maanden later. wordt door de applicatie berekend
@@ -25,10 +22,12 @@ public class Enrollment {
     //looptijd in maanden. wordt berekend vanaf de LocalDate .now
     private int duration;
 
-    //de default van Boolean is false. Bij aanmaken van een Enrollmant willen we dat isOngoing op true staat:
+    //de default waarde van Boolean is false. Bij aanmaken van een Enrollment willen we dat isOngoing op true staat:
     private boolean isOngoing = true;
 
     private boolean cancellationRequested;
+
+    private String horseNumber;
 
     @ManyToOne
     @JoinColumn(name = "customer_profile_id", referencedColumnName = "id")
@@ -52,12 +51,11 @@ public class Enrollment {
 
     //Constructor die we nodig hebben om af te dwingen dat in associatieklasse de instantie van de
     //associatieklasse alleen wordt aangemaakt wanneer de addCustomerProfileToSubscription()-operatie wordt aangeroepen.
-    // Vooralsnog startDate ook in de Constructor gezet omdat we vooralsnog een String gebruiken. Wanneer we LocalDate
-    // gaan gebruiken, lossen we dit elders op.
     public Enrollment(Subscription s, CustomerProfile cp, Horse h) {
         this.subscription = s;
         this.customerProfile =cp;
         this.horse = h;
+        this.horseNumber = h.getHorseNumber();
         this.startDate = LocalDate.now();
         this.expireDate = startDate.plusMonths(12);
     }
@@ -67,15 +65,16 @@ public class Enrollment {
         this.subscription = s;
         this.customerProfile = cp;
         this.horse = h;
+        this.horseNumber = h.getHorseNumber();
         this.startDate = startDate;
         this.expireDate = startDate.plusMonths(12);
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -119,13 +118,28 @@ public class Enrollment {
         this.cancellationRequested = cancellationRequested;
     }
 
-    //voor CustomerProfile en Subscription is alleen een getter nodig, omdat ze al in de constructor zijn opgenomen.
+    public String getHorseNumber() {
+        return horseNumber;
+    }
+
+    public void setHorseNumber(String horseNumber) {
+        this.horseNumber = horseNumber;
+    }
+
     public CustomerProfile getCustomer() {
         return customerProfile;
     }
 
+    public void setCustomer(CustomerProfile customerProfile) {
+        this.customerProfile = customerProfile;
+    }
+
     public Subscription getSubscription() {
         return subscription;
+    }
+
+    public void setSubscription(Subscription subscription) {
+        this.subscription = subscription;
     }
 
     public Horse getHorse() {

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class CustomerProfileDto {
 
-    private long id;
+    private Long id;
 
     private String firstName;
 
@@ -25,6 +25,8 @@ public class CustomerProfileDto {
 
     private String emailAddress;
 
+    private String bankAccountNumber;
+
     private UserDto user;
 
     private List<HorseDto> horses = new ArrayList<>();
@@ -32,11 +34,11 @@ public class CustomerProfileDto {
     private List<EnrollmentDto> enrollments = new ArrayList<>();
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -102,6 +104,14 @@ public class CustomerProfileDto {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    public String getBankAccountNumber() {
+        return bankAccountNumber;
+    }
+
+    public void setBankAccountNumber(String bankAccountNumber) {
+        this.bankAccountNumber = bankAccountNumber;
     }
 
     public UserDto getUser() {

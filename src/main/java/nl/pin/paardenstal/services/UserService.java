@@ -3,23 +3,29 @@ package nl.pin.paardenstal.services;
 import nl.pin.paardenstal.dtos.UserDto;
 import nl.pin.paardenstal.dtos.UserInputDto;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
+import nl.pin.paardenstal.models.Authority;
 import nl.pin.paardenstal.models.User;
 import nl.pin.paardenstal.repositories.UserRepository;
+import nl.pin.paardenstal.utils.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -33,52 +39,95 @@ public class UserService {
         return dtos;
     }
 
-    public UserDto getUser(long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-
+    public UserDto getUser(String username) {
+        Optional<User> optionalUser = userRepository.findById(username);
+        UserDto dto = new UserDto();
         if (optionalUser.isPresent()) {
             User storedUser = optionalUser.get();
-            UserDto dto = transferToDto(storedUser);
+            dto = transferToDto(storedUser);
             return dto;
         } else {
-            throw new RecordNotFoundException("This ID does not exist");
+            throw new UsernameNotFoundException(username);
         }
-
     }
 
-    public long addNewUser(UserInputDto userInputDto) {
-        User newUser = transferToUser(userInputDto);
-        userRepository.save(newUser);
-        long newId = newUser.getId();
-        return newId;
+    public boolean userExists(String username) {
+        return userRepository.existsById(username);
     }
 
-    public void deleteUser(long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
+    public String createUser(UserDto userDto) {
+        String randomString = RandomStringGenerator.generateAlphaNumeric(20);
+        userDto.setApikey(randomString);
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        User newUser = userRepository.save(transferToUser(userDto));
+        return newUser.getUsername();
+    }
+
+    public void deleteUser(String username) {
+        Optional<User> optionalUser = userRepository.findById(username);
 
         if (optionalUser.isPresent()) {
-            userRepository.deleteById(id);
+            userRepository.deleteById(username);
         } else {
-            throw new RecordNotFoundException("This ID does not exist");
+            throw new UsernameNotFoundException(username);
         }
     }
 
-    public UserDto transferToDto(User user) {
-        UserDto dto = new UserDto();
+    public void updateUser(String username, UserDto newUser) {
+        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+        User user = userRepository.findById(username).get();
+        user.setPassword(newUser.getPassword());
+        userRepository.save(user);
+    }
 
-        dto.setId(user.getId());
-        dto.setUsername(user.getUsername());
+    public Set<Authority> getAuthorities(String username) {
+        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+        User user = userRepository.findById(username).get();
+        UserDto userDto = transferToDto(user);
+        return userDto.getAuthorities();
+    }
+
+    public void addAuthority(String username, String authority) {
+
+        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+        User user = userRepository.findById(username).get();
+        user.addAuthority(new Authority(username, authority));
+        userRepository.save(user);
+    }
+
+    public void removeAuthority(String username, String authority) {
+        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+        User user = userRepository.findById(username).get();
+        Authority authorityToRemove = user.getAuthorities().stream().filter((a) -> a.getAuthority().equalsIgnoreCase(authority)).findAny().get();
+        user.removeAuthority(authorityToRemove);
+        userRepository.save(user);
+    }
+
+    public static UserDto transferToDto(User user){
+
+        var dto = new UserDto();
+
+        dto.username = user.getUsername();
+        dto.password = user.getPassword();
+        dto.enabled = user.isEnabled();
+        dto.apikey = user.getApikey();
+        dto.email = user.getEmail();
+        dto.authorities = user.getAuthorities();
+
         return dto;
     }
 
-    public User transferToUser(UserInputDto userInputDto) {
-        User user = new User();
+    public User transferToUser(UserDto userDto) {
 
-        user.setUsername(userInputDto.getUsername());
-        user.setPassword(userInputDto.getPassword());
+        var user = new User();
+
+        user.setUsername(userDto.getUsername());
+        user.setPassword(userDto.getPassword());
+        user.setEnabled(userDto.getEnabled());
+        user.setApikey(userDto.getApikey());
+        user.setEmail(userDto.getEmail());
 
         return user;
-
     }
 
 }

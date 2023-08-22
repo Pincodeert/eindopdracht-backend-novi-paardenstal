@@ -15,6 +15,8 @@ public class Horse {
 
     private String name;
 
+    private String horseNumber;
+
     private String typeOfFeed;
 
     private String typeOfBedding;
@@ -25,8 +27,7 @@ public class Horse {
 
     private String telephoneOfVet;
 
-    //alternatief als variable binnen klasse Horse
-    //private byte[] LOB;
+    private String preferredSubscription;
 
     //upload als aparte klasse
     @OneToOne
@@ -43,11 +44,11 @@ public class Horse {
     @OneToOne(mappedBy = "horse")
     private Enrollment enrollment;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -57,6 +58,14 @@ public class Horse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getHorseNumber() {
+        return horseNumber;
+    }
+
+    public void setHorseNumber(String horseNumber) {
+        this.horseNumber = horseNumber;
     }
 
     public String getTypeOfFeed() {
@@ -97,6 +106,14 @@ public class Horse {
 
     public void setTelephoneOfVet(String telephoneOfVet) {
         this.telephoneOfVet = telephoneOfVet;
+    }
+
+    public String getPreferredSubscription() {
+        return preferredSubscription;
+    }
+
+    public void setPreferredSubscription(String preferredSubscription) {
+        this.preferredSubscription = preferredSubscription;
     }
 
     public FileUploadResponse getPassport() {

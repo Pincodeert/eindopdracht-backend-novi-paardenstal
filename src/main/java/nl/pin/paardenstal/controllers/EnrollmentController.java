@@ -41,20 +41,20 @@ public class EnrollmentController {
     }
 
     @GetMapping("/enrollments/{id}")
-    public ResponseEntity<EnrollmentDto> getEnrollmentById(@PathVariable long id) {
+    public ResponseEntity<EnrollmentDto> getEnrollmentById(@PathVariable Long id) {
         EnrollmentDto dto = enrollmentService.getEnrollmentById(id);
         return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/enrollments/{id}")
-    public ResponseEntity<Object> deleteEnrollment(@PathVariable long id) {
+    public ResponseEntity<Object> deleteEnrollment(@PathVariable Long id) {
         enrollmentService.deleteEnrollment(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/enrollments")
     public ResponseEntity<Object> assignCustomerToSubscription(@RequestBody EnrollmentInputDto input) {
-        Long newId = enrollmentService.assignCustomerToSubscription(input.id1, input.id2, input.id3, input.date);
+        Long newId = enrollmentService.assignCustomerToSubscription(input.subscriptionId, input.customerId, input.horseId, input.date);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newId).toUri();
@@ -70,7 +70,7 @@ public class EnrollmentController {
 
     @PatchMapping("/enrollments")
     public ResponseEntity<Object> terminateSubscription(@RequestBody EnrollmentInputDto input) {
-        enrollmentService.terminateSubscription(input.id1);
+        enrollmentService.terminateSubscription(input.subscriptionId);
         return ResponseEntity.noContent().build();
     }
 

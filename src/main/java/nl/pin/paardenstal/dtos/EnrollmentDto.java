@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class EnrollmentDto {
 
-    private long id;
+    private Long id;
 
     private LocalDate startDate;
 
@@ -16,16 +16,18 @@ public class EnrollmentDto {
 
     private boolean cancellationRequested;
 
+    private String horseNumber;
+
     private CustomerProfileDto customer;
     private SubscriptionDto subscription;
 
     private HorseDto horse;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -67,6 +69,14 @@ public class EnrollmentDto {
 
     public void setCancellationRequested(boolean cancellationRequested) {
         this.cancellationRequested = cancellationRequested;
+    }
+
+    public String getHorseNumber() {
+        return horseNumber;
+    }
+
+    public void setHorseNumber(String horseNumber) {
+        this.horseNumber = horseNumber;
     }
 
     public CustomerProfileDto getCustomer() {

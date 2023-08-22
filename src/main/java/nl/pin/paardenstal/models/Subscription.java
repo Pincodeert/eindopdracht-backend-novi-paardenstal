@@ -12,7 +12,7 @@ public class Subscription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String name;
     private double price;
@@ -25,11 +25,11 @@ public class Subscription {
     @JsonIgnore
     private List<Enrollment> enrollments;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

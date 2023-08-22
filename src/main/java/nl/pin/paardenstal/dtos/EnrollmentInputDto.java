@@ -4,11 +4,11 @@ import javax.validation.constraints.Min;
 
 public class EnrollmentInputDto {
 
-   public Long id1;
+   public Long subscriptionId;
 
-   public Long id2;
+   public Long customerId;
 
-   public Long id3;
+   public Long horseId;
 
    public String date;
 

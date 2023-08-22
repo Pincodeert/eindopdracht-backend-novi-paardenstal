@@ -7,7 +7,7 @@ import java.util.List;
 
 public class SubscriptionDto {
 
-    private long id;
+    private Long id;
 
     private String name;
 
@@ -19,11 +19,11 @@ public class SubscriptionDto {
 
     private List<EnrollmentDto> enrollments = new ArrayList<>();
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

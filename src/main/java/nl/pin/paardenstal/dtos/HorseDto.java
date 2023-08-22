@@ -6,6 +6,8 @@ public class HorseDto {
 
     private String name;
 
+    private String horseNumber;
+
     private String typeOfFeed;
 
     private String typeOfBedding;
@@ -15,6 +17,8 @@ public class HorseDto {
     private String residenceOfVet;
 
     private String telephoneOfVet;
+
+    private String preferredSubscription;
 
     private CustomerProfileDto owner;
 
@@ -35,6 +39,14 @@ public class HorseDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getHorseNumber() {
+        return horseNumber;
+    }
+
+    public void setHorseNumber(String horseNumber) {
+        this.horseNumber = horseNumber;
     }
 
     public String getTypeOfFeed() {
@@ -75,6 +87,14 @@ public class HorseDto {
 
     public void setTelephoneOfVet(String telephoneOfVet) {
         this.telephoneOfVet = telephoneOfVet;
+    }
+
+    public String getPreferredSubscription() {
+        return preferredSubscription;
+    }
+
+    public void setPreferredSubscription(String preferredSubscription) {
+        this.preferredSubscription = preferredSubscription;
     }
 
     public CustomerProfileDto getOwner() {

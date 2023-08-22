@@ -4,6 +4,8 @@ import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.HorseDto;
 import nl.pin.paardenstal.dtos.HorseInputDto;
 import nl.pin.paardenstal.dtos.StallDto;
+import nl.pin.paardenstal.exceptions.AlreadyAssignedException;
+import nl.pin.paardenstal.exceptions.NotYetRemovedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.models.FileUploadResponse;
@@ -50,12 +52,16 @@ public class HorseService {
                 CustomerProfileDto ownerDto = customerProfileService.transferToDto(h.getOwner());
                 dto.setOwnerDto(ownerDto);
             }
+            if(h.getStall() != null) {
+                StallDto stallDto = stallService.transferToDto(h.getStall());
+                dto.setStall(stallDto);
+            }
             dtos.add(dto);
         }
         return dtos;
     }
 
-    public HorseDto getHorse(long id){
+    public HorseDto getHorse(Long id){
         Optional<Horse> optionalHorse = horseRepository.findById(id);
 
         if(optionalHorse.isPresent()){
@@ -64,6 +70,10 @@ public class HorseService {
             if(optionalHorse.get().getOwner() != null) {
                 CustomerProfileDto ownerDto = customerProfileService.transferToDto(optionalHorse.get().getOwner());
                 horseDto.setOwnerDto(ownerDto);
+            }
+            if(optionalHorse.get().getStall() != null) {
+                StallDto stallDto = stallService.transferToDto(optionalHorse.get().getStall());
+                horseDto.setStall(stallDto);
             }
             return horseDto;
         } else {
@@ -85,14 +95,14 @@ public class HorseService {
         return dtos;
     }
 
-    public long addNewHorse(HorseInputDto horseInputDto){
+    public Long addNewHorse(HorseInputDto horseInputDto){
         Horse newHorse = transferToHorse(horseInputDto);
                 horseRepository.save(newHorse);
-        long newId = newHorse.getId();
+        Long newId = newHorse.getId();
         return newId;
     }
 
-    public void updateHorse(long id, HorseInputDto horseInputDto){
+    public void updateHorse(Long id, HorseInputDto horseInputDto){
         Optional<Horse> optionalHorse = horseRepository.findById(id);
 
         if (optionalHorse.isPresent()){
@@ -124,12 +134,26 @@ public class HorseService {
         }
     }
 
-    public void deleteHorse(long id) {
+    public void deleteHorse(Long id) {
 
         Optional<Horse> optionalHorse = horseRepository.findById(id);
 
         if (optionalHorse.isPresent()) {
-            horseRepository.deleteById(id);
+            Horse horse = optionalHorse.get();
+            if(horse.getStall() != null) {
+                throw new NotYetRemovedException("Verwijder eerst het paard uit de stal");
+                //alternatief voor de NotYetRemovedException. handelt de oorzaak voor de exception gelijk ook af.
+                //stallService.removeHorseFromStall(horse.getStall().getId());
+            }
+            if(horse.getEnrollment() != null) {
+                throw new NotYetRemovedException("Er loopt nog een abonnement. Beindig dit eerst.");
+            }
+            if(horse.getOwner() == null) {
+                horseRepository.delete(horse);
+            } else {
+                Horse unAssignedHorse = removeCustomerProfileFromHorse(horse);
+                horseRepository.delete(unAssignedHorse);
+            }
         } else {
             throw new RecordNotFoundException("sorry, can't find any horse by this ID");
         }
@@ -140,11 +164,13 @@ public class HorseService {
 
         dto.setId(horse.getId());
         dto.setName(horse.getName());
+        dto.setHorseNumber(horse.getHorseNumber());
         dto.setTypeOfFeed(horse.getTypeOfFeed());
         dto.setTypeOfBedding(horse.getTypeOfBedding());
         dto.setNameOfVet(horse.getNameOfVet());
         dto.setResidenceOfVet(horse.getResidenceOfVet());
         dto.setTelephoneOfVet(horse.getTelephoneOfVet());
+        dto.setPreferredSubscription(horse.getPreferredSubscription());
 
         return dto;
     }
@@ -153,13 +179,29 @@ public class HorseService {
         Horse horse = new Horse();
 
         horse.setName(horseInputDto.getName());
+        horse.setHorseNumber(horseInputDto.getHorseNumber());
         horse.setTypeOfFeed(horseInputDto.getTypeOfFeed());
         horse.setTypeOfBedding(horseInputDto.getTypeOfBedding());
         horse.setNameOfVet(horseInputDto.getNameOfVet());
         horse.setResidenceOfVet(horseInputDto.getResidenceOfVet());
         horse.setTelephoneOfVet(horseInputDto.getTelephoneOfVet());
+        horse.setPreferredSubscription(horseInputDto.getPreferredSubscription());
 
         return horse;
+    }
+
+    public void assignPassportToHorse(String fileName, Long horseId) {
+        Optional<Horse> optionalHorse = horseRepository.findById(horseId);
+        Optional<FileUploadResponse> fileUploadResponse = fileUploadRepository.findByFileName(fileName);
+
+        if (optionalHorse.isPresent() && fileUploadResponse.isPresent()) {
+            Horse horse = optionalHorse.get();
+            FileUploadResponse passport = fileUploadResponse.get();
+            horse.setPassport(passport);
+            horseRepository.save(horse);
+        } else {
+            throw new RecordNotFoundException("kan geen paard met deze Id vinden");
+        }
     }
 
     public void assignCustomerProfileToHorse(Long horseId, Long ownerId) {
@@ -178,17 +220,10 @@ public class HorseService {
         }
     }
 
-    public void assignPassportToHorse(String fileName, Long horseId) {
-        Optional<Horse> optionalHorse = horseRepository.findById(horseId);
-        Optional<FileUploadResponse> fileUploadResponse = fileUploadRepository.findByFileName(fileName);
-
-        if (optionalHorse.isPresent() && fileUploadResponse.isPresent()) {
-            Horse horse = optionalHorse.get();
-            FileUploadResponse passport = fileUploadResponse.get();
-            horse.setPassport(passport);
-            horseRepository.save(horse);
-        } else {
-            throw new RecordNotFoundException("kan geen paard met deze Id vinden");
-        }
+    public Horse removeCustomerProfileFromHorse(Horse horse) {
+            horse.setOwner(null);
+            Horse lonelyHorse = horseRepository.save(horse);
+            return lonelyHorse;
     }
+
 }

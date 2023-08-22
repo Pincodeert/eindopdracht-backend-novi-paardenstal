@@ -40,7 +40,7 @@ public class CustomerProfileController {
     }
 
     @GetMapping("/customerprofiles/{id}")
-    public ResponseEntity<CustomerProfileDto> getCustomerProfile(@PathVariable long id){
+    public ResponseEntity<CustomerProfileDto> getCustomerProfile(@PathVariable Long id){
         CustomerProfileDto dto = customerProfileService.getCustomerProfile(id);
         return ResponseEntity.ok(dto);
     }
@@ -57,7 +57,7 @@ public class CustomerProfileController {
             return ResponseEntity.badRequest().body(stringBuilder.toString());
         } else {
 
-            long newId = customerProfileService.createNewCustomerProfile(customerInputDto);
+            Long newId = customerProfileService.createNewCustomerProfile(customerInputDto);
 
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                     .buildAndExpand(newId).toUri();
@@ -67,21 +67,21 @@ public class CustomerProfileController {
     }
 
     @DeleteMapping("/customerprofiles/{id}")
-    public ResponseEntity<Object> deleteCustomerProfile(@PathVariable long id){
+    public ResponseEntity<Object> deleteCustomerProfile(@PathVariable Long id){
         customerProfileService.deleteCustomerProfile(id);
         return ResponseEntity.noContent().build();
     }
 
     //PutMapping overbodig en niet realistisch
     @PutMapping("/customerprofiles/{id}")
-    public ResponseEntity<Object> updateCustomerProfile(@PathVariable long id, @RequestBody CustomerProfileInputDto
+    public ResponseEntity<Object> updateCustomerProfile(@PathVariable Long id, @RequestBody CustomerProfileInputDto
             inputDto){
         customerProfileService.updateCustomerProfile(id, inputDto);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/customerprofiles/{id}")
-    public ResponseEntity<Object> partialUpdateCustomerProfile(@PathVariable long id, @Valid
+    public ResponseEntity<Object> partialUpdateCustomerProfile(@PathVariable Long id, @Valid
                                                                @RequestBody CustomerProfileInputDto inputDto,
                                                                BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
@@ -97,11 +97,11 @@ public class CustomerProfileController {
         }
     }
 
-    @PutMapping("/customerprofiles/{id}/user")
-    public ResponseEntity<Object> assignUserToCustomerProfile(@PathVariable long id, @RequestBody IdInputDto userInput){
+    /*@PutMapping("/customerprofiles/{id}/user")
+    public ResponseEntity<Object> assignUserToCustomerProfile(@PathVariable Long id, @RequestBody IdInputDto userInput){
         customerProfileService.assignUserToCustomerProfile(id, userInput.id);
         return ResponseEntity.noContent().build();
-    }
+    }*/
 
     @GetMapping("/customerprofiles/{id}/enrollments")
     public ResponseEntity<List<EnrollmentDto>> getAllEnrollmentsByCustomerProfileId(@PathVariable Long id) {

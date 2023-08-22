@@ -63,7 +63,7 @@ public class HorseController {
             }
             return ResponseEntity.badRequest().body(stringBuilder.toString());
         } else {
-            long newId = horseService.addNewHorse(horseInputDto);
+            Long newId = horseService.addNewHorse(horseInputDto);
 
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                     .buildAndExpand(newId).toUri();
@@ -95,7 +95,7 @@ public class HorseController {
     }
 
     @PutMapping("/horses/{id}/customerprofile")
-    public ResponseEntity<Object> assignCustomerProfileToHorse(@PathVariable Long horseId, @RequestBody IdInputDto input) {
+    public ResponseEntity<Object> assignCustomerProfileToHorse(@PathVariable("id") Long horseId, @RequestBody IdInputDto input) {
         horseService.assignCustomerProfileToHorse(horseId, input.id);
         return ResponseEntity.noContent().build();
     }
