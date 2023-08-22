@@ -2,15 +2,19 @@ package nl.pin.paardenstal.dtos;
 
 import nl.pin.paardenstal.models.Authority;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 public class UserDto {
 
-
+    @Size(min=8, max=20, message = "username moet tussen 8 en 20 tekens bevatten")
     public String username;
+    @Size(min=8, max=20, message = "password moet tussen 8 en 20 tekens bevatten")
     public String password;
     public boolean enabled;
     public String apikey;
+    @Email(message = "ongeldig emailadres")
     public String email;
     public Set<Authority> authorities;
 

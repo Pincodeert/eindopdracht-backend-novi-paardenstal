@@ -54,8 +54,18 @@ VALUES
 ('Ma Dalton abonnement', 499.95, 'halfpension', 'grote buitenstal'),
 ('Rataplan abonnement', 489.95, 'volpension', 'grote buitenstal');
 
+-- password = "password" (dit comment is een security lek, zet dit nooit in je code.
+-- Als je hier je plaintext password niet meer weet, moet je een nieuw password encrypted)
+INSERT INTO users (username, password, email, enabled)
+VALUES
+('foreveryoung', '$2a$12$eD6u67c59rwGghmlYmykWeDjyScFK4c.L1Q6a.MgGS90ooTR8jSx6','neil.young@harvestmoon.com', TRUE),
+('dirtyharry', '$2a$12$WBWNCazStJW.XImY1iMmreBg2MinjUD7KJADELS9Pb6T4F9ony0WS', 'make@myday.com', TRUE);
 
-
+INSERT INTO authorities (username, authority)
+VALUES
+('foreveryoung', 'ROLE_USER'),
+('dirtyharry', 'ROLE_USER'),
+('dirtyharry', 'ROLE_ADMIN');
 
 
 INSERT INTO enrollments(start_date, expire_date, duration, is_ongoing, cancellation_requested, horse_number, subscription_id,
