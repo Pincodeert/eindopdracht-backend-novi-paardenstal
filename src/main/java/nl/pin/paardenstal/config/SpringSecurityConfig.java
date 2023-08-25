@@ -88,7 +88,7 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.GET, "/stalls/type/{type}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/stalls/{id}/horse").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/stalls/{id}").hasRole("ADMIN")
-                //nog een delete methode maken?
+                .antMatchers(HttpMethod.DELETE, "/stalls/{id}").hasRole("ADMIN")
 
                 .antMatchers(HttpMethod.POST, "/horses").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.GET, "/horses").hasRole("ADMIN")
@@ -104,7 +104,7 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.GET, "/subscriptions").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/subscriptions/{id}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/subscriptions/{id}/enrollments").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "subscriptions/enrollments/{subscriptionId}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/subscriptions/enrollments/{subscriptionId}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/subscriptions/{id}").hasRole("ADMIN")
 
                 //via dit path gebruik te mkane van 2 constructors
@@ -113,8 +113,8 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.GET, "/enrollments/{id}").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.PATCH, "/enrollments/{id}").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.PATCH, "/enrollments").hasRole("ADMIN")
-                // delete methode verwijderen?
                 .antMatchers(HttpMethod.DELETE, "/enrollments").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/enrollments/{id}").hasRole("ADMIN")
 
 
                 .antMatchers(HttpMethod.POST, "/upload").hasAnyRole("USER","ADMIN")

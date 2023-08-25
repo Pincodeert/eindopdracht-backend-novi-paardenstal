@@ -85,4 +85,10 @@ public class StallController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/stalls/{id}")
+    public ResponseEntity<Object> deleteStall(@PathVariable Long id) {
+        stallService.deleteStall(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -68,9 +68,19 @@ public class EnrollmentController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/enrollments")
+    //dit klopt niet. input is SubscriptionId, maar wenselijk is EnrollmentId. De service methode werkt wel met EnrollmentId.
+    // of wel aan de EnrollmentInputDto een EnrollmentId toevoegen, of wel deze methode via update-endpoint in de
+    // zdezelfde service methode opnemen
+    /*@PatchMapping("/enrollments")
     public ResponseEntity<Object> terminateSubscription(@RequestBody EnrollmentInputDto input) {
         enrollmentService.terminateSubscription(input.subscriptionId);
+        return ResponseEntity.noContent().build();
+    }*/
+
+    // dit pad bestaat al. (askForCancellation). wat nu?
+    @PutMapping("/enrollments/{id}")
+    public ResponseEntity<Object> updateEnrollment(@PathVariable Long id, @RequestBody EnrollmentInputDto enrollmentInputDto) {
+        enrollmentService.updateEnrollment(id, enrollmentInputDto);
         return ResponseEntity.noContent().build();
     }
 

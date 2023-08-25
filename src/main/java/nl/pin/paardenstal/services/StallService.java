@@ -3,6 +3,7 @@ package nl.pin.paardenstal.services;
 import nl.pin.paardenstal.dtos.*;
 import nl.pin.paardenstal.exceptions.AlreadyAssignedException;
 import nl.pin.paardenstal.exceptions.NotYetAssignedException;
+import nl.pin.paardenstal.exceptions.NotYetRemovedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.models.Stall;
@@ -170,6 +171,22 @@ public class StallService {
             throw new RecordNotFoundException("geen stal met deze id bekend");
         } else if (optionalStall.get().getHorse() == null) {
             throw new NotYetAssignedException("er staat helemaal geen paard in deze stal");
+        }
+    }
+
+    public void deleteStall(Long id) {
+        Optional<Stall> optionalStall = stallRepository.findById(id);
+
+        if(optionalStall.isPresent()) {
+            Stall stall = optionalStall.get();
+
+            if(stall.getHorse() != null) {
+                throw new NotYetRemovedException("er staat nog een paard in deze stal. verwijder die eerst");
+            }
+            stallRepository.delete(stall);
+
+        } else {
+            throw new RecordNotFoundException("kan geen stal vinden met deze id");
         }
     }
 
