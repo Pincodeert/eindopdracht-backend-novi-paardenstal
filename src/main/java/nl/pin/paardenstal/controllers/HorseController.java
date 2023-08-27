@@ -25,28 +25,28 @@ public class HorseController {
 
     private final FileController fileController;
 
-    @Autowired
+    //@Autowired
     public HorseController(HorseService horseService, FileController fileController){
         this.horseService = horseService;
         this.fileController = fileController;
     }
 
     @GetMapping("/horses")
-    @Transactional
+    //@Transactional
     public ResponseEntity<List<HorseDto>> getAllHorses(){
         List<HorseDto> horseDtos = horseService.getAllHorses();
         return ResponseEntity.ok(horseDtos);
     }
 
     @GetMapping("/horses/{id}")
-    @Transactional
+    //@Transactional
     public ResponseEntity<HorseDto> getHorse(@PathVariable Long id){
         HorseDto horseDto = horseService.getHorse(id);
         return ResponseEntity.ok(horseDto);
     }
 
     @GetMapping("/horses/customerprofile")
-    @Transactional
+    //@Transactional
     public ResponseEntity<List<HorseDto>> getAllHorsesByCustomerProfileId(@RequestBody IdInputDto input) {
         List<HorseDto> dtos = horseService.getAllHorsesByCustomerProfileId(input.id);
         return ResponseEntity.ok(dtos);
@@ -72,12 +72,6 @@ public class HorseController {
         }
     }
 
-    @DeleteMapping("/horses/{id}")
-    public ResponseEntity<Object> deleteHorse(@PathVariable Long id){
-        horseService.deleteHorse(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @PatchMapping("/horses/{id}")
     public ResponseEntity<Object> updateHorse(@PathVariable Long id, @Valid @RequestBody HorseInputDto horseInputDto,
                                               BindingResult bindingResult){
@@ -92,6 +86,12 @@ public class HorseController {
             horseService.updateHorse(id, horseInputDto);
             return ResponseEntity.noContent().build();
         }
+    }
+
+    @DeleteMapping("/horses/{id}")
+    public ResponseEntity<Object> deleteHorse(@PathVariable Long id){
+        horseService.deleteHorse(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/horses/{id}/customerprofile")

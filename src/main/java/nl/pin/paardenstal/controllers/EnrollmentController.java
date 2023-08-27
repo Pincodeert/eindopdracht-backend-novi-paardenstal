@@ -19,7 +19,7 @@ public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
 
-    @Autowired
+    //@Autowired
     public EnrollmentController (EnrollmentService enrollmentService) {
         this.enrollmentService = enrollmentService;
     }

@@ -33,7 +33,7 @@ public class EnrollmentService {
     private final HorseRepository horseRepository;
     private final HorseService horseService;
 
-    @Autowired
+    //@Autowired
     public EnrollmentService(EnrollmentRepository enrollmentRepository,
                              SubscriptionRepository subscriptionRepository,
                              SubscriptionService subscriptionService,
@@ -186,6 +186,71 @@ public class EnrollmentService {
         return ongoingEnrollments;
     }
 
+    //berekent en geeft terug de totale prijs van de inschrijvingen op een abonnement van een specifieke klant
+    public BigDecimal getTotalPriceOfAssignedSubscriptionsByCustomerId(Long customerProfileId) {
+        //default-waarde van een double is al 0. hoeven we hier dus niet apart te declareren.
+        double totalPrice = 0;
+        List<Enrollment> enrollment = enrollmentRepository.findAllByCustomerProfileId(customerProfileId);
+
+        for(Enrollment e: enrollment) {
+            double price = e.getSubscription().getPrice();
+            totalPrice += price;
+        }
+        BigDecimal roundedPrice = new BigDecimal(totalPrice).setScale(2, RoundingMode.HALF_UP);
+        return roundedPrice;
+    }
+
+    // zorgt ervoor dat een klant voor een bepaald paard een bepaald abonnement wordt ingeschreven en waarbij er een
+    // inschrijving (enrollment-object) wordt aangemaakt waarbij deze drie aan elkaar gekoppeld zijn en de datum van
+    // inschrijving wordt toegevoegd.
+    public Long assignCustomerToSubscription(Long subscriptionId, Long customerId, Long horseId, String date) {
+        Optional<Subscription> optionalSubscription = subscriptionRepository.findById(subscriptionId);
+        Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(customerId);
+        Optional<Horse> optionalHorse = horseRepository.findById(horseId);
+
+        if (optionalSubscription.isPresent() && optionalCustomerProfile.isPresent() && optionalHorse.isPresent()){
+            Subscription subscription = optionalSubscription.get();
+            CustomerProfile customer = optionalCustomerProfile.get();
+            Horse horse = optionalHorse.get();
+
+            //zorgt ervoor dat de applicatie niet vastloopt, wanneer (per ongeluk) een horseId wordt opgegeven dat al
+            // gekoppeld is aan een enrollment
+            if(horse.getEnrollment() != null) {
+                throw new AlreadyAssignedException("This horse already has a subscription");
+            } //zorgt ervoor dat een paard altijd gekoppeld moet zijn aan een stal om een abonnement te kunnen afsluiten:
+            else if (horse.getStall() == null) {
+                throw new NotYetAssignedException("Horse must be assigned to a stall first");
+            } else if(date != null){
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy");
+                LocalDate futureDate = LocalDate.parse(date, formatter);
+                Enrollment enrollment = new Enrollment(subscription, customer, horse, futureDate);
+                Enrollment newEnrollment = enrollmentRepository.save(enrollment);
+
+                Long newId = newEnrollment.getId();
+                return newId;
+            } else {
+                Enrollment enrollment = new Enrollment(subscription, customer, horse);
+                Enrollment newEnrollment = enrollmentRepository.save(enrollment);
+
+                Long newId = newEnrollment.getId();
+                return newId;
+            }
+        } else if (!optionalSubscription.isPresent()) {
+            throw new RecordNotFoundException("There's no subscruption with this ID");
+        } else if (!optionalCustomerProfile.isPresent()){
+            throw new RecordNotFoundException("There's no customer with this ID");
+        } else if (!optionalSubscription.isPresent()) {
+            throw new RecordNotFoundException("There's no subscription with this ID");
+        } else if (!optionalHorse.isPresent()) {
+            throw new RecordNotFoundException("There's no horse with this ID");
+            // De if-statement hier weggehaald, omdat anders om return-waarde blijft vragen.
+        } else //if (!optionalCustomerProfile.isPresent())
+        {
+            throw new RecordNotFoundException("There's no customer with this ID");
+        }
+        //return null;
+    }
+
     public void deleteEnrollment(Long id) {
         Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(id);
         if(optionalEnrollment.isPresent()){
@@ -221,58 +286,6 @@ public class EnrollmentService {
     }
 
 
-    // zorgt ervoor dat een klant voor een bepaald paard een bepaald abonnement wordt ingeschreven en waarbij er een
-    // inschrijving (enrollment-object) wordt aangemaakt waarbij deze drie aan elkaar gekoppeld zijn en de datum van
-    // inschrijving wordt toegevoegd.
-    public Long assignCustomerToSubscription(Long subscriptionId, Long customerId, Long horseId, String date) {
-        Optional<Subscription> optionalSubscription = subscriptionRepository.findById(subscriptionId);
-        Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(customerId);
-        Optional<Horse> optionalHorse = horseRepository.findById(horseId);
-
-        if (optionalSubscription.isPresent() && optionalCustomerProfile.isPresent() && optionalHorse.isPresent()){
-            Subscription subscription = optionalSubscription.get();
-            CustomerProfile customer = optionalCustomerProfile.get();
-            Horse horse = optionalHorse.get();
-
-            //zorgt ervoor dat de applicatie niet vastloopt, wanneer (per ongeluk) een horseId wordt opgegeven dat al
-            // gekoppeld is aan een enrollment
-            if(horse.getEnrollment() != null) {
-                throw new AlreadyAssignedException("This horse already has a subscription");
-            } //zorgt ervoor dat een paard altijd gekoppeld moet zijn aan een stal om een abonnement te kunnen afsluiten:
-              else if (horse.getStall() == null) {
-                throw new NotYetAssignedException("Horse must be assigned to a stall first");
-            } else if(date != null){
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy");
-                LocalDate futureDate = LocalDate.parse(date, formatter);
-                Enrollment enrollment = new Enrollment(subscription, customer, horse, futureDate);
-                Enrollment newEnrollment = enrollmentRepository.save(enrollment);
-
-                Long newId = newEnrollment.getId();
-                return newId;
-            } else {
-                Enrollment enrollment = new Enrollment(subscription, customer, horse);
-                Enrollment newEnrollment = enrollmentRepository.save(enrollment);
-
-                Long newId = newEnrollment.getId();
-                return newId;
-            }
-
-        } else if (!optionalSubscription.isPresent()) {
-            throw new RecordNotFoundException("There's no subscruption with this ID");
-        } else if (!optionalCustomerProfile.isPresent()){
-            throw new RecordNotFoundException("There's no customer with this ID");
-        } else if (!optionalSubscription.isPresent()) {
-            throw new RecordNotFoundException("There's no subscription with this ID");
-        } else if (!optionalHorse.isPresent()) {
-            throw new RecordNotFoundException("There's no horse with this ID");
-            // De if-statement hier weggehaald, omdat anders om return-waarde blijft vragen.
-        } else //if (!optionalCustomerProfile.isPresent())
-        {
-            throw new RecordNotFoundException("There's no customer with this ID");
-        }
-        //return null;
-    }
-
     // regelt dat er een verzoek tot annulering gedaan kan worden
     public void askForCancellation(Long enrollmentId) {
         Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(enrollmentId);
@@ -302,19 +315,7 @@ public class EnrollmentService {
     }
 
 
-    //berekent en geeft terug de totale prijs van de inschrijvingen op een abonnement van een specifieke klant
-    public BigDecimal getTotalPriceOfAssignedSubscriptionsByCustomerId(Long customerProfileId) {
-        //default-waarde van een double is al 0. hoeven we hier dus niet apart te declareren.
-        double totalPrice = 0;
-        List<Enrollment> enrollment = enrollmentRepository.findAllByCustomerProfileId(customerProfileId);
 
-        for(Enrollment e: enrollment) {
-            double price = e.getSubscription().getPrice();
-            totalPrice += price;
-        }
-        BigDecimal roundedPrice = new BigDecimal(totalPrice).setScale(2, RoundingMode.HALF_UP);
-        return roundedPrice;
-    }
 
     public void updateEnrollment(Long id, EnrollmentInputDto enrollmentInputDto) {
         Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(id);

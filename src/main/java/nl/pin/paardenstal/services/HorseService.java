@@ -31,7 +31,7 @@ public class HorseService {
     private final StallService stallService;
     private final FileUploadRepository fileUploadRepository;
 
-    @Autowired
+    //@Autowired
     public HorseService(HorseRepository horseRepository, CustomerProfileRepository customerProfileRepository,
                         @Lazy CustomerProfileService customerProfileService, @Lazy StallService stallService,
                         FileUploadRepository fileUploadRepository){
@@ -168,6 +168,12 @@ public class HorseService {
         }
     }
 
+    public Horse removeCustomerProfileFromHorse(Horse horse) {
+        horse.setOwner(null);
+        Horse lonelyHorse = horseRepository.save(horse);
+        return lonelyHorse;
+    }
+
     public HorseDto transferToDto(Horse horse){
         HorseDto dto = new HorseDto();
 
@@ -199,20 +205,6 @@ public class HorseService {
         return horse;
     }
 
-    public void assignPassportToHorse(String fileName, Long horseId) {
-        Optional<Horse> optionalHorse = horseRepository.findById(horseId);
-        Optional<FileUploadResponse> fileUploadResponse = fileUploadRepository.findByFileName(fileName);
-
-        if (optionalHorse.isPresent() && fileUploadResponse.isPresent()) {
-            Horse horse = optionalHorse.get();
-            FileUploadResponse passport = fileUploadResponse.get();
-            horse.setPassport(passport);
-            horseRepository.save(horse);
-        } else {
-            throw new RecordNotFoundException("kan geen paard met deze Id vinden");
-        }
-    }
-
     public void assignCustomerProfileToHorse(Long horseId, Long ownerId) {
         Optional<Horse> optionalHorse = horseRepository.findById(horseId);
         Optional<CustomerProfile> optionalOwner = customerProfileRepository.findById(ownerId);
@@ -229,10 +221,18 @@ public class HorseService {
         }
     }
 
-    public Horse removeCustomerProfileFromHorse(Horse horse) {
-            horse.setOwner(null);
-            Horse lonelyHorse = horseRepository.save(horse);
-            return lonelyHorse;
+    public void assignPassportToHorse(String fileName, Long horseId) {
+        Optional<Horse> optionalHorse = horseRepository.findById(horseId);
+        Optional<FileUploadResponse> fileUploadResponse = fileUploadRepository.findByFileName(fileName);
+
+        if (optionalHorse.isPresent() && fileUploadResponse.isPresent()) {
+            Horse horse = optionalHorse.get();
+            FileUploadResponse passport = fileUploadResponse.get();
+            horse.setPassport(passport);
+            horseRepository.save(horse);
+        } else {
+            throw new RecordNotFoundException("kan geen paard met deze Id vinden");
+        }
     }
 
 }

@@ -27,7 +27,7 @@ public class CustomerProfileService {
     private final HorseService horseService;
 
 
-    @Autowired
+    //@Autowired
     public CustomerProfileService(CustomerProfileRepository customerProfileRepository,
                                   UserRepository userRepository,
                                   UserService userService, HorseService horseService
@@ -72,11 +72,52 @@ public class CustomerProfileService {
 
     }
 
+
+
     public Long createNewCustomerProfile(CustomerProfileInputDto inputDto){
         CustomerProfile newCustomerProfile = transferToCustomerProfile(inputDto);
                 customerProfileRepository.save(newCustomerProfile);
         Long id = newCustomerProfile.getId();
         return id;
+    }
+
+    public void updateCustomerProfile(Long id, CustomerProfileInputDto inputDto){
+        Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
+
+        if(optionalCustomerProfile.isPresent()){
+            CustomerProfile storedCustomerProfile = customerProfileRepository.findById(id).orElse(null);
+            CustomerProfile customerProfile = transferToCustomerProfile(inputDto);
+            if(customerProfile.getFirstName()!= null && !customerProfile.getFirstName().isEmpty()){
+                storedCustomerProfile.setFirstName(customerProfile.getFirstName());
+            }
+            if(customerProfile.getLastName() != null && !customerProfile.getLastName().isEmpty()){
+                storedCustomerProfile.setLastName(customerProfile.getLastName());
+            }
+            if(customerProfile.getStreet() != null && !customerProfile.getStreet().isEmpty()){
+                storedCustomerProfile.setStreet(customerProfile.getStreet());
+            }
+            if(customerProfile.getHouseNumber() != null && !customerProfile.getHouseNumber().isEmpty()){
+                storedCustomerProfile.setHouseNumber(customerProfile.getHouseNumber());
+            }
+            if(customerProfile.getPostalCode() != null && !customerProfile.getPostalCode().isEmpty()){
+                storedCustomerProfile.setPostalCode(customerProfile.getPostalCode());
+            }
+            if(customerProfile.getResidence() != null && !customerProfile.getResidence().isEmpty()){
+                storedCustomerProfile.setResidence(customerProfile.getResidence());
+            }
+            if(customerProfile.getTelephoneNumber() != null && !customerProfile.getTelephoneNumber().isEmpty()){
+                storedCustomerProfile.setTelephoneNumber(customerProfile.getTelephoneNumber());
+            }
+            if(customerProfile.getEmailAddress() != null && !customerProfile.getEmailAddress().isEmpty()){
+                storedCustomerProfile.setEmailAddress(customerProfile.getEmailAddress());
+            }
+            if(customerProfile.getBankAccountNumber() !=null && !customerProfile.getBankAccountNumber().isEmpty()){
+                storedCustomerProfile.setBankAccountNumber(customerProfile.getBankAccountNumber());
+            }
+            customerProfileRepository.save(storedCustomerProfile);
+        } else {
+            throw new RecordNotFoundException("Geen klant bekend met deze ID");
+        }
     }
 
     public void deleteCustomerProfile(Long id){
@@ -114,58 +155,6 @@ public class CustomerProfileService {
             customerProfileRepository.deleteById(id);
         } else {
             throw new RecordNotFoundException("This Id doesn't exist");
-        }
-    }
-
-    public void updateCustomerProfile(Long id, CustomerProfileInputDto inputDto){
-        Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
-
-        if(optionalCustomerProfile.isPresent()){
-            CustomerProfile storedCustomerProfile = optionalCustomerProfile.get();
-            CustomerProfile customerProfile = transferToCustomerProfile(inputDto);
-            customerProfile.setId(storedCustomerProfile.getId());
-            customerProfileRepository.save(customerProfile);
-        } else {
-            throw new RecordNotFoundException("This ID doesn't exist");
-        }
-    }
-
-    public void partialUpdateCustomerProfile(Long id, CustomerProfileInputDto inputDto){
-        Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
-
-        if(optionalCustomerProfile.isPresent()){
-            CustomerProfile storedCustomerProfile = customerProfileRepository.findById(id).orElse(null);
-            CustomerProfile customerProfile = transferToCustomerProfile(inputDto);
-            //if(customerProfile.getFirstName()!= null && !customerProfile.getFirstName().isEmpty()){
-            //    storedCustomerProfile.setFirstName(customerProfile.getFirstName());
-            //}
-            //if(customerProfile.getLastName() != null && !customerProfile.getLastName().isEmpty()){
-            //    storedCustomerProfile.setLastName(customerProfile.getLastName());
-            //}
-            if(customerProfile.getStreet() != null && !customerProfile.getStreet().isEmpty()){
-                storedCustomerProfile.setHouseNumber(customerProfile.getHouseNumber());
-            }
-            if(customerProfile.getHouseNumber() != null && !customerProfile.getHouseNumber().isEmpty()){
-                storedCustomerProfile.setHouseNumber(customerProfile.getHouseNumber());
-            }
-            if(customerProfile.getPostalCode() != null && !customerProfile.getPostalCode().isEmpty()){
-                storedCustomerProfile.setPostalCode(customerProfile.getPostalCode());
-            }
-            if(customerProfile.getResidence() != null && !customerProfile.getResidence().isEmpty()){
-                storedCustomerProfile.setResidence(customerProfile.getResidence());
-            }
-            if(customerProfile.getTelephoneNumber() != null && !customerProfile.getTelephoneNumber().isEmpty()){
-                storedCustomerProfile.setTelephoneNumber(customerProfile.getTelephoneNumber());
-            }
-            if(customerProfile.getEmailAddress() != null && !customerProfile.getEmailAddress().isEmpty()){
-                storedCustomerProfile.setEmailAddress(customerProfile.getEmailAddress());
-            }
-            if(customerProfile.getBankAccountNumber() !=null && !customerProfile.getBankAccountNumber().isEmpty()){
-                storedCustomerProfile.setBankAccountNumber(customerProfile.getBankAccountNumber());
-            }
-            customerProfileRepository.save(storedCustomerProfile);
-        } else {
-            throw new RecordNotFoundException("Geen klant bekend met deze ID");
         }
     }
 

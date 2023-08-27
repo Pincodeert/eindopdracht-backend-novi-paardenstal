@@ -25,7 +25,7 @@ public class StallController {
 
     private final StallService stallService;
 
-    @Autowired
+    //@Autowired
     public StallController(StallService stallService){
         this.stallService = stallService;
     }

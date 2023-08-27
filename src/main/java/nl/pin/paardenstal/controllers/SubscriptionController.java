@@ -26,7 +26,7 @@ public class SubscriptionController {
     private final SubscriptionService subscriptionService;
     private final EnrollmentService enrollmentService;
 
-    @Autowired
+    //@Autowired
     public SubscriptionController(SubscriptionService subscriptionService, EnrollmentService enrollmentService){
         this.subscriptionService = subscriptionService;
         this.enrollmentService = enrollmentService;

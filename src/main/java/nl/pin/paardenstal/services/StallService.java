@@ -27,7 +27,7 @@ public class StallService {
 
 
 
-    @Autowired
+    //@Autowired
     public StallService(StallRepository stallRepository,
                         HorseRepository horseRepository,
                         HorseService horseService,
