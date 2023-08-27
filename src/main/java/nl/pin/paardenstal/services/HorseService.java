@@ -48,13 +48,16 @@ public class HorseService {
 
         for(Horse h: horses){
             HorseDto dto = transferToDto(h);
-            if(h.getOwner() != null){
+            if(h.getOwner() != null) {
                 CustomerProfileDto ownerDto = customerProfileService.transferToDto(h.getOwner());
-                dto.setOwnerDto(ownerDto);
+                dto.setOwner(ownerDto);
             }
             if(h.getStall() != null) {
                 StallDto stallDto = stallService.transferToDto(h.getStall());
                 dto.setStall(stallDto);
+            }
+            if(h.getPassport() != null) {
+                dto.setPassport(h.getPassport());
             }
             dtos.add(dto);
         }
@@ -69,11 +72,14 @@ public class HorseService {
 
             if(optionalHorse.get().getOwner() != null) {
                 CustomerProfileDto ownerDto = customerProfileService.transferToDto(optionalHorse.get().getOwner());
-                horseDto.setOwnerDto(ownerDto);
+                horseDto.setOwner(ownerDto);
             }
             if(optionalHorse.get().getStall() != null) {
                 StallDto stallDto = stallService.transferToDto(optionalHorse.get().getStall());
                 horseDto.setStall(stallDto);
+            }
+            if(optionalHorse.get().getPassport() != null) {
+                horseDto.setPassport(optionalHorse.get().getPassport());
             }
             return horseDto;
         } else {
@@ -89,6 +95,9 @@ public class HorseService {
             if(h.getStall() != null) {
                 StallDto stallDto = stallService.transferToDto(h.getStall());
                 dto.setStall(stallDto);
+            }
+            if(h.getPassport() != null) {
+                dto.setPassport(h.getPassport());
             }
             dtos.add(dto);
         }

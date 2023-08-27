@@ -59,6 +59,29 @@ public class SubscriptionService {
         return newId;
     }
 
+    public void updateSubscription(Long id, SubscriptionInputDto inputDto) {
+        Optional<Subscription> optionalSubscription = subscriptionRepository.findById(id);
+
+        if(optionalSubscription.isPresent()) {
+            Subscription storedSubscription = optionalSubscription.get();
+            if (inputDto.getName() != null && !inputDto.getName().isEmpty()) {
+                storedSubscription.setName(inputDto.getName());
+            }
+            if (inputDto.getPrice() > 0.0) {
+                storedSubscription.setPrice(inputDto.getPrice());
+            }
+            if (inputDto.getTypeOfCare() != null && !inputDto.getTypeOfCare().isEmpty()) {
+                storedSubscription.setTypeOfCare(inputDto.getTypeOfCare());
+            }
+            if (inputDto.getTypeOfStall() != null && !inputDto.getTypeOfStall().isEmpty()) {
+                storedSubscription.setTypeOfCare(inputDto.getTypeOfCare());
+            }
+            subscriptionRepository.save(storedSubscription);
+        } else {
+            throw new RecordNotFoundException("no subsription known by this ID");
+        }
+    }
+
     //delete een subscription op voorwaarde dat het geen lopende abonnementen (Enrollments met isOngoing = true) (meer)
     // bevat. Als het wel nog lopende abonnementen bevat geeft het een melding hiervan.
     public void deleteSubscription(Long id){

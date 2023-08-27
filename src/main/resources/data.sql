@@ -1,12 +1,25 @@
-INSERT INTO customerprofiles(first_name, last_name, street, house_number, postal_code, residence, telephone_number, email_address, bank_account_number)
+INSERT INTO users (username, password, email, enabled)
 VALUES
-('Neil', 'Young', 'Country Lane', '1120', '2230', 'Albuquerque', '0612121212', 'neil.young@harvestmoon.com', '76CASH0123456789'),
-('Jon', 'Bonjovi', 'Lost Highway', '7800','5588', 'Sayreville', '0677119966', 'jon.bonjovi@badmedicine.com', '12ROCK0135792468'),
-('Barry', 'Hay', 'Radarweg', '179', '7754', 'Willemstad', '0658972311', 'barry.hay@goingtotherun.com', '83EARS0987654321'),
-('Eddie', 'Vedder', 'Long Road', '10', '2208','Seattle', '0657993254', 'eddie.vedder@stillalive.com', '10EVEN05544332211'),
-('Mick', 'Jagger', 'Sympathy Road', '12', '3333', 'Richmond', '0677336611', 'mick.jagger@movelikeme.com', '12HORS0639008652'),
-('Rocky', 'Balboa', 'Stair Way', '118A', '1876', 'Philadelphia', '0629983321', 'rocky.balboa@adrian.com', '88BOKS0777444999'),
-('Axl', 'Rose', 'Road to Nowhere', '1', '8854', 'Paradise City', '0691827364', 'axl.rose@youcouldbemine.com', '43ROSE0843223859');
+('dirtyharry', '$2a$12$WBWNCazStJW.XImY1iMmreBg2MinjUD7KJADELS9Pb6T4F9ony0WS', 'make@myday.com', TRUE),
+('foreveryoung', '$2a$12$eD6u67c59rwGghmlYmykWeDjyScFK4c.L1Q6a.MgGS90ooTR8jSx6','neil.young@harvestmoon.com', TRUE),
+('jonbovi', '$2a$12$wFXOyRnByrwMEqWaAdugz.Un8iZIMh9.d4XavpogIgy96hXY/BYqe', 'jon.bonjovi@badmedicine.com', TRUE);
+
+INSERT INTO authorities (username, authority)
+VALUES
+('dirtyharry', 'ROLE_USER'),
+('foreveryoung', 'ROLE_USER'),
+('dirtyharry', 'ROLE_ADMIN'),
+('jonbovi', 'ROLE_USER');
+
+INSERT INTO customerprofiles(first_name, last_name, street, house_number, postal_code, residence, telephone_number, email_address, bank_account_number, user_username)
+VALUES
+('Neil', 'Young', 'Country Lane', '1120', '2230', 'Albuquerque', '0612121212', 'neil.young@harvestmoon.com', '76CASH0123456789', 'foreveryoung'),
+('Jon', 'Bonjovi', 'Lost Highway', '7800','5588', 'Sayreville', '0677119966', 'jon.bonjovi@badmedicine.com', '12ROCK0135792468', null),
+('Barry', 'Hay', 'Radarweg', '179', '7754', 'Willemstad', '0658972311', 'barry.hay@goingtotherun.com', '83EARS0987654321', null),
+('Eddie', 'Vedder', 'Long Road', '10', '2208','Seattle', '0657993254', 'eddie.vedder@stillalive.com', '10EVEN05544332211', null),
+('Mick', 'Jagger', 'Sympathy Road', '12', '3333', 'Richmond', '0677336611', 'mick.jagger@movelikeme.com', '12HORS0639008652', null),
+('Rocky', 'Balboa', 'Stair Way', '118A', '1876', 'Philadelphia', '0629983321', 'rocky.balboa@adrian.com', '88BOKS0777444999', null),
+('Axl', 'Rose', 'Road to Nowhere', '1', '8854', 'Paradise City', '0691827364', 'axl.rose@youcouldbemine.com', '43ROSE0843223859', null);
 
 INSERT INTO horses(name, horse_number, type_of_feed, type_of_bedding, name_of_vet, residence_of_vet, telephone_of_vet, preferred_subscription, customer_profile_id)
 VALUES
@@ -54,18 +67,7 @@ VALUES
 ('Ma Dalton abonnement', 499.95, 'halfpension', 'grote buitenstal'),
 ('Rataplan abonnement', 489.95, 'volpension', 'grote buitenstal');
 
--- password = "password" (dit comment is een security lek, zet dit nooit in je code.
--- Als je hier je plaintext password niet meer weet, moet je een nieuw password encrypted)
-INSERT INTO users (username, password, email, enabled)
-VALUES
-('foreveryoung', '$2a$12$eD6u67c59rwGghmlYmykWeDjyScFK4c.L1Q6a.MgGS90ooTR8jSx6','neil.young@harvestmoon.com', TRUE),
-('dirtyharry', '$2a$12$WBWNCazStJW.XImY1iMmreBg2MinjUD7KJADELS9Pb6T4F9ony0WS', 'make@myday.com', TRUE);
 
-INSERT INTO authorities (username, authority)
-VALUES
-('foreveryoung', 'ROLE_USER'),
-('dirtyharry', 'ROLE_USER'),
-('dirtyharry', 'ROLE_ADMIN');
 
 
 INSERT INTO enrollments(start_date, expire_date, duration, is_ongoing, cancellation_requested, horse_number, subscription_id,

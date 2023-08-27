@@ -1,6 +1,7 @@
 package nl.pin.paardenstal.services;
 
 import nl.pin.paardenstal.dtos.*;
+import nl.pin.paardenstal.exceptions.NotYetAssignedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.models.Enrollment;
@@ -180,16 +181,16 @@ public class CustomerProfileService {
         dto.setEmailAddress(customerProfile.getEmailAddress());
         dto.setBankAccountNumber(customerProfile.getBankAccountNumber());
 
-        /*if(customerProfile.getUser() != null){
+        if(customerProfile.getUser() != null){
             UserDto userDto = userService.transferToDto(customerProfile.getUser());
             dto.setUser(userDto);
-        }*/
+        }
         return dto;
     }
 
-    /*public void assignUserToCustomerProfile(Long id, Long userId){
+    public void assignUserToCustomerProfile(Long id, String username){
         Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
-        Optional<User> optionalUser = userRepository.findById(userId);
+        Optional<User> optionalUser = userRepository.findById(username);
 
         if(optionalCustomerProfile.isPresent() && optionalUser.isPresent()){
             CustomerProfile customer = optionalCustomerProfile.get();
@@ -203,6 +204,28 @@ public class CustomerProfileService {
         } else if (!optionalUser.isPresent()){
             throw new RecordNotFoundException("There's no user with this ID");
         }
-    }*/
+    }
+
+    public void removeUserFromCustomerProfile(Long customerId, String username) {
+        Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(customerId);
+        Optional<User> optionalUser = userRepository.findById(username);
+
+        if (!optionalCustomerProfile.isPresent() && !optionalUser.isPresent()) {
+            throw new RecordNotFoundException("There's no customer nor user with this ID");
+        } else if (!optionalCustomerProfile.isPresent()) {
+            throw new RecordNotFoundException("There's no customer with this ID");
+        } else if (!optionalUser.isPresent()) {
+            throw new RecordNotFoundException("There's no user with this ID");
+        } else if (optionalCustomerProfile.isPresent() && optionalUser.isPresent()) {
+            CustomerProfile customer = optionalCustomerProfile.get();
+            User user = optionalUser.get();
+            if (customer.getUser() == null) {
+                throw new NotYetAssignedException("there's no user to be removed");
+            } else {
+                customer.setUser(null);
+                customerProfileRepository.save(customer);
+            }
+        }
+    }
 
 }
