@@ -39,5 +39,9 @@ public class ExceptionController {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(value = EnrollmentIsOngoingException.class)
+    public ResponseEntity<String> exception(EnrollmentIsOngoingException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
 }

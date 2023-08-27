@@ -29,6 +29,10 @@ public class Enrollment {
 
     private String horseNumber;
 
+    private double subscriptionPrice;
+
+    private Long customerNumber;
+
     @ManyToOne
     @JoinColumn(name = "customer_profile_id", referencedColumnName = "id")
     @JsonIgnore
@@ -56,6 +60,8 @@ public class Enrollment {
         this.customerProfile =cp;
         this.horse = h;
         this.horseNumber = h.getHorseNumber();
+        this.subscriptionPrice = s.getPrice();
+        this.customerNumber = cp.getId() + 1000;
         this.startDate = LocalDate.now();
         this.expireDate = startDate.plusMonths(12);
     }
@@ -66,6 +72,8 @@ public class Enrollment {
         this.customerProfile = cp;
         this.horse = h;
         this.horseNumber = h.getHorseNumber();
+        this.subscriptionPrice = s.getPrice();
+        this.customerNumber = cp.getId() + 1000;
         this.startDate = startDate;
         this.expireDate = startDate.plusMonths(12);
     }
@@ -124,6 +132,22 @@ public class Enrollment {
 
     public void setHorseNumber(String horseNumber) {
         this.horseNumber = horseNumber;
+    }
+
+    public double getSubcriptionPrice() {
+        return subscriptionPrice;
+    }
+
+    public void setSubcriptionPrice(double subcriptionPrice) {
+        this.subscriptionPrice = subcriptionPrice;
+    }
+
+    public Long getCustomerNumber() {
+        return customerNumber;
+    }
+
+    public void setCustomerNumber(Long customerNumber) {
+        this.customerNumber = customerNumber;
     }
 
     public CustomerProfile getCustomer() {

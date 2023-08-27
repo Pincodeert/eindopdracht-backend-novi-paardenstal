@@ -18,6 +18,10 @@ public class EnrollmentDto {
 
     private String horseNumber;
 
+    private double subscriptionPrice;
+
+    private Long customerNumber;
+
     private CustomerProfileDto customer;
     private SubscriptionDto subscription;
 
@@ -77,6 +81,22 @@ public class EnrollmentDto {
 
     public void setHorseNumber(String horseNumber) {
         this.horseNumber = horseNumber;
+    }
+
+    public double getSubscriptionPrice() {
+        return subscriptionPrice;
+    }
+
+    public void setSubscriptionPrice(double subscriptionPrice) {
+        this.subscriptionPrice = subscriptionPrice;
+    }
+
+    public Long getCustomerNumber() {
+        return customerNumber;
+    }
+
+    public void setCustomerNumber(Long customerNumber) {
+        this.customerNumber = customerNumber;
     }
 
     public CustomerProfileDto getCustomer() {

@@ -2,6 +2,7 @@ package nl.pin.paardenstal.services;
 
 import nl.pin.paardenstal.dtos.*;
 import nl.pin.paardenstal.exceptions.NotYetAssignedException;
+import nl.pin.paardenstal.exceptions.NotYetRemovedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.models.Enrollment;
@@ -83,15 +84,32 @@ public class CustomerProfileService {
 
         if(customerProfile.isPresent()){
             CustomerProfile customer = customerProfile.get();
+            //checkt of er nog paarden aan een Enrollment gekoppeld zijn voor deze klant. Zo ja, wordt een error voorkomen
+            // door een exception te gooien.
+            List<Horse> horses = customer.getHorses();
+            List<Horse> enrolledHorses = new ArrayList<>();
+            if(horses != null) {
+                for(Horse h: horses) {
+                    if(h.getEnrollment() != null) {
+                        enrolledHorses.add(h);
+                    }
+                }
+                if(enrolledHorses.size() > 0) {
+                    throw new NotYetRemovedException("can't delete this customer; terminate subscription of all its horses first");
+                }
+            }
+            //om customerProfile te kunnen deleten, moet eerst de foreignkey verwijderd worden voor iedere Enrollment
             List<Enrollment> enrollments = customer.getEnrollments();
             List<Enrollment> updatedEnrollments = new ArrayList<>();
-            //om customerProfile te kunnen deleten, moet eerst de foreignkey verwijderd worden voor iedere Enrollment
             if(enrollments != null) {
                 for(Enrollment e: enrollments) {
                     e.setCustomer(null);
                     updatedEnrollments.add(e);
                 }
                 customer.setEnrollments(updatedEnrollments);
+            }
+            if(customer.getUser() != null) {
+                throw new NotYetRemovedException("remove user from customer first");
             }
             customerProfileRepository.deleteById(id);
         } else {

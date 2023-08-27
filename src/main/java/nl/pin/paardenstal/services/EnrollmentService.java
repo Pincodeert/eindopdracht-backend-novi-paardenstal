@@ -2,9 +2,7 @@ package nl.pin.paardenstal.services;
 
 import nl.pin.paardenstal.dtos.EnrollmentDto;
 import nl.pin.paardenstal.dtos.EnrollmentInputDto;
-import nl.pin.paardenstal.exceptions.AlreadyAssignedException;
-import nl.pin.paardenstal.exceptions.NotYetAssignedException;
-import nl.pin.paardenstal.exceptions.RecordNotFoundException;
+import nl.pin.paardenstal.exceptions.*;
 import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.models.Enrollment;
 import nl.pin.paardenstal.models.Horse;
@@ -191,6 +189,16 @@ public class EnrollmentService {
     public void deleteEnrollment(Long id) {
         Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(id);
         if(optionalEnrollment.isPresent()){
+            Enrollment enrollment = optionalEnrollment.get();
+            if(enrollment.isOngoing()) {
+                throw new EnrollmentIsOngoingException("can't delete this enrollment; it is still ongoing");
+            }
+            if(enrollment.getSubscription() != null) {
+                throw new NotYetRemovedException("remove subscription from enrollment first");
+            }
+            if(enrollment.getCustomer() != null) {
+                throw new NotYetRemovedException("remove customer from enrollment first");
+            }
             enrollmentRepository.deleteById(id);
         } else {
             throw new RecordNotFoundException("Er bestaat geen inschrijving/abonnement met deze Id");
@@ -207,6 +215,8 @@ public class EnrollmentService {
         dto.setOngoing(enrollment.isOngoing());
         dto.setCancellationRequested(enrollment.isCancellationRequested());
         dto.setHorseNumber(enrollment.getHorseNumber());
+        dto.setSubscriptionPrice(enrollment.getSubcriptionPrice());
+        dto.setCustomerNumber(enrollment.getCustomerNumber());
         return dto;
     }
 
@@ -322,7 +332,10 @@ public class EnrollmentService {
                 removeSubscriptionFromEnrollment(id);
             }
 
-
+            //nog uitzoeken of isEmpty hier echt nodig is
+            if(enrollmentInputDto.customerId != null && !enrollmentInputDto.customerId.describeConstable().isEmpty()) {
+                removeCustomerProfileFromEnrollment(id);
+            }
         }
     }
     public void removeSubscriptionFromEnrollment(Long id) {
@@ -331,6 +344,18 @@ public class EnrollmentService {
         if(optionalEnrollment.isPresent()) {
             Enrollment enrollment = optionalEnrollment.get();
             enrollment.setSubscription(null);
+            enrollmentRepository.save(enrollment);
+        } else {
+            throw new RecordNotFoundException("deze id is niet bekend");
+        }
+    }
+
+    public void removeCustomerProfileFromEnrollment(Long id) {
+        Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(id);
+
+        if(optionalEnrollment.isPresent()) {
+            Enrollment enrollment = optionalEnrollment.get();
+            enrollment.setCustomer(null);
             enrollmentRepository.save(enrollment);
         } else {
             throw new RecordNotFoundException("deze id is niet bekend");

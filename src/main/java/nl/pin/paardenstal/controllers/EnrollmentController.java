@@ -46,12 +46,6 @@ public class EnrollmentController {
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/enrollments/{id}")
-    public ResponseEntity<Object> deleteEnrollment(@PathVariable Long id) {
-        enrollmentService.deleteEnrollment(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @PostMapping("/enrollments")
     public ResponseEntity<Object> assignCustomerToSubscription(@RequestBody EnrollmentInputDto input) {
         Long newId = enrollmentService.assignCustomerToSubscription(input.subscriptionId, input.customerId, input.horseId, input.date);
@@ -68,22 +62,19 @@ public class EnrollmentController {
         return ResponseEntity.noContent().build();
     }
 
-    //dit klopt niet. input is SubscriptionId, maar wenselijk is EnrollmentId. De service methode werkt wel met EnrollmentId.
-    // of wel aan de EnrollmentInputDto een EnrollmentId toevoegen, of wel deze methode via update-endpoint in de
-    // zdezelfde service methode opnemen
-    /*@PatchMapping("/enrollments")
-    public ResponseEntity<Object> terminateSubscription(@RequestBody EnrollmentInputDto input) {
-        enrollmentService.terminateSubscription(input.subscriptionId);
-        return ResponseEntity.noContent().build();
-    }*/
-
-    // dit pad bestaat al. (askForCancellation). wat nu?
+    //afhankelijk van de meegegeven inhoud in de enrollmentInputDto wordt in de servicelaag de subscription op geëindigd
+    // gezet of de subscription van de enrollment verwijderd.
     @PutMapping("/enrollments/{id}")
     public ResponseEntity<Object> updateEnrollment(@PathVariable Long id, @RequestBody EnrollmentInputDto enrollmentInputDto) {
         enrollmentService.updateEnrollment(id, enrollmentInputDto);
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/enrollments/{id}")
+    public ResponseEntity<Object> deleteEnrollment(@PathVariable Long id) {
+        enrollmentService.deleteEnrollment(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 
 
