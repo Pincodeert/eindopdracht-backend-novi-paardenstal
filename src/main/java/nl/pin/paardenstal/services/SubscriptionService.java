@@ -53,8 +53,8 @@ public class SubscriptionService {
     }
 
     public Long addSubscription(SubscriptionInputDto subscriptionInputDto){
-        Subscription newSubscription = transferToSubscription(subscriptionInputDto);
-                subscriptionRepository.save(newSubscription);
+        Subscription subscription = transferToSubscription(subscriptionInputDto);
+        Subscription newSubscription = subscriptionRepository.save(subscription);
         Long newId = newSubscription.getId();
         return newId;
     }

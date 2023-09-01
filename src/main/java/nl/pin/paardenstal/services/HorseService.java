@@ -105,8 +105,8 @@ public class HorseService {
     }
 
     public Long addNewHorse(HorseInputDto horseInputDto){
-        Horse newHorse = transferToHorse(horseInputDto);
-                horseRepository.save(newHorse);
+        Horse horse = transferToHorse(horseInputDto);
+        Horse newHorse = horseRepository.save(horse);
         Long newId = newHorse.getId();
         return newId;
     }
@@ -119,6 +119,10 @@ public class HorseService {
 
             if(horseInputDto.getName() != null && !horseInputDto.getName().isEmpty()){
                 storedHorse.setName(horseInputDto.getName());
+            }
+
+            if(horseInputDto.getHorseNumber() != null && !horseInputDto.getHorseNumber().isEmpty()) {
+                storedHorse.setHorseNumber(horseInputDto.getHorseNumber());
             }
 
             if(horseInputDto.getTypeOfFeed() != null && !horseInputDto.getTypeOfFeed().isEmpty()){
@@ -216,7 +220,7 @@ public class HorseService {
             horseRepository.save(horse);
         } else if (!optionalHorse.isPresent()){
             throw new RecordNotFoundException("Kan geen paard vinden met deze Id");
-        } else {
+        } else if (!optionalOwner.isPresent()){
             throw new RecordNotFoundException("Kan geen klant vinden met deze Id");
         }
     }

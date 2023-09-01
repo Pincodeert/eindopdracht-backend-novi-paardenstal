@@ -75,8 +75,8 @@ public class CustomerProfileService {
 
 
     public Long createNewCustomerProfile(CustomerProfileInputDto inputDto){
-        CustomerProfile newCustomerProfile = transferToCustomerProfile(inputDto);
-                customerProfileRepository.save(newCustomerProfile);
+        CustomerProfile customerProfile = transferToCustomerProfile(inputDto);
+        CustomerProfile newCustomerProfile = customerProfileRepository.save(customerProfile);
         Long id = newCustomerProfile.getId();
         return id;
     }
