@@ -31,7 +31,7 @@ public class HorseService {
     private final StallService stallService;
     private final FileUploadRepository fileUploadRepository;
 
-    @Autowired
+    //@Autowired
     public HorseService(HorseRepository horseRepository, CustomerProfileRepository customerProfileRepository,
                         @Lazy CustomerProfileService customerProfileService, @Lazy StallService stallService,
                         FileUploadRepository fileUploadRepository){
@@ -48,13 +48,16 @@ public class HorseService {
 
         for(Horse h: horses){
             HorseDto dto = transferToDto(h);
-            if(h.getOwner() != null){
+            if(h.getOwner() != null) {
                 CustomerProfileDto ownerDto = customerProfileService.transferToDto(h.getOwner());
-                dto.setOwnerDto(ownerDto);
+                dto.setOwner(ownerDto);
             }
             if(h.getStall() != null) {
                 StallDto stallDto = stallService.transferToDto(h.getStall());
                 dto.setStall(stallDto);
+            }
+            if(h.getPassport() != null) {
+                dto.setPassport(h.getPassport());
             }
             dtos.add(dto);
         }
@@ -69,11 +72,14 @@ public class HorseService {
 
             if(optionalHorse.get().getOwner() != null) {
                 CustomerProfileDto ownerDto = customerProfileService.transferToDto(optionalHorse.get().getOwner());
-                horseDto.setOwnerDto(ownerDto);
+                horseDto.setOwner(ownerDto);
             }
             if(optionalHorse.get().getStall() != null) {
                 StallDto stallDto = stallService.transferToDto(optionalHorse.get().getStall());
                 horseDto.setStall(stallDto);
+            }
+            if(optionalHorse.get().getPassport() != null) {
+                horseDto.setPassport(optionalHorse.get().getPassport());
             }
             return horseDto;
         } else {
@@ -90,14 +96,17 @@ public class HorseService {
                 StallDto stallDto = stallService.transferToDto(h.getStall());
                 dto.setStall(stallDto);
             }
+            if(h.getPassport() != null) {
+                dto.setPassport(h.getPassport());
+            }
             dtos.add(dto);
         }
         return dtos;
     }
 
     public Long addNewHorse(HorseInputDto horseInputDto){
-        Horse newHorse = transferToHorse(horseInputDto);
-                horseRepository.save(newHorse);
+        Horse horse = transferToHorse(horseInputDto);
+        Horse newHorse = horseRepository.save(horse);
         Long newId = newHorse.getId();
         return newId;
     }
@@ -110,6 +119,10 @@ public class HorseService {
 
             if(horseInputDto.getName() != null && !horseInputDto.getName().isEmpty()){
                 storedHorse.setName(horseInputDto.getName());
+            }
+
+            if(horseInputDto.getHorseNumber() != null && !horseInputDto.getHorseNumber().isEmpty()) {
+                storedHorse.setHorseNumber(horseInputDto.getHorseNumber());
             }
 
             if(horseInputDto.getTypeOfFeed() != null && !horseInputDto.getTypeOfFeed().isEmpty()){
@@ -159,6 +172,12 @@ public class HorseService {
         }
     }
 
+    public Horse removeCustomerProfileFromHorse(Horse horse) {
+        horse.setOwner(null);
+        Horse lonelyHorse = horseRepository.save(horse);
+        return lonelyHorse;
+    }
+
     public HorseDto transferToDto(Horse horse){
         HorseDto dto = new HorseDto();
 
@@ -190,6 +209,22 @@ public class HorseService {
         return horse;
     }
 
+    public void assignCustomerProfileToHorse(Long horseId, Long ownerId) {
+        Optional<Horse> optionalHorse = horseRepository.findById(horseId);
+        Optional<CustomerProfile> optionalOwner = customerProfileRepository.findById(ownerId);
+
+        if (optionalHorse.isPresent() && optionalOwner.isPresent()) {
+            Horse horse = optionalHorse.get();
+            CustomerProfile owner = optionalOwner.get();
+            horse.setOwner(owner);
+            horseRepository.save(horse);
+        } else if (!optionalHorse.isPresent()){
+            throw new RecordNotFoundException("Kan geen paard vinden met deze Id");
+        } else if (!optionalOwner.isPresent()){
+            throw new RecordNotFoundException("Kan geen klant vinden met deze Id");
+        }
+    }
+
     public void assignPassportToHorse(String fileName, Long horseId) {
         Optional<Horse> optionalHorse = horseRepository.findById(horseId);
         Optional<FileUploadResponse> fileUploadResponse = fileUploadRepository.findByFileName(fileName);
@@ -202,28 +237,6 @@ public class HorseService {
         } else {
             throw new RecordNotFoundException("kan geen paard met deze Id vinden");
         }
-    }
-
-    public void assignCustomerProfileToHorse(Long horseId, Long ownerId) {
-        Optional<Horse> optionalHorse = horseRepository.findById(horseId);
-        Optional<CustomerProfile> optionalOwner = customerProfileRepository.findById(ownerId);
-
-        if (optionalHorse.isPresent() && optionalOwner.isPresent()) {
-            Horse horse = optionalHorse.get();
-            CustomerProfile owner = optionalOwner.get();
-            horse.setOwner(owner);
-            horseRepository.save(horse);
-        } else if (!optionalHorse.isPresent()){
-            throw new RecordNotFoundException("Kan geen paard vinden met deze Id");
-        } else {
-            throw new RecordNotFoundException("Kan geen klant vinden met deze Id");
-        }
-    }
-
-    public Horse removeCustomerProfileFromHorse(Horse horse) {
-            horse.setOwner(null);
-            Horse lonelyHorse = horseRepository.save(horse);
-            return lonelyHorse;
     }
 
 }

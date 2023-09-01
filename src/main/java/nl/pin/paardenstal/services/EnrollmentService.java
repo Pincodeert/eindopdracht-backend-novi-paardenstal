@@ -2,9 +2,7 @@ package nl.pin.paardenstal.services;
 
 import nl.pin.paardenstal.dtos.EnrollmentDto;
 import nl.pin.paardenstal.dtos.EnrollmentInputDto;
-import nl.pin.paardenstal.exceptions.AlreadyAssignedException;
-import nl.pin.paardenstal.exceptions.NotYetAssignedException;
-import nl.pin.paardenstal.exceptions.RecordNotFoundException;
+import nl.pin.paardenstal.exceptions.*;
 import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.models.Enrollment;
 import nl.pin.paardenstal.models.Horse;
@@ -35,7 +33,7 @@ public class EnrollmentService {
     private final HorseRepository horseRepository;
     private final HorseService horseService;
 
-    @Autowired
+    //@Autowired
     public EnrollmentService(EnrollmentRepository enrollmentRepository,
                              SubscriptionRepository subscriptionRepository,
                              SubscriptionService subscriptionService,
@@ -135,112 +133,6 @@ public class EnrollmentService {
         }
     }
 
-    // het deleten van een enrollment is over het algemeen niet wenselijk. Wel deze functionaliteit gemaakt, om het
-    // mogelijk te maken een enrollment-object te deleten wanneer het per ongeluk is aangemaakt met een verkeerde
-    // subscription Id?
-    public void deleteEnrollment(Long id) {
-        Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(id);
-        if(optionalEnrollment.isPresent()){
-            enrollmentRepository.deleteById(id);
-        } else {
-            throw new RecordNotFoundException("Er bestaat geen inschrijving/abonnement met deze Id");
-        }
-    }
-
-    //zet een Enrollment Object om in een EnrollmentDto object
-    public EnrollmentDto transferToDto(Enrollment enrollment) {
-        EnrollmentDto dto = new EnrollmentDto();
-        dto.setId(enrollment.getId());
-        dto.setStartDate(enrollment.getStartDate());
-        dto.setExpireDate(enrollment.getExpireDate());
-        dto.setDuration(enrollment.getDuration());
-        dto.setOngoing(enrollment.isOngoing());
-        dto.setCancellationRequested(enrollment.isCancellationRequested());
-        dto.setHorseNumber(enrollment.getHorseNumber());
-        return dto;
-    }
-
-
-    // zorgt ervoor dat een klant voor een bepaald paard een bepaald abonnement wordt ingeschreven en waarbij er een
-    // inschrijving (enrollment-object) wordt aangemaakt waarbij deze drie aan elkaar gekoppeld zijn en de datum van
-    // inschrijving wordt toegevoegd.
-    public Long assignCustomerToSubscription(Long subscriptionId, Long customerId, Long horseId, String date) {
-        Optional<Subscription> optionalSubscription = subscriptionRepository.findById(subscriptionId);
-        Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(customerId);
-        Optional<Horse> optionalHorse = horseRepository.findById(horseId);
-
-        if (optionalSubscription.isPresent() && optionalCustomerProfile.isPresent() && optionalHorse.isPresent()){
-            Subscription subscription = optionalSubscription.get();
-            CustomerProfile customer = optionalCustomerProfile.get();
-            Horse horse = optionalHorse.get();
-
-            //zorgt ervoor dat de applicatie niet vastloopt, wanneer (per ongeluk) een horseId wordt opgegeven dat al
-            // gekoppeld is aan een enrollment
-            if(horse.getEnrollment() != null) {
-                throw new AlreadyAssignedException("This horse already has a subscription");
-            } //zorgt ervoor dat een paard altijd gekoppeld moet zijn aan een stal om een abonnement te kunnen afsluiten:
-              else if (horse.getStall() == null) {
-                throw new NotYetAssignedException("Horse must be assigned to a stall first");
-            } else if(date != null){
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy");
-                LocalDate futureDate = LocalDate.parse(date, formatter);
-                Enrollment enrollment = new Enrollment(subscription, customer, horse, futureDate);
-                Enrollment newEnrollment = enrollmentRepository.save(enrollment);
-
-                Long newId = newEnrollment.getId();
-                return newId;
-            } else {
-                Enrollment enrollment = new Enrollment(subscription, customer, horse);
-                Enrollment newEnrollment = enrollmentRepository.save(enrollment);
-
-                Long newId = newEnrollment.getId();
-                return newId;
-            }
-
-        } else if (!optionalSubscription.isPresent()) {
-            throw new RecordNotFoundException("There's no subscruption with this ID");
-        } else if (!optionalCustomerProfile.isPresent()){
-            throw new RecordNotFoundException("There's no customer with this ID");
-        } else if (!optionalSubscription.isPresent()) {
-            throw new RecordNotFoundException("There's no subscription with this ID");
-        } else if (!optionalHorse.isPresent()) {
-            throw new RecordNotFoundException("There's no horse with this ID");
-            // De if-statement hier weggehaald, omdat anders om return-waarde blijft vragen.
-        } else //if (!optionalCustomerProfile.isPresent())
-        {
-            throw new RecordNotFoundException("There's no customer with this ID");
-        }
-        //return null;
-    }
-
-    // regelt dat er een verzoek tot annulering gedaan kan worden
-    public void askForCancellation(Long enrollmentId) {
-        Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(enrollmentId);
-
-        if(optionalEnrollment.isPresent()) {
-            Enrollment enrollment = optionalEnrollment.get();
-            enrollment.setCancellationRequested(true);
-            enrollmentRepository.save(enrollment);
-        } else {
-            throw new RecordNotFoundException("Er bestaat geen abonnement met deze Id");
-        }
-    }
-
-    // regelt dat de inschrijving op een bepaald abonnement wordt stopgezet
-    public void terminateSubscription(Long enrollmentId) {
-        Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(enrollmentId);
-
-        if(optionalEnrollment.isPresent()) {
-            Enrollment enrollment = optionalEnrollment.get();
-            enrollment.setOngoing(false);
-            enrollment.setCancellationRequested(false);
-            enrollment.setHorse(null);
-            enrollmentRepository.save(enrollment);
-        } else {
-            throw new RecordNotFoundException("Er bestaat geen abonnement met deze Id");
-        }
-    }
-
     //zorgt ervoor dat per klant al zijn/haar inschrijvingen op een abonnement worden opgehaald (en dus getoond kunnen
     // gaan worden).
     public List<EnrollmentDto> getAllEnrollmentsByCustomerProfileId(Long customerProfileId) {
@@ -306,6 +198,169 @@ public class EnrollmentService {
         }
         BigDecimal roundedPrice = new BigDecimal(totalPrice).setScale(2, RoundingMode.HALF_UP);
         return roundedPrice;
+    }
+
+    // zorgt ervoor dat een klant voor een bepaald paard een bepaald abonnement wordt ingeschreven en waarbij er een
+    // inschrijving (enrollment-object) wordt aangemaakt waarbij deze drie aan elkaar gekoppeld zijn en de datum van
+    // inschrijving wordt toegevoegd.
+    public Long assignCustomerToSubscription(Long subscriptionId, Long customerId, Long horseId, String date) {
+        Optional<Subscription> optionalSubscription = subscriptionRepository.findById(subscriptionId);
+        Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(customerId);
+        Optional<Horse> optionalHorse = horseRepository.findById(horseId);
+
+        if (optionalSubscription.isPresent() && optionalCustomerProfile.isPresent() && optionalHorse.isPresent()){
+            Subscription subscription = optionalSubscription.get();
+            CustomerProfile customer = optionalCustomerProfile.get();
+            Horse horse = optionalHorse.get();
+
+            //zorgt ervoor dat de applicatie niet vastloopt, wanneer (per ongeluk) een horseId wordt opgegeven dat al
+            // gekoppeld is aan een enrollment
+            if(horse.getEnrollment() != null) {
+                throw new AlreadyAssignedException("This horse already has a subscription");
+            } //zorgt ervoor dat een paard altijd gekoppeld moet zijn aan een stal om een abonnement te kunnen afsluiten:
+            else if (horse.getStall() == null) {
+                throw new NotYetAssignedException("Horse must be assigned to a stall first");
+            } else if(date != null){
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy");
+                LocalDate futureDate = LocalDate.parse(date, formatter);
+                Enrollment enrollment = new Enrollment(subscription, customer, horse, futureDate);
+                Enrollment newEnrollment = enrollmentRepository.save(enrollment);
+
+                Long newId = newEnrollment.getId();
+                return newId;
+            } else {
+                Enrollment enrollment = new Enrollment(subscription, customer, horse);
+                Enrollment newEnrollment = enrollmentRepository.save(enrollment);
+
+                Long newId = newEnrollment.getId();
+                return newId;
+            }
+        } else if (!optionalSubscription.isPresent()) {
+            throw new RecordNotFoundException("There's no subscruption with this ID");
+        } else if (!optionalCustomerProfile.isPresent()){
+            throw new RecordNotFoundException("There's no customer with this ID");
+        } else if (!optionalSubscription.isPresent()) {
+            throw new RecordNotFoundException("There's no subscription with this ID");
+        } else if (!optionalHorse.isPresent()) {
+            throw new RecordNotFoundException("There's no horse with this ID");
+            // De if-statement hier weggehaald, omdat anders om return-waarde blijft vragen.
+        } else //if (!optionalCustomerProfile.isPresent())
+        {
+            throw new RecordNotFoundException("There's no customer with this ID");
+        }
+        //return null;
+    }
+
+    public void deleteEnrollment(Long id) {
+        Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(id);
+        if(optionalEnrollment.isPresent()){
+            Enrollment enrollment = optionalEnrollment.get();
+            if(enrollment.isOngoing()) {
+                throw new EnrollmentIsOngoingException("can't delete this enrollment; it is still ongoing");
+            }
+            if(enrollment.getSubscription() != null) {
+                throw new NotYetRemovedException("remove subscription from enrollment first");
+            }
+            if(enrollment.getCustomer() != null) {
+                throw new NotYetRemovedException("remove customer from enrollment first");
+            }
+            enrollmentRepository.deleteById(id);
+        } else {
+            throw new RecordNotFoundException("Er bestaat geen inschrijving/abonnement met deze Id");
+        }
+    }
+
+    //zet een Enrollment Object om in een EnrollmentDto object
+    public EnrollmentDto transferToDto(Enrollment enrollment) {
+        EnrollmentDto dto = new EnrollmentDto();
+        dto.setId(enrollment.getId());
+        dto.setStartDate(enrollment.getStartDate());
+        dto.setExpireDate(enrollment.getExpireDate());
+        dto.setDuration(enrollment.getDuration());
+        dto.setOngoing(enrollment.isOngoing());
+        dto.setCancellationRequested(enrollment.isCancellationRequested());
+        dto.setHorseNumber(enrollment.getHorseNumber());
+        dto.setSubscriptionPrice(enrollment.getSubcriptionPrice());
+        dto.setCustomerNumber(enrollment.getCustomerNumber());
+        return dto;
+    }
+
+
+    // regelt dat er een verzoek tot annulering gedaan kan worden
+    public void askForCancellation(Long enrollmentId) {
+        Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(enrollmentId);
+
+        if(optionalEnrollment.isPresent()) {
+            Enrollment enrollment = optionalEnrollment.get();
+            enrollment.setCancellationRequested(true);
+            enrollmentRepository.save(enrollment);
+        } else {
+            throw new RecordNotFoundException("Er bestaat geen abonnement met deze Id");
+        }
+    }
+
+    // regelt dat de inschrijving op een bepaald abonnement wordt stopgezet
+    public void terminateSubscription(Long enrollmentId) {
+        Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(enrollmentId);
+
+        if(optionalEnrollment.isPresent()) {
+            Enrollment enrollment = optionalEnrollment.get();
+            enrollment.setOngoing(false);
+            enrollment.setCancellationRequested(false);
+            enrollment.setHorse(null);
+            enrollmentRepository.save(enrollment);
+        } else {
+            throw new RecordNotFoundException("Er bestaat geen abonnement met deze Id");
+        }
+    }
+
+
+
+
+    public void updateEnrollment(Long id, EnrollmentInputDto enrollmentInputDto) {
+        Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(id);
+
+        if(!optionalEnrollment.isPresent()) {
+            throw new RecordNotFoundException("deze id is niet bekend");
+        } else {
+            Enrollment enrollment = optionalEnrollment.get();
+
+            if(enrollmentInputDto.isOngoing) {
+                terminateSubscription(id);            }
+
+            //nog uitzoeken of isEmpty hier echt nodig is
+            if(enrollmentInputDto.subscriptionId != null && !enrollmentInputDto.subscriptionId.describeConstable().isEmpty()) {
+                removeSubscriptionFromEnrollment(id);
+            }
+
+            //nog uitzoeken of isEmpty hier echt nodig is
+            if(enrollmentInputDto.customerId != null && !enrollmentInputDto.customerId.describeConstable().isEmpty()) {
+                removeCustomerProfileFromEnrollment(id);
+            }
+        }
+    }
+    public void removeSubscriptionFromEnrollment(Long id) {
+        Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(id);
+
+        if(optionalEnrollment.isPresent()) {
+            Enrollment enrollment = optionalEnrollment.get();
+            enrollment.setSubscription(null);
+            enrollmentRepository.save(enrollment);
+        } else {
+            throw new RecordNotFoundException("deze id is niet bekend");
+        }
+    }
+
+    public void removeCustomerProfileFromEnrollment(Long id) {
+        Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(id);
+
+        if(optionalEnrollment.isPresent()) {
+            Enrollment enrollment = optionalEnrollment.get();
+            enrollment.setCustomer(null);
+            enrollmentRepository.save(enrollment);
+        } else {
+            throw new RecordNotFoundException("deze id is niet bekend");
+        }
     }
 
 }

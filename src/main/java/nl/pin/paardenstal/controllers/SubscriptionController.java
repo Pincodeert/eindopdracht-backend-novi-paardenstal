@@ -26,7 +26,7 @@ public class SubscriptionController {
     private final SubscriptionService subscriptionService;
     private final EnrollmentService enrollmentService;
 
-    @Autowired
+    //@Autowired
     public SubscriptionController(SubscriptionService subscriptionService, EnrollmentService enrollmentService){
         this.subscriptionService = subscriptionService;
         this.enrollmentService = enrollmentService;
@@ -44,6 +44,20 @@ public class SubscriptionController {
         return ResponseEntity.ok(subscriptionDto);
     }
 
+    //laat voor een bepaald Abonnement(Subscription) alle (zowel lopende als beëindigde) inschrijvingen (Enrollement) zien.
+    @GetMapping("/subscriptions/{id}/enrollments")
+    public ResponseEntity<List<EnrollmentDto>> getAllEnrollmentsBySubscriptionId(@PathVariable Long id) {
+        List<EnrollmentDto> enrollments = enrollmentService.getAllEnrollmentsBySubscriptionId(id);
+        return ResponseEntity.ok(enrollments);
+    }
+
+    //laat voor een bepaald Abonnement(Subscription) alle lopende inschrijvingen(Enrollment) zien.
+    @GetMapping("subscriptions/enrollments/{subscriptionId}")
+    public ResponseEntity<List<EnrollmentDto>> getOngoingEnrollmentsBySubscriptionId(@PathVariable("subscriptionId")
+                                                                                     Long subscriptionId) {
+        List<EnrollmentDto> enrollments = enrollmentService.getOngoingEnrollmentsBySubscriptionId(subscriptionId);
+        return ResponseEntity.ok(enrollments);
+    }
     @PostMapping("/subscriptions")
     public ResponseEntity<Object> addSubscription(@Valid @RequestBody SubscriptionInputDto subscriptionInputDto,
                                                 BindingResult bindingResult){
@@ -64,23 +78,18 @@ public class SubscriptionController {
         }
     }
 
+    @PatchMapping("/subscriptions/{id}")
+    public ResponseEntity<Object> updateSubscription(@PathVariable Long id, @RequestBody SubscriptionInputDto inputDto) {
+        subscriptionService.updateSubscription(id, inputDto);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/subscriptions/{id}")
     public ResponseEntity<Object> deleteSubscription(@PathVariable Long id){
         subscriptionService.deleteSubscription(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/subscriptions/{id}/enrollments")
-    public ResponseEntity<List<EnrollmentDto>> getAllEnrollmentsBySubscriptionId(@PathVariable Long id) {
-        List<EnrollmentDto> enrollments = enrollmentService.getAllEnrollmentsBySubscriptionId(id);
-        return ResponseEntity.ok(enrollments);
-    }
 
-    @GetMapping("subscriptions/enrollments/{subscriptionId}")
-    public ResponseEntity<List<EnrollmentDto>> getOngoingEnrollmentsBySubscriptionId(@PathVariable("subscriptionId")
-                                                                                         Long subscriptionId) {
-        List<EnrollmentDto> enrollments = enrollmentService.getOngoingEnrollmentsBySubscriptionId(subscriptionId);
-        return ResponseEntity.ok(enrollments);
-    }
 
 }

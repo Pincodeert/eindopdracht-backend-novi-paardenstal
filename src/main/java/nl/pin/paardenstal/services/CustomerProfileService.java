@@ -1,6 +1,8 @@
 package nl.pin.paardenstal.services;
 
 import nl.pin.paardenstal.dtos.*;
+import nl.pin.paardenstal.exceptions.NotYetAssignedException;
+import nl.pin.paardenstal.exceptions.NotYetRemovedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.CustomerProfile;
 import nl.pin.paardenstal.models.Enrollment;
@@ -25,7 +27,7 @@ public class CustomerProfileService {
     private final HorseService horseService;
 
 
-    @Autowired
+    //@Autowired
     public CustomerProfileService(CustomerProfileRepository customerProfileRepository,
                                   UserRepository userRepository,
                                   UserService userService, HorseService horseService
@@ -70,61 +72,29 @@ public class CustomerProfileService {
 
     }
 
+
+
     public Long createNewCustomerProfile(CustomerProfileInputDto inputDto){
-        CustomerProfile newCustomerProfile = transferToCustomerProfile(inputDto);
-                customerProfileRepository.save(newCustomerProfile);
+        CustomerProfile customerProfile = transferToCustomerProfile(inputDto);
+        CustomerProfile newCustomerProfile = customerProfileRepository.save(customerProfile);
         Long id = newCustomerProfile.getId();
         return id;
-    }
-
-    public void deleteCustomerProfile(Long id){
-        Optional<CustomerProfile> customerProfile = customerProfileRepository.findById(id);
-
-        if(customerProfile.isPresent()){
-            CustomerProfile customer = customerProfile.get();
-            List<Enrollment> enrollments = customer.getEnrollments();
-            List<Enrollment> updatedEnrollments = new ArrayList<>();
-            //om customerProfile te kunnen deleten, moet eerst de foreignkey verwijderd worden voor iedere Enrollment
-            if(enrollments != null) {
-                for(Enrollment e: enrollments) {
-                    e.setCustomer(null);
-                    updatedEnrollments.add(e);
-                }
-                customer.setEnrollments(updatedEnrollments);
-            }
-            customerProfileRepository.deleteById(id);
-        } else {
-            throw new RecordNotFoundException("This Id doesn't exist");
-        }
     }
 
     public void updateCustomerProfile(Long id, CustomerProfileInputDto inputDto){
         Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
 
         if(optionalCustomerProfile.isPresent()){
-            CustomerProfile storedCustomerProfile = optionalCustomerProfile.get();
-            CustomerProfile customerProfile = transferToCustomerProfile(inputDto);
-            customerProfile.setId(storedCustomerProfile.getId());
-            customerProfileRepository.save(customerProfile);
-        } else {
-            throw new RecordNotFoundException("This ID doesn't exist");
-        }
-    }
-
-    public void partialUpdateCustomerProfile(Long id, CustomerProfileInputDto inputDto){
-        Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
-
-        if(optionalCustomerProfile.isPresent()){
             CustomerProfile storedCustomerProfile = customerProfileRepository.findById(id).orElse(null);
             CustomerProfile customerProfile = transferToCustomerProfile(inputDto);
-            //if(customerProfile.getFirstName()!= null && !customerProfile.getFirstName().isEmpty()){
-            //    storedCustomerProfile.setFirstName(customerProfile.getFirstName());
-            //}
-            //if(customerProfile.getLastName() != null && !customerProfile.getLastName().isEmpty()){
-            //    storedCustomerProfile.setLastName(customerProfile.getLastName());
-            //}
+            if(customerProfile.getFirstName()!= null && !customerProfile.getFirstName().isEmpty()){
+                storedCustomerProfile.setFirstName(customerProfile.getFirstName());
+            }
+            if(customerProfile.getLastName() != null && !customerProfile.getLastName().isEmpty()){
+                storedCustomerProfile.setLastName(customerProfile.getLastName());
+            }
             if(customerProfile.getStreet() != null && !customerProfile.getStreet().isEmpty()){
-                storedCustomerProfile.setHouseNumber(customerProfile.getHouseNumber());
+                storedCustomerProfile.setStreet(customerProfile.getStreet());
             }
             if(customerProfile.getHouseNumber() != null && !customerProfile.getHouseNumber().isEmpty()){
                 storedCustomerProfile.setHouseNumber(customerProfile.getHouseNumber());
@@ -147,6 +117,44 @@ public class CustomerProfileService {
             customerProfileRepository.save(storedCustomerProfile);
         } else {
             throw new RecordNotFoundException("Geen klant bekend met deze ID");
+        }
+    }
+
+    public void deleteCustomerProfile(Long id){
+        Optional<CustomerProfile> customerProfile = customerProfileRepository.findById(id);
+
+        if(customerProfile.isPresent()){
+            CustomerProfile customer = customerProfile.get();
+            //checkt of er nog paarden aan een Enrollment gekoppeld zijn voor deze klant. Zo ja, wordt een error voorkomen
+            // door een exception te gooien.
+            List<Horse> horses = customer.getHorses();
+            List<Horse> enrolledHorses = new ArrayList<>();
+            if(horses != null) {
+                for(Horse h: horses) {
+                    if(h.getEnrollment() != null) {
+                        enrolledHorses.add(h);
+                    }
+                }
+                if(enrolledHorses.size() > 0) {
+                    throw new NotYetRemovedException("can't delete this customer; terminate subscription of all its horses first");
+                }
+            }
+            //om customerProfile te kunnen deleten, moet eerst de foreignkey verwijderd worden voor iedere Enrollment
+            List<Enrollment> enrollments = customer.getEnrollments();
+            List<Enrollment> updatedEnrollments = new ArrayList<>();
+            if(enrollments != null) {
+                for(Enrollment e: enrollments) {
+                    e.setCustomer(null);
+                    updatedEnrollments.add(e);
+                }
+                customer.setEnrollments(updatedEnrollments);
+            }
+            if(customer.getUser() != null) {
+                throw new NotYetRemovedException("remove user from customer first");
+            }
+            customerProfileRepository.deleteById(id);
+        } else {
+            throw new RecordNotFoundException("This Id doesn't exist");
         }
     }
 
@@ -180,16 +188,16 @@ public class CustomerProfileService {
         dto.setEmailAddress(customerProfile.getEmailAddress());
         dto.setBankAccountNumber(customerProfile.getBankAccountNumber());
 
-        /*if(customerProfile.getUser() != null){
+        if(customerProfile.getUser() != null){
             UserDto userDto = userService.transferToDto(customerProfile.getUser());
             dto.setUser(userDto);
-        }*/
+        }
         return dto;
     }
 
-    /*public void assignUserToCustomerProfile(Long id, Long userId){
+    public void assignUserToCustomerProfile(Long id, String username){
         Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
-        Optional<User> optionalUser = userRepository.findById(userId);
+        Optional<User> optionalUser = userRepository.findById(username);
 
         if(optionalCustomerProfile.isPresent() && optionalUser.isPresent()){
             CustomerProfile customer = optionalCustomerProfile.get();
@@ -203,6 +211,28 @@ public class CustomerProfileService {
         } else if (!optionalUser.isPresent()){
             throw new RecordNotFoundException("There's no user with this ID");
         }
-    }*/
+    }
+
+    public void removeUserFromCustomerProfile(Long customerId, String username) {
+        Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(customerId);
+        Optional<User> optionalUser = userRepository.findById(username);
+
+        if (!optionalCustomerProfile.isPresent() && !optionalUser.isPresent()) {
+            throw new RecordNotFoundException("There's no customer nor user with this ID");
+        } else if (!optionalCustomerProfile.isPresent()) {
+            throw new RecordNotFoundException("There's no customer with this ID");
+        } else if (!optionalUser.isPresent()) {
+            throw new RecordNotFoundException("There's no user with this ID");
+        } else if (optionalCustomerProfile.isPresent() && optionalUser.isPresent()) {
+            CustomerProfile customer = optionalCustomerProfile.get();
+            User user = optionalUser.get();
+            if (customer.getUser() == null) {
+                throw new NotYetAssignedException("there's no user to be removed");
+            } else {
+                customer.setUser(null);
+                customerProfileRepository.save(customer);
+            }
+        }
+    }
 
 }

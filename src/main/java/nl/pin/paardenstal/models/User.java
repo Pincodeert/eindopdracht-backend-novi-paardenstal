@@ -33,7 +33,7 @@ public class User {
     private Set<Authority> authorities = new HashSet<>();
 
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private CustomerProfile customerProfile;
 
 

@@ -3,6 +3,7 @@ package nl.pin.paardenstal.services;
 import nl.pin.paardenstal.dtos.*;
 import nl.pin.paardenstal.exceptions.AlreadyAssignedException;
 import nl.pin.paardenstal.exceptions.NotYetAssignedException;
+import nl.pin.paardenstal.exceptions.NotYetRemovedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.models.Stall;
@@ -26,7 +27,7 @@ public class StallService {
 
 
 
-    @Autowired
+    //@Autowired
     public StallService(StallRepository stallRepository,
                         HorseRepository horseRepository,
                         HorseService horseService,
@@ -108,6 +109,42 @@ public class StallService {
         return newId;
     }
 
+    public void updateStall(Long id, StallInputDto stallInputDto) {
+        Optional<Stall> optionalStall = stallRepository.findById(id);
+
+        if(optionalStall.isPresent()) {
+            Stall storedStall = optionalStall.get();
+
+            if(stallInputDto.getName() != null && !stallInputDto.getName().isEmpty()) {
+                storedStall.setName(stallInputDto.getName());
+            }
+            if(stallInputDto.getSize() != null && !stallInputDto.getSize().isEmpty()) {
+                storedStall.setSize(stallInputDto.getSize());
+            }
+            if(stallInputDto.getType() != null && !stallInputDto.getType().isEmpty()) {
+                storedStall.setType(stallInputDto.getType());
+            }
+            stallRepository.save(storedStall);
+        } else {
+            throw new RecordNotFoundException("Can't find a stall with this id");
+        }
+    }
+
+    public void deleteStall(Long id) {
+        Optional<Stall> optionalStall = stallRepository.findById(id);
+
+        if(optionalStall.isPresent()) {
+            Stall stall = optionalStall.get();
+
+            if(stall.getHorse() != null) {
+                throw new NotYetRemovedException("er staat nog een paard in deze stal. verwijder die eerst");
+            }
+            stallRepository.delete(stall);
+
+        } else {
+            throw new RecordNotFoundException("kan geen stal vinden met deze id");
+        }
+    }
     public StallDto transferToDto(Stall stall){
         StallDto dto = new StallDto();
 

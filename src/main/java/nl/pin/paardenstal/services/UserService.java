@@ -1,7 +1,9 @@
 package nl.pin.paardenstal.services;
 
+import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.UserDto;
 import nl.pin.paardenstal.dtos.UserInputDto;
+import nl.pin.paardenstal.exceptions.NotYetRemovedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Authority;
 import nl.pin.paardenstal.models.User;
@@ -59,6 +61,7 @@ public class UserService {
         String randomString = RandomStringGenerator.generateAlphaNumeric(20);
         userDto.setApikey(randomString);
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        //userDto.setEnabled(true);
         User newUser = userRepository.save(transferToUser(userDto));
         return newUser.getUsername();
     }
@@ -67,7 +70,11 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findById(username);
 
         if (optionalUser.isPresent()) {
-            userRepository.deleteById(username);
+            if(optionalUser.get().getCustomerProfile() != null){
+                throw new NotYetRemovedException("remove customerprofile first");
+            } else {
+                userRepository.deleteById(username);
+            }
         } else {
             throw new UsernameNotFoundException(username);
         }

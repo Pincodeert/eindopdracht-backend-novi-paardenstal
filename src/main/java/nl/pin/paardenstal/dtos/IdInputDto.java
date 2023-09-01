@@ -6,4 +6,6 @@ public class IdInputDto {
 
     public Long id;
 
+    public String username;
+
 }

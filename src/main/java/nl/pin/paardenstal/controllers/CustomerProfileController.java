@@ -26,7 +26,7 @@ public class CustomerProfileController {
     private final CustomerProfileService customerProfileService;
     private final EnrollmentService enrollmentService;
 
-    @Autowired
+    //@Autowired
     public CustomerProfileController(CustomerProfileService customerProfileService,
                                      EnrollmentService enrollmentService){
         this.customerProfileService = customerProfileService;
@@ -43,6 +43,19 @@ public class CustomerProfileController {
     public ResponseEntity<CustomerProfileDto> getCustomerProfile(@PathVariable Long id){
         CustomerProfileDto dto = customerProfileService.getCustomerProfile(id);
         return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/customerprofiles/{id}/enrollments")
+    public ResponseEntity<List<EnrollmentDto>> getAllEnrollmentsByCustomerProfileId(@PathVariable Long id) {
+        List<EnrollmentDto> enrollments = enrollmentService.getAllEnrollmentsByCustomerProfileId(id);
+        return ResponseEntity.ok(enrollments);
+    }
+
+    @GetMapping("customerprofiles/enrollments/{customerProfileId}")
+    public ResponseEntity<BigDecimal> getTotalPriceOfAssignedSubscriptions(@PathVariable("customerProfileId")
+                                                                           Long customerProfileId) {
+        BigDecimal totalPrice = enrollmentService.getTotalPriceOfAssignedSubscriptionsByCustomerId(customerProfileId);
+        return ResponseEntity.ok(totalPrice);
     }
 
     @PostMapping("/customerprofiles")
@@ -66,22 +79,8 @@ public class CustomerProfileController {
         }
     }
 
-    @DeleteMapping("/customerprofiles/{id}")
-    public ResponseEntity<Object> deleteCustomerProfile(@PathVariable Long id){
-        customerProfileService.deleteCustomerProfile(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    //PutMapping overbodig en niet realistisch
-    @PutMapping("/customerprofiles/{id}")
-    public ResponseEntity<Object> updateCustomerProfile(@PathVariable Long id, @RequestBody CustomerProfileInputDto
-            inputDto){
-        customerProfileService.updateCustomerProfile(id, inputDto);
-        return ResponseEntity.noContent().build();
-    }
-
     @PatchMapping("/customerprofiles/{id}")
-    public ResponseEntity<Object> partialUpdateCustomerProfile(@PathVariable Long id, @Valid
+    public ResponseEntity<Object> updateCustomerProfile(@PathVariable Long id, @Valid
                                                                @RequestBody CustomerProfileInputDto inputDto,
                                                                BindingResult bindingResult){
         if(bindingResult.hasErrors()) {
@@ -92,29 +91,27 @@ public class CustomerProfileController {
             }
             return ResponseEntity.badRequest().body(stringBuilder.toString());
         } else {
-            customerProfileService.partialUpdateCustomerProfile(id, inputDto);
+            customerProfileService.updateCustomerProfile(id, inputDto);
             return ResponseEntity.noContent().build();
         }
     }
 
-    /*@PutMapping("/customerprofiles/{id}/user")
-    public ResponseEntity<Object> assignUserToCustomerProfile(@PathVariable Long id, @RequestBody IdInputDto userInput){
-        customerProfileService.assignUserToCustomerProfile(id, userInput.id);
+    @DeleteMapping("/customerprofiles/{id}")
+    public ResponseEntity<Object> deleteCustomerProfile(@PathVariable Long id){
+        customerProfileService.deleteCustomerProfile(id);
         return ResponseEntity.noContent().build();
-    }*/
-
-    @GetMapping("/customerprofiles/{id}/enrollments")
-    public ResponseEntity<List<EnrollmentDto>> getAllEnrollmentsByCustomerProfileId(@PathVariable Long id) {
-        List<EnrollmentDto> enrollments = enrollmentService.getAllEnrollmentsByCustomerProfileId(id);
-        return ResponseEntity.ok(enrollments);
     }
 
-
-
-    @GetMapping("customerprofiles/enrollments/{customerProfileId}")
-    public ResponseEntity<BigDecimal> getTotalPriceOfAssignedSubscriptions(@PathVariable("customerProfileId")
-                                                                           Long customerProfileId) {
-        BigDecimal totalPrice = enrollmentService.getTotalPriceOfAssignedSubscriptionsByCustomerId(customerProfileId);
-        return ResponseEntity.ok(totalPrice);
+    @PutMapping("/customerprofiles/{id}/user")
+    public ResponseEntity<Object> assignUserToCustomerProfile(@PathVariable Long id, @RequestBody IdInputDto userInput){
+        customerProfileService.assignUserToCustomerProfile(id, userInput.username);
+        return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/customerprofiles/{id}/users/{username}")
+    public ResponseEntity<Object> removeUserFromCustomerProfile(@PathVariable ("id") Long customerId, @PathVariable ("username") String username) {
+        customerProfileService.removeUserFromCustomerProfile(customerId,username);
+        return ResponseEntity.noContent().build();
+    }
+
 }

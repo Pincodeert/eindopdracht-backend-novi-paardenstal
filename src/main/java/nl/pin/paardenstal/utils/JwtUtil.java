@@ -55,7 +55,7 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                // duur van de geldigheid van de jwt token op 1 dag ingesteld
+                // duur van de geldigheid van de jwt token op 5 dagen ingesteld
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 5))
                 .signWith(getSigningKey() , SignatureAlgorithm.HS256)
                 .compact();

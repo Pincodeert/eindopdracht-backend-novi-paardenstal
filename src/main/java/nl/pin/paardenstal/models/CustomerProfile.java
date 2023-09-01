@@ -40,7 +40,6 @@ public class CustomerProfile {
     @JsonIgnore
     private List<Horse> horses = new ArrayList<>();
 
-    //(tijdelijk) hier FetchType.EAGER veranderd in FetchType.LAZY, vanwege MultipleBagFetchException igv 2 collecties met FetchType.EAGER
     @OneToMany(mappedBy = "customerProfile", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = false)
     @JsonIgnore
     private List<Enrollment> enrollments;

@@ -19,7 +19,7 @@ public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
 
-    @Autowired
+    //@Autowired
     public EnrollmentController (EnrollmentService enrollmentService) {
         this.enrollmentService = enrollmentService;
     }
@@ -46,12 +46,6 @@ public class EnrollmentController {
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping("/enrollments/{id}")
-    public ResponseEntity<Object> deleteEnrollment(@PathVariable Long id) {
-        enrollmentService.deleteEnrollment(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @PostMapping("/enrollments")
     public ResponseEntity<Object> assignCustomerToSubscription(@RequestBody EnrollmentInputDto input) {
         Long newId = enrollmentService.assignCustomerToSubscription(input.subscriptionId, input.customerId, input.horseId, input.date);
@@ -68,12 +62,19 @@ public class EnrollmentController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/enrollments")
-    public ResponseEntity<Object> terminateSubscription(@RequestBody EnrollmentInputDto input) {
-        enrollmentService.terminateSubscription(input.subscriptionId);
+    //afhankelijk van de meegegeven inhoud in de enrollmentInputDto wordt in de servicelaag de subscription op geëindigd
+    // gezet of de subscription van de enrollment verwijderd.
+    @PutMapping("/enrollments/{id}")
+    public ResponseEntity<Object> updateEnrollment(@PathVariable Long id, @RequestBody EnrollmentInputDto enrollmentInputDto) {
+        enrollmentService.updateEnrollment(id, enrollmentInputDto);
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/enrollments/{id}")
+    public ResponseEntity<Object> deleteEnrollment(@PathVariable Long id) {
+        enrollmentService.deleteEnrollment(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 
 

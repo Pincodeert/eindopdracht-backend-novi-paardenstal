@@ -1,5 +1,7 @@
 package nl.pin.paardenstal.dtos;
 
+import nl.pin.paardenstal.models.FileUploadResponse;
+
 public class HorseDto {
 
     private Long id;
@@ -19,6 +21,8 @@ public class HorseDto {
     private String telephoneOfVet;
 
     private String preferredSubscription;
+
+    private FileUploadResponse passport;
 
     private CustomerProfileDto owner;
 
@@ -97,12 +101,20 @@ public class HorseDto {
         this.preferredSubscription = preferredSubscription;
     }
 
+    public FileUploadResponse getPassport() {
+        return passport;
+    }
+
+    public void setPassport(FileUploadResponse passport) {
+        this.passport = passport;
+    }
+
     public CustomerProfileDto getOwner() {
         return owner;
     }
 
-    public void setOwnerDto(CustomerProfileDto ownerDto) {
-        this.owner = ownerDto;
+    public void setOwner(CustomerProfileDto owner) {
+        this.owner = owner;
     }
 
     public StallDto getStall() {

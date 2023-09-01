@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>nl.pin</groupId>
 	<artifactId>paardenstal</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>paardenstal</name>
 	<description>Eindproject backend Novi</description>
 	<properties>
@@ -73,8 +73,19 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline-reader</artifactId>
+            <version>3.23.0</version>
+        </dependency>
 
-	</dependencies>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+    </dependencies>
 
 	<build>
 		<plugins>

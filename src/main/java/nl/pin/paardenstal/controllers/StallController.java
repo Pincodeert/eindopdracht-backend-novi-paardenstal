@@ -25,7 +25,7 @@ public class StallController {
 
     private final StallService stallService;
 
-    @Autowired
+    //@Autowired
     public StallController(StallService stallService){
         this.stallService = stallService;
     }
@@ -71,6 +71,28 @@ public class StallController {
                     .buildAndExpand(newId).toUri();
             return ResponseEntity.created(location).build();
         }
+    }
+
+    @PatchMapping("/stalls/{id}")
+    public ResponseEntity<Object> updateStall(@PathVariable Long id, @Valid @RequestBody StallInputDto stallInputDto,
+                                              BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                stringBuilder.append(fieldError.getDefaultMessage());
+                stringBuilder.append("\n");
+            }
+            return ResponseEntity.badRequest().body(stringBuilder.toString());
+        } else {
+            stallService.updateStall(id, stallInputDto);
+            return ResponseEntity.noContent().build();
+        }
+    }
+
+    @DeleteMapping("/stalls/{id}")
+    public ResponseEntity<Object> deleteStall(@PathVariable Long id) {
+        stallService.deleteStall(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/stalls/{id}/horse")
