@@ -25,7 +25,7 @@ public class HorseController {
 
     private final FileController fileController;
 
-    //@Autowired
+
     public HorseController(HorseService horseService, FileController fileController){
         this.horseService = horseService;
         this.fileController = fileController;
