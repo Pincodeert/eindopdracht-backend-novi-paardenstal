@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name = "enrollments")
@@ -19,7 +18,7 @@ public class Enrollment {
     //standaard instellen 12 maanden later. wordt door de applicatie berekend
     private LocalDate expireDate;
 
-    //looptijd in maanden. wordt berekend vanaf de LocalDate .now
+    //looptijd in maanden. wordt berekend vanaf de LocalDate.now
     private int duration;
 
     //de default waarde van Boolean is false. Bij aanmaken van een Enrollment willen we dat isOngoing op true staat:
@@ -98,10 +97,6 @@ public class Enrollment {
     public LocalDate getExpireDate() {
         return expireDate;
     }
-
-    /*public void setExpireDate(LocalDate expireDate) {
-        this.expireDate = expireDate;
-    }*/
 
     public int getDuration() {
         return duration;

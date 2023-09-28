@@ -1,6 +1,5 @@
 package nl.pin.paardenstal.dtos;
 
-import nl.pin.paardenstal.models.Enrollment;
 
 import java.util.ArrayList;
 import java.util.List;

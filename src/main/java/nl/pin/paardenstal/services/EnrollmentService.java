@@ -11,7 +11,6 @@ import nl.pin.paardenstal.repositories.CustomerProfileRepository;
 import nl.pin.paardenstal.repositories.EnrollmentRepository;
 import nl.pin.paardenstal.repositories.HorseRepository;
 import nl.pin.paardenstal.repositories.SubscriptionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -33,7 +32,6 @@ public class EnrollmentService {
     private final HorseRepository horseRepository;
     private final HorseService horseService;
 
-    //@Autowired
     public EnrollmentService(EnrollmentRepository enrollmentRepository,
                              SubscriptionRepository subscriptionRepository,
                              SubscriptionService subscriptionService,
@@ -133,8 +131,7 @@ public class EnrollmentService {
         }
     }
 
-    //zorgt ervoor dat per klant al zijn/haar inschrijvingen op een abonnement worden opgehaald (en dus getoond kunnen
-    // gaan worden).
+    //zorgt ervoor dat per klant al zijn/haar inschrijvingen op een abonnement worden opgehaald
     public List<EnrollmentDto> getAllEnrollmentsByCustomerProfileId(Long customerProfileId) {
         List<EnrollmentDto> dtos = new ArrayList<>();
         List<Enrollment> enrollments = enrollmentRepository.findAllByCustomerProfileId(customerProfileId);
@@ -188,7 +185,6 @@ public class EnrollmentService {
 
     //berekent en geeft terug de totale prijs van de inschrijvingen op een abonnement van een specifieke klant
     public BigDecimal getTotalPriceOfAssignedSubscriptionsByCustomerId(Long customerProfileId) {
-        //default-waarde van een double is al 0. hoeven we hier dus niet apart te declareren.
         double totalPrice = 0;
         List<Enrollment> enrollment = enrollmentRepository.findAllByCustomerProfileId(customerProfileId);
 
@@ -200,10 +196,9 @@ public class EnrollmentService {
         return roundedPrice;
     }
 
-    // zorgt ervoor dat een klant voor een bepaald paard een bepaald abonnement wordt ingeschreven en waarbij er een
-    // inschrijving (enrollment-object) wordt aangemaakt waarbij deze drie aan elkaar gekoppeld zijn en de datum van
-    // inschrijving wordt toegevoegd.
-    public Long assignCustomerToSubscription(Long subscriptionId, Long customerId, Long horseId, String date) {
+    // zorgt ervoor dat een nieuwe inschrijving wordt aangemaakt en dat deze gelijk aan een abonnement(subscription),
+    // klant(customerProfile) en paard gekoppeld wordt en dat de ingangs- en verloopdatum worden vastgelegd.
+    public Long createNewEnrollment(Long subscriptionId, Long customerId, Long horseId, String date) {
         Optional<Subscription> optionalSubscription = subscriptionRepository.findById(subscriptionId);
         Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(customerId);
         Optional<Horse> optionalHorse = horseRepository.findById(horseId);
@@ -244,11 +239,11 @@ public class EnrollmentService {
         } else if (!optionalHorse.isPresent()) {
             throw new RecordNotFoundException("There's no horse with this ID");
             // De if-statement hier weggehaald, omdat anders om return-waarde blijft vragen.
-        } else //if (!optionalCustomerProfile.isPresent())
+        } else
         {
             throw new RecordNotFoundException("There's no customer with this ID");
         }
-        //return null;
+
     }
 
     public void deleteEnrollment(Long id) {
@@ -259,14 +254,14 @@ public class EnrollmentService {
                 throw new EnrollmentIsOngoingException("can't delete this enrollment; it is still ongoing");
             }
             if(enrollment.getSubscription() != null) {
-                throw new NotYetRemovedException("remove subscription from enrollment first");
+                throw new NotYetRemovedException("first remove subscription from enrollment");
             }
             if(enrollment.getCustomer() != null) {
-                throw new NotYetRemovedException("remove customer from enrollment first");
+                throw new NotYetRemovedException("first remove customer from enrollment");
             }
             enrollmentRepository.deleteById(id);
         } else {
-            throw new RecordNotFoundException("Er bestaat geen inschrijving/abonnement met deze Id");
+            throw new RecordNotFoundException("No enrollment known by this ID");
         }
     }
 
@@ -285,7 +280,6 @@ public class EnrollmentService {
         return dto;
     }
 
-
     // regelt dat er een verzoek tot annulering gedaan kan worden
     public void askForCancellation(Long enrollmentId) {
         Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(enrollmentId);
@@ -295,7 +289,7 @@ public class EnrollmentService {
             enrollment.setCancellationRequested(true);
             enrollmentRepository.save(enrollment);
         } else {
-            throw new RecordNotFoundException("Er bestaat geen abonnement met deze Id");
+            throw new RecordNotFoundException("No enrollment known by this ID");
         }
     }
 
@@ -310,11 +304,9 @@ public class EnrollmentService {
             enrollment.setHorse(null);
             enrollmentRepository.save(enrollment);
         } else {
-            throw new RecordNotFoundException("Er bestaat geen abonnement met deze Id");
+            throw new RecordNotFoundException("No enrollment known by this ID");
         }
     }
-
-
 
 
     public void updateEnrollment(Long id, EnrollmentInputDto enrollmentInputDto) {
@@ -339,6 +331,7 @@ public class EnrollmentService {
             }
         }
     }
+
     public void removeSubscriptionFromEnrollment(Long id) {
         Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(id);
 

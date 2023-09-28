@@ -23,7 +23,7 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    //zorgt ervoor dat een bestand kan worden ge-upload.
+
     @PostMapping("/upload")
     FileUploadResponse singleFileUpload(@RequestParam ("file")MultipartFile file) {
         String url = ServletUriComponentsBuilder.fromCurrentContextPath().path("/download/").path(Objects

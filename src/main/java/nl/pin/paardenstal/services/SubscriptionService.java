@@ -5,11 +5,8 @@ import nl.pin.paardenstal.dtos.SubscriptionDto;
 import nl.pin.paardenstal.dtos.SubscriptionInputDto;
 import nl.pin.paardenstal.exceptions.NotYetRemovedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
-import nl.pin.paardenstal.models.Enrollment;
 import nl.pin.paardenstal.models.Subscription;
-import nl.pin.paardenstal.repositories.EnrollmentRepository;
 import nl.pin.paardenstal.repositories.SubscriptionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +27,7 @@ public class SubscriptionService {
         this.enrollmentService = enrollmentService;
     }
 
-    public List<SubscriptionDto> getAllSubscriptions(){
+    public List<SubscriptionDto> getAllSubscriptions() {
         List<Subscription> subscriptions = subscriptionRepository.findAll();
         List<SubscriptionDto> dtos = new ArrayList<>();
 
@@ -41,18 +38,18 @@ public class SubscriptionService {
         return dtos;
     }
 
-    public SubscriptionDto getSubscription(Long id){
+    public SubscriptionDto getSubscription(Long id) {
         Optional<Subscription> optionalSubscription = subscriptionRepository.findById(id);
 
         if(optionalSubscription.isPresent()){
             SubscriptionDto dto = transferToSubscriptionDto(optionalSubscription.get());
             return dto;
         } else {
-            throw new RecordNotFoundException("This id does not exist.");
+            throw new RecordNotFoundException("This ID does not exist.");
         }
     }
 
-    public Long addSubscription(SubscriptionInputDto subscriptionInputDto){
+    public Long addSubscription(SubscriptionInputDto subscriptionInputDto) {
         Subscription subscription = transferToSubscription(subscriptionInputDto);
         Subscription newSubscription = subscriptionRepository.save(subscription);
         Long newId = newSubscription.getId();
@@ -84,10 +81,10 @@ public class SubscriptionService {
 
     //delete een subscription op voorwaarde dat het geen lopende abonnementen (Enrollments met isOngoing = true) (meer)
     // bevat. Als het wel nog lopende abonnementen bevat geeft het een melding hiervan.
-    public void deleteSubscription(Long id){
+    public void deleteSubscription(Long id) {
         Optional<Subscription> optionalSubscription = subscriptionRepository.findById(id);
 
-        if(optionalSubscription.isPresent()){
+        if(optionalSubscription.isPresent()) {
             Subscription subscription = optionalSubscription.get();
             //Geeft voor deze subscriptionId een lijst met alle lopende enrollments
             List<EnrollmentDto> allOngoingEnrollments = enrollmentService.getOngoingEnrollmentsBySubscriptionId(id);
@@ -96,7 +93,7 @@ public class SubscriptionService {
 
             if(subscription.getEnrollments().size() > 0) {
                 if((allOngoingEnrollments.size()) > 0) {
-                    throw new NotYetRemovedException("kan niet deleten, vanwege nog lopende abonnementen");
+                    throw new NotYetRemovedException("Can't delete this subscription, because of (an) ongoing enrollment(s)");
                 } else if ((allEnrollments.size() - allOngoingEnrollments.size()) > 0) {
                     for(EnrollmentDto e: allEnrollments) {
                         enrollmentService.removeSubscriptionFromEnrollment(e.getId());
@@ -109,7 +106,7 @@ public class SubscriptionService {
         }
     }
 
-    public /*static*/ SubscriptionDto transferToSubscriptionDto(Subscription subscription){
+    public SubscriptionDto transferToSubscriptionDto(Subscription subscription) {
         SubscriptionDto dto = new SubscriptionDto();
 
         dto.setId(subscription.getId());
@@ -121,7 +118,7 @@ public class SubscriptionService {
         return dto;
     }
 
-    public Subscription transferToSubscription(SubscriptionInputDto subscriptionInputDto){
+    public Subscription transferToSubscription(SubscriptionInputDto subscriptionInputDto) {
         Subscription subscription = new Subscription();
 
         subscription.setName(subscriptionInputDto.getName());

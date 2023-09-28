@@ -5,15 +5,12 @@ import nl.pin.paardenstal.dtos.HorseInputDto;
 import nl.pin.paardenstal.dtos.IdInputDto;
 import nl.pin.paardenstal.models.FileUploadResponse;
 import nl.pin.paardenstal.services.HorseService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -26,27 +23,24 @@ public class HorseController {
     private final FileController fileController;
 
 
-    public HorseController(HorseService horseService, FileController fileController){
+    public HorseController(HorseService horseService, FileController fileController) {
         this.horseService = horseService;
         this.fileController = fileController;
     }
 
     @GetMapping("/horses")
-    //@Transactional
-    public ResponseEntity<List<HorseDto>> getAllHorses(){
+    public ResponseEntity<List<HorseDto>> getAllHorses() {
         List<HorseDto> horseDtos = horseService.getAllHorses();
         return ResponseEntity.ok(horseDtos);
     }
 
     @GetMapping("/horses/{id}")
-    //@Transactional
-    public ResponseEntity<HorseDto> getHorse(@PathVariable Long id){
+    public ResponseEntity<HorseDto> getHorse(@PathVariable Long id) {
         HorseDto horseDto = horseService.getHorse(id);
         return ResponseEntity.ok(horseDto);
     }
 
     @GetMapping("/horses/customerprofile")
-    //@Transactional
     public ResponseEntity<List<HorseDto>> getAllHorsesByCustomerProfileId(@RequestBody IdInputDto input) {
         List<HorseDto> dtos = horseService.getAllHorsesByCustomerProfileId(input.id);
         return ResponseEntity.ok(dtos);
@@ -54,7 +48,7 @@ public class HorseController {
 
     @PostMapping("/horses")
     public ResponseEntity<Object> addNewHorse(@Valid @RequestBody HorseInputDto horseInputDto,
-                                              BindingResult bindingResult){
+                                              BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             StringBuilder stringBuilder = new StringBuilder();
             for(FieldError fieldError: bindingResult.getFieldErrors()) {
@@ -74,7 +68,7 @@ public class HorseController {
 
     @PatchMapping("/horses/{id}")
     public ResponseEntity<Object> updateHorse(@PathVariable Long id, @Valid @RequestBody HorseInputDto horseInputDto,
-                                              BindingResult bindingResult){
+                                              BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             StringBuilder stringBuilder = new StringBuilder();
             for(FieldError fieldError: bindingResult.getFieldErrors()) {
@@ -89,7 +83,7 @@ public class HorseController {
     }
 
     @DeleteMapping("/horses/{id}")
-    public ResponseEntity<Object> deleteHorse(@PathVariable Long id){
+    public ResponseEntity<Object> deleteHorse(@PathVariable Long id) {
         horseService.deleteHorse(id);
         return ResponseEntity.noContent().build();
     }
@@ -100,13 +94,11 @@ public class HorseController {
         return ResponseEntity.noContent().build();
     }
 
+    //zorgt ervoor dat het paspoort wordt geupload en gelijk gekoppeld aan het paard
     @PostMapping("horses/{id}/passport")
     public ResponseEntity<Object> assignPassportToHorse(@PathVariable("id") Long horseId, @RequestBody MultipartFile file) {
         FileUploadResponse passport = fileController.singleFileUpload(file);
-
         horseService.assignPassportToHorse(passport.getFileName(), horseId);
-
-        //zorgt ervoor dat de url voor de get-methode in de response in Postman wordt meegestuurd:
         return ResponseEntity.ok(passport.getUrl());
     }
 

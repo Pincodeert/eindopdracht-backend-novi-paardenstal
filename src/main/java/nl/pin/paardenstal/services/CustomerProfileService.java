@@ -10,8 +10,6 @@ import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.models.User;
 import nl.pin.paardenstal.repositories.CustomerProfileRepository;
 import nl.pin.paardenstal.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,32 +25,32 @@ public class CustomerProfileService {
     private final HorseService horseService;
 
 
-    //@Autowired
+
     public CustomerProfileService(CustomerProfileRepository customerProfileRepository,
                                   UserRepository userRepository,
                                   UserService userService, HorseService horseService
-    ){
+    ) {
         this.customerProfileRepository = customerProfileRepository;
         this.userRepository = userRepository;
         this.userService = userService;
         this.horseService = horseService;
     }
 
-    public List<CustomerProfileDto> getAllCustomerProfiles(){
+    public List<CustomerProfileDto> getAllCustomerProfiles() {
         List<CustomerProfile> customerProfiles = customerProfileRepository.findAll();
         List<CustomerProfileDto> dtos = new ArrayList<>();
 
-        for(CustomerProfile c: customerProfiles){
+        for(CustomerProfile c: customerProfiles) {
             CustomerProfileDto dto = transferToDto(c);
             dtos.add(dto);
         }
         return dtos;
     }
 
-    public CustomerProfileDto getCustomerProfile(Long id){
+    public CustomerProfileDto getCustomerProfile(Long id) {
         Optional<CustomerProfile> customerProfile = customerProfileRepository.findById(id);
 
-        if(customerProfile.isPresent()){
+        if(customerProfile.isPresent()) {
             CustomerProfile storedCustomer = customerProfile.get();
             CustomerProfileDto dto = transferToDto(storedCustomer);
 
@@ -74,14 +72,14 @@ public class CustomerProfileService {
 
 
 
-    public Long createNewCustomerProfile(CustomerProfileInputDto inputDto){
+    public Long createNewCustomerProfile(CustomerProfileInputDto inputDto) {
         CustomerProfile customerProfile = transferToCustomerProfile(inputDto);
         CustomerProfile newCustomerProfile = customerProfileRepository.save(customerProfile);
         Long id = newCustomerProfile.getId();
         return id;
     }
 
-    public void updateCustomerProfile(Long id, CustomerProfileInputDto inputDto){
+    public void updateCustomerProfile(Long id, CustomerProfileInputDto inputDto) {
         Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(id);
 
         if(optionalCustomerProfile.isPresent()){
@@ -116,11 +114,11 @@ public class CustomerProfileService {
             }
             customerProfileRepository.save(storedCustomerProfile);
         } else {
-            throw new RecordNotFoundException("Geen klant bekend met deze ID");
+            throw new RecordNotFoundException("This Id does not exist");
         }
     }
 
-    public void deleteCustomerProfile(Long id){
+    public void deleteCustomerProfile(Long id) {
         Optional<CustomerProfile> customerProfile = customerProfileRepository.findById(id);
 
         if(customerProfile.isPresent()){

@@ -1,7 +1,6 @@
 package nl.pin.paardenstal.controllers;
 
 import nl.pin.paardenstal.dtos.UserDto;
-import nl.pin.paardenstal.dtos.UserInputDto;
 import nl.pin.paardenstal.exceptions.BadRequestException;
 import nl.pin.paardenstal.services.UserService;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +33,8 @@ public class UserController {
     }
 
     @GetMapping("/users/{username}")
-    public ResponseEntity<UserDto> getUser(@PathVariable String username){
-        UserDto userDto = userService.getUser(username);
+    public ResponseEntity<UserDto> getUserOutputInfo(@PathVariable String username){
+        UserDto userDto = userService.getUserOutputInfo(username);
         return ResponseEntity.ok(userDto);
     }
 
@@ -69,7 +68,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{username}")
-    public ResponseEntity<Object> deleteUser(@PathVariable String username){
+    public ResponseEntity<Object> deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }

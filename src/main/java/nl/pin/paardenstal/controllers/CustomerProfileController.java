@@ -4,11 +4,8 @@ import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.CustomerProfileInputDto;
 import nl.pin.paardenstal.dtos.EnrollmentDto;
 import nl.pin.paardenstal.dtos.IdInputDto;
-import nl.pin.paardenstal.models.Enrollment;
 import nl.pin.paardenstal.services.CustomerProfileService;
 import nl.pin.paardenstal.services.EnrollmentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -26,21 +23,21 @@ public class CustomerProfileController {
     private final CustomerProfileService customerProfileService;
     private final EnrollmentService enrollmentService;
 
-    //@Autowired
+
     public CustomerProfileController(CustomerProfileService customerProfileService,
-                                     EnrollmentService enrollmentService){
+                                     EnrollmentService enrollmentService) {
         this.customerProfileService = customerProfileService;
         this.enrollmentService = enrollmentService;
     }
 
     @GetMapping("/customerprofiles")
-    public ResponseEntity<List<CustomerProfileDto>> getAllCustomerProfiles(){
+    public ResponseEntity<List<CustomerProfileDto>> getAllCustomerProfiles() {
         List<CustomerProfileDto> dtos = customerProfileService.getAllCustomerProfiles();
         return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/customerprofiles/{id}")
-    public ResponseEntity<CustomerProfileDto> getCustomerProfile(@PathVariable Long id){
+    public ResponseEntity<CustomerProfileDto> getCustomerProfile(@PathVariable Long id) {
         CustomerProfileDto dto = customerProfileService.getCustomerProfile(id);
         return ResponseEntity.ok(dto);
     }
@@ -60,7 +57,7 @@ public class CustomerProfileController {
 
     @PostMapping("/customerprofiles")
     public ResponseEntity<Object> createNewCustomerProfile(@Valid @RequestBody CustomerProfileInputDto customerInputDto,
-                                                         BindingResult bindingResult){
+                                                         BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             StringBuilder stringBuilder = new StringBuilder();
             for(FieldError fieldError: bindingResult.getFieldErrors()) {
@@ -82,7 +79,7 @@ public class CustomerProfileController {
     @PatchMapping("/customerprofiles/{id}")
     public ResponseEntity<Object> updateCustomerProfile(@PathVariable Long id, @Valid
                                                                @RequestBody CustomerProfileInputDto inputDto,
-                                                               BindingResult bindingResult){
+                                                               BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             StringBuilder stringBuilder = new StringBuilder();
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
@@ -97,7 +94,7 @@ public class CustomerProfileController {
     }
 
     @DeleteMapping("/customerprofiles/{id}")
-    public ResponseEntity<Object> deleteCustomerProfile(@PathVariable Long id){
+    public ResponseEntity<Object> deleteCustomerProfile(@PathVariable Long id) {
         customerProfileService.deleteCustomerProfile(id);
         return ResponseEntity.noContent().build();
     }
@@ -109,7 +106,8 @@ public class CustomerProfileController {
     }
 
     @PutMapping("/customerprofiles/{id}/users/{username}")
-    public ResponseEntity<Object> removeUserFromCustomerProfile(@PathVariable ("id") Long customerId, @PathVariable ("username") String username) {
+    public ResponseEntity<Object> removeUserFromCustomerProfile(@PathVariable ("id") Long customerId,
+                                                                @PathVariable ("username") String username) {
         customerProfileService.removeUserFromCustomerProfile(customerId,username);
         return ResponseEntity.noContent().build();
     }

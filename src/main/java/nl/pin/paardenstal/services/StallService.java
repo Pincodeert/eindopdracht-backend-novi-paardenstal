@@ -7,11 +7,8 @@ import nl.pin.paardenstal.exceptions.NotYetRemovedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.models.Stall;
-import nl.pin.paardenstal.models.Subscription;
 import nl.pin.paardenstal.repositories.HorseRepository;
 import nl.pin.paardenstal.repositories.StallRepository;
-import nl.pin.paardenstal.repositories.SubscriptionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,12 +24,9 @@ public class StallService {
 
 
 
-    //@Autowired
     public StallService(StallRepository stallRepository,
                         HorseRepository horseRepository,
-                        HorseService horseService,
-                        SubscriptionRepository subscriptionRepository,
-                        SubscriptionService subscriptionService){
+                        HorseService horseService){
         this.stallRepository = stallRepository;
         this.horseRepository = horseRepository;
         this.horseService = horseService;
@@ -137,12 +131,12 @@ public class StallService {
             Stall stall = optionalStall.get();
 
             if(stall.getHorse() != null) {
-                throw new NotYetRemovedException("er staat nog een paard in deze stal. verwijder die eerst");
+                throw new NotYetRemovedException("First remove the horse that's still in the stall.");
             }
             stallRepository.delete(stall);
 
         } else {
-            throw new RecordNotFoundException("kan geen stal vinden met deze id");
+            throw new RecordNotFoundException("Can't find any stall with this ID");
         }
     }
     public StallDto transferToDto(Stall stall){
@@ -189,9 +183,9 @@ public class StallService {
             stall.setOccupied(true);
             stallRepository.save(stall);
         } else if (stall.getHorse() != null){
-            throw new AlreadyAssignedException("deze stal is al bezet");
+            throw new AlreadyAssignedException("This stall is occupied");
         } else if (horse.getStall() != null){
-            throw new AlreadyAssignedException("dit paard is al aan een andere stal toegewezen");
+            throw new AlreadyAssignedException("This horse had already been assigned to another stall");
         }
     }
 
