@@ -43,7 +43,7 @@ public class EnrollmentController {
     }
 
     @PostMapping("/enrollments")
-    public ResponseEntity<Object> assignCustomerToSubscription(@RequestBody EnrollmentInputDto input) {
+    public ResponseEntity<Object> createNewEnrollment(@RequestBody EnrollmentInputDto input) {
         Long newId = enrollmentService.createNewEnrollment(input.subscriptionId, input.customerId, input.horseId, input.date);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
