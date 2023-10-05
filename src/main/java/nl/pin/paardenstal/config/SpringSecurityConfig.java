@@ -51,15 +51,12 @@ public class SpringSecurityConfig {
                 .httpBasic().disable()
                 .cors().and()
                 .authorizeHttpRequests()
-                // Wanneer je deze uncomments, staat je hele security open. Je hebt dan alleen nog een jwt nodig.
+                // Wanneer deze wordt ge-uncomments, staat de hele security open. Er is dan alleen nog een jwt nodig.
                 //.requestMatchers("/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
                 .antMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
-                //moet USER-role dit ook kunnen opvragen???
                 .antMatchers(HttpMethod.GET,"/users/{username}").hasAnyRole("USER","ADMIN")
-                //deze toevoegen?
                 .antMatchers(HttpMethod.GET,"/users/{username}/authorities").hasRole("ADMIN")
-                //kloppen deze rollen?
                 .antMatchers(HttpMethod.PUT,"/users/{username}").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
@@ -70,8 +67,6 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.GET, "/customerprofiles/{id}").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.GET, "/customerprofiles/{id}/enrollments").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.GET, "/customerprofiles/enrollments/{customerProfileId}").hasAnyRole("USER","ADMIN")
-                //keuze maken: put of patch
-                .antMatchers(HttpMethod.PUT, "/customerprofiles/{id}").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.PATCH, "/customerprofiles/{id}").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.PUT, "/customerprofiles/{id}/user").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.PUT, "/customerprofiles/{id}/users/{username}").hasRole("ADMIN")
@@ -89,6 +84,7 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.PUT, "/stalls/{id}/horse").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/stalls/{id}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/stalls/{id}").hasRole("ADMIN")
+
 
                 .antMatchers(HttpMethod.POST, "/horses").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.GET, "/horses").hasRole("ADMIN")
@@ -108,12 +104,11 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.PATCH, "/subscriptions/{id}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/subscriptions/{id}").hasRole("ADMIN")
 
-                //via dit path gebruik te maken van 2 constructors:
+
                 .antMatchers(HttpMethod.POST, "/enrollments").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/enrollments").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/enrollments/{id}").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.PATCH, "/enrollments/{id}").hasAnyRole("USER","ADMIN")
-
                 .antMatchers(HttpMethod.DELETE, "/enrollments/{id}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/enrollments/{id}").hasRole("ADMIN")
 

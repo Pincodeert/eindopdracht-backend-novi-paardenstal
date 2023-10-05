@@ -152,8 +152,6 @@ public class HorseService {
             Horse horse = optionalHorse.get();
             if(horse.getStall() != null) {
                 throw new NotYetRemovedException("First remove horse from stall");
-                //alternatief voor de NotYetRemovedException. handelt de oorzaak voor de exception gelijk ook af.
-                //stallService.removeHorseFromStall(horse.getStall().getId());
             }
             if(horse.getEnrollment() != null) {
                 throw new NotYetRemovedException("There's still an ongoing enrollment, you have to terminate first.");

@@ -51,13 +51,9 @@ public class EnrollmentService {
         List<Enrollment> enrollments = enrollmentRepository.findAll();
         for(Enrollment e: enrollments) {
             EnrollmentDto dto = transferToDto(e);
-            // in theorie kan enrollment.getCustomer() nooit null zijn omdat de constructor die we gebruiken afdwingt
-            // altijd een customer te koppelen. dus if-statement hier in principe niet nodig?
             if(e.getCustomer() != null) {
                 dto.setCustomer(customerProfileService.transferToDto(e.getCustomer()));
             }
-            // in theorie kan enrollment.getSubscription() nooit null zijn omdat de constructor die we gebruiken afdwingt
-            // altijd een subscription te koppelen. dus if-statement hier in principe niet nodig?
             if(e.getSubscription() != null) {
                 dto.setSubscription(subscriptionService.transferToSubscriptionDto(e.getSubscription()));
             }
@@ -72,13 +68,9 @@ public class EnrollmentService {
         List<Enrollment> enrollments = enrollmentRepository.findAllByCancellationRequested(cancellationRequested);
         for(Enrollment e: enrollments) {
             EnrollmentDto dto = transferToDto(e);
-            // in theorie kan enrollment.getCustomer() nooit null zijn omdat de constructor die we gebruiken afdwingt
-            // altijd een customer te koppelen. dus if-statement hier in principe niet nodig?
             if(e.getCustomer() != null) {
                 dto.setCustomer(customerProfileService.transferToDto(e.getCustomer()));
             }
-            // in theorie kan enrollment.getSubscription() nooit null zijn omdat de constructor die we gebruiken afdwingt
-            // altijd een subscription te koppelen. dus if-statement hier in principe niet nodig?
             if(e.getSubscription() != null) {
                 dto.setSubscription(subscriptionService.transferToSubscriptionDto(e.getSubscription()));
             }
@@ -90,7 +82,7 @@ public class EnrollmentService {
         return dtos;
     }
 
-    //zorgt ervoor dat alle lopende abonnementen worden opgehaald
+    //zorgt ervoor dat alle lopende inschrijvingen op een abonnement worden opgehaald
     public List<EnrollmentDto> getAllOngoingEnrollments(boolean isOngoing) {
         List<EnrollmentDto> dtos = new ArrayList<>();
         List<Enrollment> ongoingEnrollments = enrollmentRepository.findAllByIsOngoing(isOngoing);
@@ -115,13 +107,9 @@ public class EnrollmentService {
         if(optionalEnrollment.isPresent()){
             Enrollment storedEnrollment = optionalEnrollment.get();
             EnrollmentDto dto = transferToDto(storedEnrollment);
-            // in theorie kan enrollment.getCustomer() nooit null zijn omdat de constructor die we gebruiken afdwingt
-            // altijd een customer te koppelen. dus if-statement hier in principe niet nodig?
             if(storedEnrollment.getCustomer() != null) {
                 dto.setCustomer(customerProfileService.transferToDto(storedEnrollment.getCustomer()));
             }
-            // in theorie kan enrollment.getSubscription() nooit null zijn omdat de constructor die we gebruiken afdwingt
-            // altijd een subscription te koppelen. dus if-statement hier in principe niet nodig?
             if(storedEnrollment.getSubscription() != null) {
                 dto.setSubscription(subscriptionService.transferToSubscriptionDto(storedEnrollment.getSubscription()));
             }
@@ -138,8 +126,6 @@ public class EnrollmentService {
 
         for(Enrollment e: enrollments) {
             EnrollmentDto dto = transferToDto(e);
-            // in theorie kan enrollment.getSubscription() nooit null zijn omdat de constructor die we gebruiken afdwingt
-            // altijd een subscription te koppelen. dus if-statement hier in principe niet nodig?
             if(e.getSubscription() != null) {
                 dto.setSubscription(subscriptionService.transferToSubscriptionDto(e.getSubscription()));
             }
@@ -158,13 +144,10 @@ public class EnrollmentService {
 
         for(Enrollment e: enrollments) {
             EnrollmentDto dto = transferToDto(e);
-            // in theorie kan enrollment.getCustomer() nooit null zijn omdat de constructor die we gebruiken afdwingt
-            // altijd een customer te koppelen. dus if-statement hier in principe niet nodig?
+
             if(e.getCustomer() != null) {
                 dto.setCustomer(customerProfileService.transferToDto(e.getCustomer()));
             }
-            // de enrollment.getSubscription() hoeft hier niet worden toegevoegd, want we weten al van welke
-            // subscription we de informatie opvragen.
             dtos.add(dto);
         }
         return dtos;
@@ -197,7 +180,7 @@ public class EnrollmentService {
     }
 
     // zorgt ervoor dat een nieuwe inschrijving wordt aangemaakt en dat deze gelijk aan een abonnement(subscription),
-    // klant(customerProfile) en paard gekoppeld wordt en dat de ingangs- en verloopdatum worden vastgelegd.
+    // klant(customerProfile) en paard(Horse) gekoppeld wordt en dat de ingangs- en verloopdatum worden vastgelegd.
     public Long createNewEnrollment(Long subscriptionId, Long customerId, Long horseId, String date) {
         Optional<Subscription> optionalSubscription = subscriptionRepository.findById(subscriptionId);
         Optional<CustomerProfile> optionalCustomerProfile = customerProfileRepository.findById(customerId);
@@ -313,19 +296,16 @@ public class EnrollmentService {
         Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(id);
 
         if(!optionalEnrollment.isPresent()) {
-            throw new RecordNotFoundException("deze id is niet bekend");
+            throw new RecordNotFoundException("this id is unknown");
         } else {
             Enrollment enrollment = optionalEnrollment.get();
 
             if(enrollmentInputDto.isOngoing) {
-                terminateSubscription(id);            }
-
-            //nog uitzoeken of isEmpty hier echt nodig is
+                terminateSubscription(id);
+            }
             if(enrollmentInputDto.subscriptionId != null && !enrollmentInputDto.subscriptionId.describeConstable().isEmpty()) {
                 removeSubscriptionFromEnrollment(id);
             }
-
-            //nog uitzoeken of isEmpty hier echt nodig is
             if(enrollmentInputDto.customerId != null && !enrollmentInputDto.customerId.describeConstable().isEmpty()) {
                 removeCustomerProfileFromEnrollment(id);
             }
@@ -340,7 +320,7 @@ public class EnrollmentService {
             enrollment.setSubscription(null);
             enrollmentRepository.save(enrollment);
         } else {
-            throw new RecordNotFoundException("deze id is niet bekend");
+            throw new RecordNotFoundException("this id is unknown");
         }
     }
 
@@ -352,7 +332,7 @@ public class EnrollmentService {
             enrollment.setCustomer(null);
             enrollmentRepository.save(enrollment);
         } else {
-            throw new RecordNotFoundException("deze id is niet bekend");
+            throw new RecordNotFoundException("this id is unknown");
         }
     }
 
