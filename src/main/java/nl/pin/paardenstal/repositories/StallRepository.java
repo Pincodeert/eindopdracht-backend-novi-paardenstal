@@ -1,7 +1,6 @@
 package nl.pin.paardenstal.repositories;
 
 
-import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.models.Stall;
 import org.springframework.data.jpa.repository.JpaRepository;
 

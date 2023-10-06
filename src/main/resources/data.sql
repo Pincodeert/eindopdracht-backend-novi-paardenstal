@@ -35,7 +35,7 @@ VALUES
 ('Wild Horse', 'NL011887766999', 'hay', 'straw', 'Dr Robert', 'London', '0666776677', 'Averell Dalton abonnement', 5),
 ('Savage Horse', 'NL024247767456', 'hay', 'straw', 'Dr Robert', 'London', '0666776677', 'Averell Dalton abonnement', 5),
 ('Italian Stallion', 'NL076547766123', 'oats', 'shavings', 'Dr Strange', 'Philadelphia', '0612883479', 'Ma Dalton abonnement', 6),
-('Sweet Horse O Mine', 'NL089247764781', 'oats', 'straw', 'Dr John', 'New Orleans', '0612345678', 'Averell Dalton abonnement', 7);
+('Sweet Horse O Mine', 'NL089247764781', 'oats', 'straw', 'Dr John', 'New Orleans', '0612345678', 'Averell Dalton abonnement', null);
 
 INSERT INTO stalls(name, size, type, is_occupied, horse_id)
 VALUES

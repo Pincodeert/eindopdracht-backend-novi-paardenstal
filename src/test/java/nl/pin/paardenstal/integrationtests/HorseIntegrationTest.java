@@ -108,13 +108,6 @@ public class HorseIntegrationTest {
 
     @Test
     void shouldRetrieveAllHorses() throws Exception {
-        /*List<Horse> horses = new ArrayList<>();
-        horses.add(horse1);
-        horses.add(horse2);
-
-        List<HorseDto> horseDtos = new ArrayList<>();
-        horseDtos.add(horseDto1);
-        horseDtos.add(horseDto2);*/
 
         this.mockMvc
                 .perform(MockMvcRequestBuilders.get("/horses"))
@@ -123,7 +116,6 @@ public class HorseIntegrationTest {
                 .andExpect(jsonPath("$[0].name", is(horseDto1.getName())))
                 .andExpect(jsonPath("$[0].horseNumber", is(horseDto1.getHorseNumber())))
                 .andExpect(jsonPath("$[1].name", is(horseDto2.getName())));
-                //.andExpect(MockMvcResultMatchers.jsonPath("$horses.size()",is(horseDtos.size())));
     }
 
     //getHorse

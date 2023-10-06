@@ -1,6 +1,6 @@
 package nl.pin.paardenstal.dtos;
 
-import nl.pin.paardenstal.models.Horse;
+
 
 import java.util.ArrayList;
 import java.util.List;

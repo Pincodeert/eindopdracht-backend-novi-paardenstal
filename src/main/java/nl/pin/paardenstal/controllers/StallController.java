@@ -3,10 +3,7 @@ package nl.pin.paardenstal.controllers;
 import nl.pin.paardenstal.dtos.IdInputDto;
 import nl.pin.paardenstal.dtos.StallDto;
 import nl.pin.paardenstal.dtos.StallInputDto;
-import nl.pin.paardenstal.models.Horse;
-import nl.pin.paardenstal.models.Stall;
 import nl.pin.paardenstal.services.StallService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -15,9 +12,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 
 @RestController
@@ -25,14 +21,14 @@ public class StallController {
 
     private final StallService stallService;
 
-    //@Autowired
+
     public StallController(StallService stallService){
         this.stallService = stallService;
     }
 
     @GetMapping("/stalls")
     public ResponseEntity<List<StallDto>> getAllStalls(@RequestParam(name = "type", defaultValue = "") String type,
-                                                       @RequestParam(name="isOccupied", defaultValue = "false") boolean isOccupied){
+                                                       @RequestParam(name="isOccupied", defaultValue = "false") boolean isOccupied) {
         List<StallDto> stallDtos = stallService.getAllStalls(type, isOccupied);
         return ResponseEntity.ok(stallDtos);
     }
@@ -50,14 +46,14 @@ public class StallController {
     }
 
     @GetMapping("/stalls/{id}")
-    public ResponseEntity<StallDto> getStall(@PathVariable Long id){
+    public ResponseEntity<StallDto> getStall(@PathVariable Long id) {
         StallDto stallDto = stallService.getStall(id);
         return ResponseEntity.ok(stallDto);
     }
 
     @PostMapping("/stalls")
     public ResponseEntity<Object> addStall(@Valid @RequestBody StallInputDto stallInputDto,
-                                            BindingResult bindingResult){
+                                            BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             StringBuilder stringBuilder = new StringBuilder();
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
@@ -96,7 +92,7 @@ public class StallController {
     }
 
     @PutMapping("/stalls/{id}/horse")
-    public ResponseEntity<Object> assignHorseToStall(@PathVariable Long id, @RequestBody IdInputDto input){
+    public ResponseEntity<Object> assignHorseToStall(@PathVariable Long id, @RequestBody IdInputDto input) {
         stallService.assignHorseToStall(id, input.id);
         return ResponseEntity.noContent().build();
     }

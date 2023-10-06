@@ -3,12 +3,8 @@ package nl.pin.paardenstal.controllers;
 import nl.pin.paardenstal.dtos.EnrollmentDto;
 import nl.pin.paardenstal.dtos.SubscriptionDto;
 import nl.pin.paardenstal.dtos.SubscriptionInputDto;
-import nl.pin.paardenstal.models.Enrollment;
-import nl.pin.paardenstal.models.Stall;
-import nl.pin.paardenstal.models.Subscription;
 import nl.pin.paardenstal.services.EnrollmentService;
 import nl.pin.paardenstal.services.SubscriptionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -17,7 +13,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,20 +21,20 @@ public class SubscriptionController {
     private final SubscriptionService subscriptionService;
     private final EnrollmentService enrollmentService;
 
-    //@Autowired
-    public SubscriptionController(SubscriptionService subscriptionService, EnrollmentService enrollmentService){
+
+    public SubscriptionController(SubscriptionService subscriptionService, EnrollmentService enrollmentService) {
         this.subscriptionService = subscriptionService;
         this.enrollmentService = enrollmentService;
     }
 
     @GetMapping("/subscriptions")
-    public ResponseEntity<List<SubscriptionDto>> getAllSubscriptions(){
+    public ResponseEntity<List<SubscriptionDto>> getAllSubscriptions() {
         List<SubscriptionDto> subscriptionDtos = subscriptionService.getAllSubscriptions();
         return ResponseEntity.ok(subscriptionDtos);
     }
 
     @GetMapping("/subscriptions/{id}")
-    public ResponseEntity<SubscriptionDto> getSubscription(@PathVariable Long id){
+    public ResponseEntity<SubscriptionDto> getSubscription(@PathVariable Long id) {
         SubscriptionDto subscriptionDto = subscriptionService.getSubscription(id);
         return ResponseEntity.ok(subscriptionDto);
     }
@@ -85,7 +80,7 @@ public class SubscriptionController {
     }
 
     @DeleteMapping("/subscriptions/{id}")
-    public ResponseEntity<Object> deleteSubscription(@PathVariable Long id){
+    public ResponseEntity<Object> deleteSubscription(@PathVariable Long id) {
         subscriptionService.deleteSubscription(id);
         return ResponseEntity.noContent().build();
     }

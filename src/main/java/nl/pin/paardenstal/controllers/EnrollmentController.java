@@ -2,14 +2,10 @@ package nl.pin.paardenstal.controllers;
 
 import nl.pin.paardenstal.dtos.EnrollmentDto;
 import nl.pin.paardenstal.dtos.EnrollmentInputDto;
-import nl.pin.paardenstal.models.Enrollment;
 import nl.pin.paardenstal.services.EnrollmentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +15,7 @@ public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
 
-    //@Autowired
+
     public EnrollmentController (EnrollmentService enrollmentService) {
         this.enrollmentService = enrollmentService;
     }
@@ -47,8 +43,8 @@ public class EnrollmentController {
     }
 
     @PostMapping("/enrollments")
-    public ResponseEntity<Object> assignCustomerToSubscription(@RequestBody EnrollmentInputDto input) {
-        Long newId = enrollmentService.assignCustomerToSubscription(input.subscriptionId, input.customerId, input.horseId, input.date);
+    public ResponseEntity<Object> createNewEnrollment(@RequestBody EnrollmentInputDto input) {
+        Long newId = enrollmentService.createNewEnrollment(input.subscriptionId, input.customerId, input.horseId, input.date);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newId).toUri();

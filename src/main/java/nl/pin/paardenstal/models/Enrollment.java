@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name = "enrollments")
@@ -19,7 +18,7 @@ public class Enrollment {
     //standaard instellen 12 maanden later. wordt door de applicatie berekend
     private LocalDate expireDate;
 
-    //looptijd in maanden. wordt berekend vanaf de LocalDate .now
+    //looptijd in maanden. wordt berekend vanaf de LocalDate.now
     private int duration;
 
     //de default waarde van Boolean is false. Bij aanmaken van een Enrollment willen we dat isOngoing op true staat:
@@ -48,13 +47,14 @@ public class Enrollment {
 
 
 
-    //No-args-constructor, hier nodig omdat we  (nodig, omdat Java niet meer default no args constructor aanmaakt omdat we zelf een
-    // (gedeeltelijke) args constructor maken, nodig om in de associatieklasse af te dwingen dat de instantie van de
-    // associatieklasse alleen wordt aangemaakt wanneer de addCustomerProfileToSubscription()-operatie wordt aangeroepen.
+    //No-args-constructor, hier nodig te vermelden, omdat Java niet meer default no args constructor aanmaakt omdat
+    // we zelf een (gedeeltelijke) args constructor maken, nodig om in de associatieklasse af te dwingen dat de instantie
+    // van de enrollment alleen wordt aangemaakt wanneer de createNewEnrollment()-operatie wordt
+    // aangeroepen.
     public Enrollment(){};
 
-    //Constructor die we nodig hebben om af te dwingen dat in associatieklasse de instantie van de
-    //associatieklasse alleen wordt aangemaakt wanneer de addCustomerProfileToSubscription()-operatie wordt aangeroepen.
+    //Constructor die gebruikt wordt om af te dwingen dat in associatieklasse de instantie van de
+    //van de enrollment alleen wordt aangemaakt wanneer de createNewEnrollment()-operatie wordt aangeroepen.
     public Enrollment(Subscription s, CustomerProfile cp, Horse h) {
         this.subscription = s;
         this.customerProfile =cp;
@@ -66,7 +66,7 @@ public class Enrollment {
         this.expireDate = startDate.plusMonths(12);
     }
 
-    //all args constructor (handig voor als je bv zelf een andere startdatum wil meegeven dan de datum van vandaag
+    //all args constructor (handig voor als je bv zelf een andere startdatum wil meegeven dan de datum van vandaag)
     public Enrollment(Subscription s,  CustomerProfile cp, Horse h, LocalDate startDate) {
         this.subscription = s;
         this.customerProfile = cp;
@@ -90,18 +90,9 @@ public class Enrollment {
         return startDate;
     }
 
-    //vooralsnog, omdat set startDate in de constructor wordt geregeld, nu geen setter nodig
-    //public void setStartDate(String startDate) {
-    //    this.startDate = startDate;
-    //}
-
     public LocalDate getExpireDate() {
         return expireDate;
     }
-
-    /*public void setExpireDate(LocalDate expireDate) {
-        this.expireDate = expireDate;
-    }*/
 
     public int getDuration() {
         return duration;

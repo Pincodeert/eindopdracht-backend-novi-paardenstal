@@ -1,7 +1,6 @@
 package nl.pin.paardenstal.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.LazyCollection;
 
 import javax.persistence.*;
 import java.util.ArrayList;

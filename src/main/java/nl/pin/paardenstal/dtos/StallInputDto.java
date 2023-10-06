@@ -15,7 +15,6 @@ public class StallInputDto {
     private String type;
 
 
-
     public String getName() {
         return name;
     }

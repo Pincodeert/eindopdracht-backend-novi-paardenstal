@@ -180,7 +180,6 @@ class StallServiceTest {
 
     @Test
     @DisplayName("testGetAllStallsByIsOccupied()")
-    // 2 testen van maken?? 1 voor true en 1 voor false?
     void shouldReturnOnlyStallsWithIsOccupiedIsTrueWhenGivenIsOccupiedIsTrue() {
 
         //Arrange
@@ -273,7 +272,6 @@ class StallServiceTest {
     }
 
     @Test
-    //id = null != id=5L???
     void shouldThrowExceptionWhenIdIsNotKnown() {
 
         assertThrows(RecordNotFoundException.class, () -> stallService.getStall(null));

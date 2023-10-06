@@ -1,15 +1,11 @@
 package nl.pin.paardenstal.services;
 
-import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.UserDto;
-import nl.pin.paardenstal.dtos.UserInputDto;
 import nl.pin.paardenstal.exceptions.NotYetRemovedException;
-import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.Authority;
 import nl.pin.paardenstal.models.User;
 import nl.pin.paardenstal.repositories.UserRepository;
 import nl.pin.paardenstal.utils.RandomStringGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -53,6 +49,21 @@ public class UserService {
         }
     }
 
+    //deze methode wordt aangeroepen door de get-methode in de UserController klasse om ervoor te zorgen dat er geen
+    // gevoelige informatie, zoals bv het password wordt teruggegeven aan een gebruiker.
+    public UserDto getUserOutputInfo(String username) {
+        Optional<User> optionalUser = userRepository.findById(username);
+        UserDto dto = new UserDto();
+        if (optionalUser.isPresent()) {
+            User storedUser = optionalUser.get();
+            dto.username = storedUser.getUsername();
+            dto.email = storedUser.getEmail();
+            return dto;
+        } else {
+            throw new UsernameNotFoundException(username);
+        }
+    }
+
     public boolean userExists(String username) {
         return userRepository.existsById(username);
     }
@@ -71,7 +82,7 @@ public class UserService {
 
         if (optionalUser.isPresent()) {
             if(optionalUser.get().getCustomerProfile() != null){
-                throw new NotYetRemovedException("remove customerprofile first");
+                throw new NotYetRemovedException("first remove customerprofile");
             } else {
                 userRepository.deleteById(username);
             }
@@ -83,7 +94,7 @@ public class UserService {
     public void updateUser(String username, UserDto newUser) {
         if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
         User user = userRepository.findById(username).get();
-        user.setPassword(newUser.getPassword());
+        user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userRepository.save(user);
     }
 

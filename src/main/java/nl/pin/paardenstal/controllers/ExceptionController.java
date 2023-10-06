@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ExceptionController {
 
     @ExceptionHandler(value = RecordNotFoundException.class)
-    public ResponseEntity<Object> exception(RecordNotFoundException exception){
+    public ResponseEntity<Object> exception(RecordNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
     }
 
@@ -42,6 +42,11 @@ public class ExceptionController {
     @ExceptionHandler(value = EnrollmentIsOngoingException.class)
     public ResponseEntity<String> exception(EnrollmentIsOngoingException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = RuntimeException.class)
+    public ResponseEntity<String> exception(RuntimeException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
 }

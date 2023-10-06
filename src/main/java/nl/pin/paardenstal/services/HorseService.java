@@ -4,7 +4,6 @@ import nl.pin.paardenstal.dtos.CustomerProfileDto;
 import nl.pin.paardenstal.dtos.HorseDto;
 import nl.pin.paardenstal.dtos.HorseInputDto;
 import nl.pin.paardenstal.dtos.StallDto;
-import nl.pin.paardenstal.exceptions.AlreadyAssignedException;
 import nl.pin.paardenstal.exceptions.NotYetRemovedException;
 import nl.pin.paardenstal.exceptions.RecordNotFoundException;
 import nl.pin.paardenstal.models.CustomerProfile;
@@ -13,8 +12,6 @@ import nl.pin.paardenstal.models.Horse;
 import nl.pin.paardenstal.repositories.CustomerProfileRepository;
 import nl.pin.paardenstal.repositories.FileUploadRepository;
 import nl.pin.paardenstal.repositories.HorseRepository;
-import nl.pin.paardenstal.repositories.StallRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -31,10 +28,10 @@ public class HorseService {
     private final StallService stallService;
     private final FileUploadRepository fileUploadRepository;
 
-    //@Autowired
+
     public HorseService(HorseRepository horseRepository, CustomerProfileRepository customerProfileRepository,
                         @Lazy CustomerProfileService customerProfileService, @Lazy StallService stallService,
-                        FileUploadRepository fileUploadRepository){
+                        FileUploadRepository fileUploadRepository) {
         this.horseRepository = horseRepository;
         this.customerProfileRepository = customerProfileRepository;
         this.customerProfileService = customerProfileService;
@@ -42,7 +39,7 @@ public class HorseService {
         this.fileUploadRepository = fileUploadRepository;
     }
 
-    public List<HorseDto> getAllHorses(){
+    public List<HorseDto> getAllHorses() {
         List<Horse> horses = horseRepository.findAll();
         List<HorseDto> dtos = new ArrayList<>();
 
@@ -64,7 +61,7 @@ public class HorseService {
         return dtos;
     }
 
-    public HorseDto getHorse(Long id){
+    public HorseDto getHorse(Long id) {
         Optional<Horse> optionalHorse = horseRepository.findById(id);
 
         if(optionalHorse.isPresent()){
@@ -104,14 +101,14 @@ public class HorseService {
         return dtos;
     }
 
-    public Long addNewHorse(HorseInputDto horseInputDto){
+    public Long addNewHorse(HorseInputDto horseInputDto) {
         Horse horse = transferToHorse(horseInputDto);
         Horse newHorse = horseRepository.save(horse);
         Long newId = newHorse.getId();
         return newId;
     }
 
-    public void updateHorse(Long id, HorseInputDto horseInputDto){
+    public void updateHorse(Long id, HorseInputDto horseInputDto) {
         Optional<Horse> optionalHorse = horseRepository.findById(id);
 
         if (optionalHorse.isPresent()){
@@ -154,12 +151,10 @@ public class HorseService {
         if (optionalHorse.isPresent()) {
             Horse horse = optionalHorse.get();
             if(horse.getStall() != null) {
-                throw new NotYetRemovedException("Verwijder eerst het paard uit de stal");
-                //alternatief voor de NotYetRemovedException. handelt de oorzaak voor de exception gelijk ook af.
-                //stallService.removeHorseFromStall(horse.getStall().getId());
+                throw new NotYetRemovedException("First remove horse from stall");
             }
             if(horse.getEnrollment() != null) {
-                throw new NotYetRemovedException("Er loopt nog een abonnement. Beindig dit eerst.");
+                throw new NotYetRemovedException("There's still an ongoing enrollment, you have to terminate first.");
             }
             if(horse.getOwner() == null) {
                 horseRepository.delete(horse);
@@ -194,7 +189,7 @@ public class HorseService {
         return dto;
     }
 
-    public Horse transferToHorse(HorseInputDto horseInputDto){
+    public Horse transferToHorse(HorseInputDto horseInputDto) {
         Horse horse = new Horse();
 
         horse.setName(horseInputDto.getName());
@@ -219,9 +214,9 @@ public class HorseService {
             horse.setOwner(owner);
             horseRepository.save(horse);
         } else if (!optionalHorse.isPresent()){
-            throw new RecordNotFoundException("Kan geen paard vinden met deze Id");
+            throw new RecordNotFoundException("sorry, can't find any horse by this ID");
         } else if (!optionalOwner.isPresent()){
-            throw new RecordNotFoundException("Kan geen klant vinden met deze Id");
+            throw new RecordNotFoundException("sorry, can't find any customer by this ID");
         }
     }
 
@@ -235,7 +230,7 @@ public class HorseService {
             horse.setPassport(passport);
             horseRepository.save(horse);
         } else {
-            throw new RecordNotFoundException("kan geen paard met deze Id vinden");
+            throw new RecordNotFoundException("sorry, can't find any horse by this ID");
         }
     }
 
