@@ -382,8 +382,7 @@ class HorseServiceTest {
         verify(horseRepository).delete(testHorse);
     }
 
-    //DIT IS DE LAATSTE TEST DIE IK NOG MOET NALOPEN!!!
-    //deleteHorse
+
     @Test
     void shouldDeleteHorseWhenOwnerIsNotNull() {
 
@@ -403,11 +402,9 @@ class HorseServiceTest {
         resultHorse.setEnrollment(null);
 
         when(horseRepository.findById(1L)).thenReturn(Optional.of(horse1));
-        //when(horseService.removeCustomerProfileFromHorse(horse1)).thenReturn(resultHorse);
         when(horseRepository.save(horse1)).thenReturn(resultHorse);
 
         horseService.deleteHorse(1L);
-        //verify(horseRepository).delete(horse1);
         verify(horseRepository).delete(resultHorse);
     }
 
