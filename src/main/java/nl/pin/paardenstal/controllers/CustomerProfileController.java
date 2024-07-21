@@ -72,7 +72,8 @@ public class CustomerProfileController {
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                     .buildAndExpand(newId).toUri();
 
-            return ResponseEntity.created(location).build();
+//            return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).body(newId);
         }
     }
 

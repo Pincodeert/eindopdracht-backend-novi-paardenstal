@@ -23,7 +23,7 @@ public class UserDto {
 
     public Set<Authority> authorities;
 
-    public CustomerProfileDto customerProfile;
+    public Long customerProfile;
 
 
     public String getUsername() {
@@ -74,9 +74,7 @@ public class UserDto {
         this.authorities = authorities;
     }
 
-    public CustomerProfileDto getCustomerProfile() {
-        return customerProfile;
-    }
+
 
 }
 

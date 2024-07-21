@@ -209,7 +209,8 @@ public class EnrollmentService {
             } else {
                 Enrollment enrollment = new Enrollment(subscription, customer, horse);
                 Enrollment newEnrollment = enrollmentRepository.save(enrollment);
-
+                horse.setPreferredSubscription("activated");
+                horseRepository.save(horse);
                 Long newId = newEnrollment.getId();
                 return newId;
             }

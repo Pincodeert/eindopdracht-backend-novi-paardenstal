@@ -52,7 +52,7 @@ public class SpringSecurityConfig {
                 .cors().and()
                 .authorizeHttpRequests()
                 // Wanneer deze wordt ge-uncomments, staat de hele security open. Er is dan alleen nog een jwt nodig.
-                //.requestMatchers("/**").permitAll()
+                .antMatchers("/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
                 .antMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET,"/users/{username}").hasAnyRole("USER","ADMIN")
@@ -63,18 +63,25 @@ public class SpringSecurityConfig {
 
 
                 .antMatchers(HttpMethod.POST, "/customerprofiles").hasAnyRole("USER","ADMIN")
+//                .antMatchers(HttpMethod.POST, "/customerprofiles").permitAll()
                 .antMatchers(HttpMethod.GET, "/customerprofiles").hasRole("ADMIN")
+//                .antMatchers(HttpMethod.GET, "/customerprofiles").permitAll()
                 .antMatchers(HttpMethod.GET, "/customerprofiles/{id}").hasAnyRole("USER","ADMIN")
+//                .antMatchers(HttpMethod.GET, "/customerprofiles/{id}").permitAll()
                 .antMatchers(HttpMethod.GET, "/customerprofiles/{id}/enrollments").hasAnyRole("USER","ADMIN")
+//                .antMatchers(HttpMethod.GET, "/customerprofiles/{id}/enrollments").permitAll()
                 .antMatchers(HttpMethod.GET, "/customerprofiles/enrollments/{customerProfileId}").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.PATCH, "/customerprofiles/{id}").hasAnyRole("USER","ADMIN")
+//                .antMatchers(HttpMethod.PATCH, "/customerprofiles/{id}").permitAll()
                 .antMatchers(HttpMethod.PUT, "/customerprofiles/{id}/user").hasAnyRole("USER","ADMIN")
+//                .antMatchers(HttpMethod.PUT, "/customerprofiles/{id}/user").permitAll()
                 .antMatchers(HttpMethod.PUT, "/customerprofiles/{id}/users/{username}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/customerprofiles/{id}").hasRole("ADMIN")
 
 
                 .antMatchers(HttpMethod.POST, "/stalls").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/stalls").hasRole("ADMIN")
+//                .antMatchers(HttpMethod.GET, "/stalls").permitAll()
                 .antMatchers(HttpMethod.GET, "/stalls/{id}").hasAnyRole("USER","ADMIN")
                 //hieronder permitAll gekozen zodat iedereen vanuit de frontend kan zien hoeveel lege en dus beschikbare
                 // stallen er nog zijn
@@ -87,18 +94,28 @@ public class SpringSecurityConfig {
 
 
                 .antMatchers(HttpMethod.POST, "/horses").hasAnyRole("USER","ADMIN")
+//                .antMatchers(HttpMethod.POST, "/horses").permitAll()
                 .antMatchers(HttpMethod.GET, "/horses").hasRole("ADMIN")
+//                .antMatchers(HttpMethod.GET, "/horses").permitAll()
                 .antMatchers(HttpMethod.GET, "/horses/{id}").hasAnyRole("USER","ADMIN")
+//                .antMatchers(HttpMethod.GET, "/horses/{id}").permitAll()
+                .antMatchers(HttpMethod.GET, "/horses/customerprofile/{id}").hasAnyRole("USER","ADMIN")
                 .antMatchers(HttpMethod.GET, "/horses/customerprofile").hasAnyRole("USER","ADMIN")
+//                .antMatchers(HttpMethod.GET, "/horses/customerprofile").permitAll()
                 .antMatchers(HttpMethod.POST, "/horses/{id}/passport").hasAnyRole("USER","ADMIN")
+//                .antMatchers(HttpMethod.POST, "/horses/{id}/passport").permitAll()
                 .antMatchers(HttpMethod.PATCH, "/horses/{id}").hasAnyRole("USER","ADMIN")
+//                .antMatchers(HttpMethod.PATCH, "/horses/{id}").permitAll()
                 .antMatchers(HttpMethod.PUT, "/horses/{id}/customerprofile").hasAnyRole("USER","ADMIN")
+//                .antMatchers(HttpMethod.PUT, "/horses/{id}/customerprofile").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/horses/{id}").hasRole("ADMIN")
 
 
+
                 .antMatchers(HttpMethod.POST, "/subscriptions").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/subscriptions").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/subscriptions").permitAll()
                 .antMatchers(HttpMethod.GET, "/subscriptions/{id}").hasRole("ADMIN")
+//                .antMatchers(HttpMethod.GET, "/subscriptions/{id}").permitAll()
                 .antMatchers(HttpMethod.GET, "/subscriptions/{id}/enrollments").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/subscriptions/enrollments/{subscriptionId}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PATCH, "/subscriptions/{id}").hasRole("ADMIN")

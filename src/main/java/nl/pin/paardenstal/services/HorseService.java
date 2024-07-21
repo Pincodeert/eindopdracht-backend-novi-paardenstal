@@ -84,6 +84,23 @@ public class HorseService {
         }
     }
 
+//    public List<HorseDto> getAllHorsesByCustomerProfileId(Long customerProfileId) {
+//        List<HorseDto> dtos = new ArrayList<>();
+//        List<Horse> horses = horseRepository.findAllByOwnerId(customerProfileId);
+//        for(Horse h: horses) {
+//            HorseDto dto = transferToDto(h);
+//            if(h.getStall() != null) {
+//                StallDto stallDto = stallService.transferToDto(h.getStall());
+//                dto.setStall(stallDto);
+//            }
+//            if(h.getPassport() != null) {
+//                dto.setPassport(h.getPassport());
+//            }
+//            dtos.add(dto);
+//        }
+//        return dtos;
+//    }
+
     public List<HorseDto> getAllHorsesByCustomerProfileId(Long customerProfileId) {
         List<HorseDto> dtos = new ArrayList<>();
         List<Horse> horses = horseRepository.findAllByOwnerId(customerProfileId);

@@ -58,6 +58,10 @@ public class UserService {
             User storedUser = optionalUser.get();
             dto.username = storedUser.getUsername();
             dto.email = storedUser.getEmail();
+            dto.authorities = storedUser.getAuthorities();
+            if(storedUser.getCustomerProfile() != null) {
+                dto.customerProfile = storedUser.getCustomerProfile().getId();
+            }
             return dto;
         } else {
             throw new UsernameNotFoundException(username);
@@ -131,6 +135,9 @@ public class UserService {
         dto.apikey = user.getApikey();
         dto.email = user.getEmail();
         dto.authorities = user.getAuthorities();
+        if (user.getCustomerProfile() != null) {
+            dto.customerProfile = user.getCustomerProfile().getId();
+        }
 
         return dto;
     }

@@ -40,9 +40,15 @@ public class HorseController {
         return ResponseEntity.ok(horseDto);
     }
 
-    @GetMapping("/horses/customerprofile")
-    public ResponseEntity<List<HorseDto>> getAllHorsesByCustomerProfileId(@RequestBody IdInputDto input) {
-        List<HorseDto> dtos = horseService.getAllHorsesByCustomerProfileId(input.id);
+//    @GetMapping("/horses/customerprofile")
+//    public ResponseEntity<List<HorseDto>> getAllHorsesByCustomerProfileId(@RequestBody IdInputDto input) {
+//        List<HorseDto> dtos = horseService.getAllHorsesByCustomerProfileId(input.id);
+//        return ResponseEntity.ok(dtos);
+//    }
+
+    @GetMapping("/horses/customerprofile/{id}")
+    public ResponseEntity<List<HorseDto>> getAllHorsesByCustomerProfileId(@PathVariable Long id) {
+        List<HorseDto> dtos = horseService.getAllHorsesByCustomerProfileId(id);
         return ResponseEntity.ok(dtos);
     }
 
@@ -62,7 +68,8 @@ public class HorseController {
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                     .buildAndExpand(newId).toUri();
 
-            return ResponseEntity.created(location).build();
+//            return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).body(newId);
         }
     }
 

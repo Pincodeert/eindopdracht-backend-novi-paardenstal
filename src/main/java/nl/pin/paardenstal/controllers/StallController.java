@@ -100,7 +100,9 @@ public class StallController {
     @PutMapping("/stalls/{id}")
     public ResponseEntity<Object> removeHorseFromStall(@PathVariable Long id) {
         stallService.removeHorseFromStall(id);
-        return ResponseEntity.noContent().build();
+//        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("horse is succesfully removed from stall");
     }
+
 
 }
